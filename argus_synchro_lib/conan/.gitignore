@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.conan2/
+build/
+generators/
+.cmake/

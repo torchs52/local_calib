@@ -1,0 +1,29 @@
+{
+  "SCX900-3": {
+    "ground_z": -1.38,
+    "local_flip_x": true,
+    "obj_fpath": "./crane3d/visualize/SCX900-3",
+    "kind": "OBJ"
+  },
+
+  "SCX2000-3": {
+    "ground_z": -1.71,
+    "local_flip_x": true,
+    "obj_fpath": "./crane3d/visualize/SCX2000-3",
+    "kind": "OBJ"
+  },
+
+  "SCX1200-3": {
+    "ground_z": -1.38,
+    "local_flip_x": true,
+    "obj_fpath": "./crane3d/visualize/SCX1200-3",
+    "kind": "OBJ"
+  },
+
+  "SCX3500-3": {
+    "ground_z": -1.85,
+    "local_flip_x": true,
+    "obj_fpath": "./crane3d/visualize/SCX3500-3",
+    "kind": "OBJ"
+  }
+}

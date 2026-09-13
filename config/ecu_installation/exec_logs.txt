@@ -1,0 +1,66 @@
+ip address show
+ip link
+iplink show wlan0
+ip link show wlan0
+ifconfig
+
+# 初期設定
+sudo apt update
+sudo apt upgrade
+which git
+which python
+python -V
+ls
+
+# gitの設定
+ssh-keygen
+cat .ssh/id_rsa.pub 
+mkdir git
+cd git
+git clone git@shi-desktop.local:HiroakiMatsunaga/gittest.git
+git clone git@shi-desktop.local:team3dmonitoring/argus_synchro.git
+git config --global user.email "ecu@shi-desktop.local"
+git config --global user.name "ecu_shi"
+
+# 仮想環境の設定
+cd argus_synchro/
+python -m venv venv
+sudo apt install python3.8-venv
+cd argus_synchro/
+source venv/bin/activate
+iconv -f utf-16 -t utf-8 requrirements.txt 
+pip install -r requirements.txt
+pip install numpy
+pip install open3d
+pip install pywin32
+pip install --upgrade pip
+pip3 install pywin32
+pip install scipy
+pip install h5py==2.10.0
+pip install matplotlib
+pip install psutil
+sudo apt install crossbuild-essential-arm64 python3-dev
+pip install -r requirements.txt
+pip install nbformat
+pip install h5py
+sudo apt-get update
+sudo apt-get install libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev liblapack-dev libblas-dev gfortran
+sudo pip install -U testresources setuptools==65.5.0
+pip3 install -U testresources setuptools==65.5.0
+pip3 install -U numpy==1.22 future==0.18.2 mock==3.0.5 keras_preprocessing==1.1.2 keras_applications==1.0.8 gast==0.4.0 protobuf pybind11 cython pkgconfig packaging h5py==3.7.0
+cat /etc/nv_tegra_release
+dpkg-query --show nvidia-l4t-core
+pip3 install --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v511 tensorflow==2.12.0+nv23.05
+find / -name '*libgomp-d22c30c5.so.1.0.0*'
+vim ~/.bashrc
+source ~/.bashrc
+echo $LD_PRELOAD 
+
+# nvidia dirverの設定
+cat /etc/nv_tegra_release 
+sudo apt update
+sudo apt dist-upgrade
+sudo reboot
+sudo vi /etc/apt/sources.list.d/nvidia-l4t-apt-source.list 
+sudo apt install nvidia-jetpack
+sudo reboot

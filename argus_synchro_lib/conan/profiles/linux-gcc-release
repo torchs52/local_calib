@@ -1,0 +1,28 @@
+# argus_synchro_lib Conan profile (forked from 3rdparty/open3d/conan/profiles/linux-gcc-release).
+
+[settings]
+os=Linux
+arch=x86_64
+compiler=gcc
+compiler.version=11
+compiler.cppstd=17
+compiler.libcxx=libstdc++11
+build_type=Release
+# Filament: Clang + libc++ on Linux (Open3D upstream uses a split toolchain).
+open3d-filament/*:compiler=clang
+open3d-filament/*:compiler.version=11
+open3d-filament/*:compiler.libcxx=libc++
+
+[options]
+*:shared=False
+# onetbb's hwloc dep enforces shared=True; allow it explicitly.
+hwloc/*:shared=True
+
+[tool_requires]
+cmake/[>=3.24 <4]
+
+[conf]
+tools.build:jobs=8
+tools.cmake.cmaketoolchain:generator=Ninja
+tools.system.package_manager:mode=report
+user.open3d:cuda_architectures=87

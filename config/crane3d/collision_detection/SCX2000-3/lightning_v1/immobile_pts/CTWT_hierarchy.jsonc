@@ -1,0 +1,165 @@
+// 機体除去において、階層構想を持つような部位で用いる
+// 配列の各要素が部位のさらに一部を表していて、その部位をどのように規定するかが配列の各要素に書かれている
+// class_nameが階層のクラス名, argsがそのクラスのコンストラクタの引数とする
+[
+    // left
+    {
+        "class_name": "CuboidRange",
+        "args": {
+            //"x_minmax": [-5.67, -4.95],
+            "x_minmax": [4.95, 5.67],
+            "y_minmax": [-1.9, -1.51],
+            "z_minmax": [-0.08, 3.50],
+            //"x_range_ratio": [-1.0, 0.0],
+            "x_range_ratio": [0.0, 1.0],
+            "y_range_ratio": [0.0, 1.0],
+            "z_range_ratio": [-1.0, 1.0]
+        }
+    },
+    {
+        "class_name": "CuboidRange",
+        "args": {
+            //"x_minmax": [-4.95, -4.1],
+            "x_minmax": [4.1, 4.95],
+            "y_minmax": [-3.4, -1.51],
+            "z_minmax": [-0.08, 3.50],
+            "x_range_ratio": [0.0, 0.0],
+            "y_range_ratio": [-1.0, 1.0],
+            "z_range_ratio": [-1.0, 1.0]
+        }
+    },
+    {
+        "class_name": "CuboidRange",
+        "args": {
+            //"x_minmax": [-4.1, -3.47],
+            "x_minmax": [3.47, 4.1],
+            "y_minmax": [-2.0, -1.51],
+            "z_minmax": [-0.08, 3.50],
+            "x_range_ratio": [-1.0, 0.0],
+            "y_range_ratio": [0.0, 1.0],
+            "z_range_ratio": [-1.0, 1.0]
+        }
+    },
+    {
+        "class_name": "TriPillar",
+        "args": {
+            "z_minmax": [-0.08, 3.50],
+            "tri_points": [
+                //[-3.47, -2.0],
+                //[-4.1, -3.4]
+                [3.47, -2.0],
+                [4.1, -3.4]
+            ],
+            "x_remove_offset_ratio": [-1.0, 0.0],
+            "y_remove_offset_ratio": [0.0, -1.0],
+            "z_remove_offset_ratio": [-1.0, 1.0],
+            //"vec_is_reverse": true
+            "vec_is_reverse": false
+        }
+    },
+    {
+        "class_name": "TriPillar",
+        "args": {
+            "z_minmax": [-0.08, 3.50],
+            "tri_points": [
+                //[-5.67, -1.9],
+                //[-4.95, -3.4]
+                [5.67, -1.9],
+                [4.95, -3.4]
+            ],
+            "x_remove_offset_ratio": [1.0, 0.0],
+            "y_remove_offset_ratio": [0.0, -1.0],
+            "z_remove_offset_ratio": [-1.0, 1.0],
+            //"vec_is_reverse": false
+            "vec_is_reverse": true
+        }
+    },
+
+    // center
+    {
+        "class_name": "CuboidRange",
+        "args": {
+            //"x_minmax": [-5.84, -3.52],
+            "x_minmax": [3.52, 5.84],
+            "y_minmax": [-1.51, 1.51],
+            "z_minmax": [-0.08, 0.66],
+            "x_range_ratio": [-1.0, 1.0],
+            "y_range_ratio": [-1.0, 1.0],
+            "z_range_ratio": [-1.0, 1.0]
+        }
+    },
+
+    //right
+    {
+        "class_name": "CuboidRange",
+        "args": {
+            //"x_minmax": [-5.67, -4.95],
+            "x_minmax": [4.95, 5.67],
+            "y_minmax": [1.51, 1.9],
+            "z_minmax": [-0.08, 3.49],
+            "x_range_ratio": [0.0, 1.0],
+            "y_range_ratio": [-1.0, 0.0],
+            "z_range_ratio": [-1.0, 1.0]
+        }
+    },
+    {
+        "class_name": "CuboidRange",
+        "args": {
+            //"x_minmax": [-4.95, -4.1],
+            "x_minmax": [4.1, 4.95],
+            "y_minmax": [1.51, 3.4],
+            "z_minmax": [-0.08, 3.49],
+            "x_range_ratio": [0.0, 0.0],
+            "y_range_ratio": [-1.0, 1.0],
+            "z_range_ratio": [-1.0, 1.0]
+        }
+    },
+    {
+        "class_name": "CuboidRange",
+        "args": {
+            //"x_minmax": [-4.1, -3.47],
+            "x_minmax": [3.47, 4.1],
+            "y_minmax": [1.51, 2.0],
+            "z_minmax": [-0.08, 3.49],
+            "x_range_ratio": [-1.0, 0.0],
+            "y_range_ratio": [-1.0, 0.0],
+            "z_range_ratio": [-1.0, 1.0]
+        }
+    },
+    {
+        "class_name": "TriPillar",
+        "args": {
+            "z_minmax": [-0.08, 3.49],
+            "tri_points": [
+                //[-3.47, 2.0],
+                //[-4.1, 3.4]
+                [3.47, 2.0],
+                [4.1, 3.4]
+            ],
+            //"x_remove_offset_ratio": [1.0, 0.0],
+            "x_remove_offset_ratio": [-1.0, 0.0],
+            "y_remove_offset_ratio": [0.0, 1.0],
+            "z_remove_offset_ratio": [-1.0, 1.0],
+            //"vec_is_reverse": false
+            "vec_is_reverse": true
+        }
+    },
+    {
+        "class_name": "TriPillar",
+        "args": {
+            "z_minmax": [-0.08, 3.50],
+            "tri_points": [
+                //[-5.67, 1.9],
+                //[-4.95, 3.4]
+                [5.67, 1.9],
+                [4.95, 3.4]
+            ],
+            //"x_remove_offset_ratio": [-1.0, 0.0],
+            "x_remove_offset_ratio": [1.0, 0.0],
+            "y_remove_offset_ratio": [0.0, 1.0],
+            "z_remove_offset_ratio": [-1.0, 1.0],
+            //"vec_is_reverse": true
+            "vec_is_reverse": false
+        }
+    }
+]

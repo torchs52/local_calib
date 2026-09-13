@@ -1,0 +1,1663 @@
+{
+  "components": [
+    {
+      "bom-ref": "pkg:conan/open3d@0.19.0?rref=2dfffeefdf18c5f830ced7d957f7bf90",
+      "description": "Open3D library and dependencies via Conan 2.",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "open3d",
+      "purl": "pkg:conan/open3d@0.19.0",
+      "type": "library",
+      "version": "0.19.0"
+    },
+    {
+      "bom-ref": "pkg:conan/nlohmann_json@3.12.0?rref=2d634ab0ec8d9f56353e5ccef6d6612c",
+      "description": "JSON for Modern C++ parser and generator.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/nlohmann/json"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "nlohmann_json",
+      "purl": "pkg:conan/nlohmann_json@3.12.0",
+      "type": "library",
+      "version": "3.12.0"
+    },
+    {
+      "bom-ref": "pkg:conan/opencv@4.10.0?rref=4458605981a42d26f29ea75e7ad54a90",
+      "description": "OpenCV (Open Source Computer Vision Library)",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://opencv.org"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
+      "name": "opencv",
+      "purl": "pkg:conan/opencv@4.10.0",
+      "type": "library",
+      "version": "4.10.0"
+    },
+    {
+      "bom-ref": "pkg:conan/pybind11@3.0.1?rref=81ed7e3cc5c945080013ca4c5c3abbbb",
+      "description": "Seamless operability between C++11 and Python",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/pybind/pybind11"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "name": "pybind11",
+      "purl": "pkg:conan/pybind11@3.0.1",
+      "type": "library",
+      "version": "3.0.1"
+    },
+    {
+      "bom-ref": "pkg:conan/eigen@3.4.0?rref=e7256a460e38f651ab0aa5246f94cf6a",
+      "description": "Eigen is a C++ template library for linear algebra: matrices, vectors, numerical solvers, and related algorithms.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "http://eigen.tuxfamily.org"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MPL-2.0"
+          }
+        },
+        {
+          "license": {
+            "id": "LGPL-3.0-or-later"
+          }
+        }
+      ],
+      "name": "eigen",
+      "purl": "pkg:conan/eigen@3.4.0",
+      "type": "library",
+      "version": "3.4.0"
+    },
+    {
+      "bom-ref": "pkg:conan/fmt@10.2.1?rref=25441914a1da0c98628fb50c865639f8",
+      "description": "A safe and fast alternative to printf and IOStreams.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/fmtlib/fmt"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "fmt",
+      "purl": "pkg:conan/fmt@10.2.1",
+      "type": "library",
+      "version": "10.2.1"
+    },
+    {
+      "bom-ref": "pkg:conan/nanoflann@1.9.0?rref=daab9d61bab13ef3c34e7b9283447526",
+      "description": "nanoflann is a C++11 header-only library for building KD-Trees of datasets with different topologies: R2, R3 (point clouds), SO(2) and SO(3) (2D and 3D rotation groups).",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/jlblancoc/nanoflann"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-2-Clause"
+          }
+        }
+      ],
+      "name": "nanoflann",
+      "purl": "pkg:conan/nanoflann@1.9.0",
+      "type": "library",
+      "version": "1.9.0"
+    },
+    {
+      "bom-ref": "pkg:conan/jsoncpp@1.9.5?rref=9415a4cf4d2e8965408f3a01a8339b48",
+      "description": "A C++ library for interacting with JSON.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/open-source-parsers/jsoncpp"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "jsoncpp",
+      "purl": "pkg:conan/jsoncpp@1.9.5",
+      "type": "library",
+      "version": "1.9.5"
+    },
+    {
+      "bom-ref": "pkg:conan/libjpeg-turbo@3.0.4?rref=ae8ff9220a5ee8615fb1f5133f7d38df",
+      "description": "SIMD-accelerated libjpeg-compatible JPEG codec library",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://libjpeg-turbo.org"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "IJG"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        },
+        {
+          "license": {
+            "id": "Zlib"
+          }
+        }
+      ],
+      "name": "libjpeg-turbo",
+      "purl": "pkg:conan/libjpeg-turbo@3.0.4",
+      "type": "library",
+      "version": "3.0.4"
+    },
+    {
+      "bom-ref": "pkg:conan/libpng@1.6.43?rref=47094e8522b0f0744acfc731eadf308d",
+      "description": "libpng is the official PNG file format reference library.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "http://www.libpng.org"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "libpng-2.0"
+          }
+        }
+      ],
+      "name": "libpng",
+      "purl": "pkg:conan/libpng@1.6.43",
+      "type": "library",
+      "version": "1.6.43"
+    },
+    {
+      "bom-ref": "pkg:conan/zlib@1.3.1?rref=cac0f6daea041b0ccf42934163defb20",
+      "description": "A Massively Spiffy Yet Delicately Unobtrusive Compression Library (Also Free, Not to Mention Unencumbered by Patents)",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://zlib.net"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "Zlib"
+          }
+        }
+      ],
+      "name": "zlib",
+      "purl": "pkg:conan/zlib@1.3.1",
+      "type": "library",
+      "version": "1.3.1"
+    },
+    {
+      "bom-ref": "pkg:conan/msgpack-cxx@6.1.1?rref=4740d30c68b15a6791d46ee4b0e23c67",
+      "description": "The official C++ library for MessagePack",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/msgpack/msgpack-c"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSL-1.0"
+          }
+        }
+      ],
+      "name": "msgpack-cxx",
+      "purl": "pkg:conan/msgpack-cxx@6.1.1",
+      "type": "library",
+      "version": "6.1.1"
+    },
+    {
+      "bom-ref": "pkg:conan/zeromq@4.3.5?rref=8cc1512649270a4781c130d9a25ec37c",
+      "description": "ZeroMQ is a community of projects focused on decentralized messaging and computing",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/zeromq/libzmq"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MPL-2.0"
+          }
+        }
+      ],
+      "name": "zeromq",
+      "purl": "pkg:conan/zeromq@4.3.5",
+      "type": "library",
+      "version": "4.3.5"
+    },
+    {
+      "bom-ref": "pkg:conan/cppzmq@4.10.0?rref=654e309a7fb0213aac79c59d168c6157",
+      "description": "Header-only C++ binding for libzmq.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/zeromq/cppzmq"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "cppzmq",
+      "purl": "pkg:conan/cppzmq@4.10.0",
+      "type": "library",
+      "version": "4.10.0"
+    },
+    {
+      "bom-ref": "pkg:conan/tinyobjloader@2.0.0-rc10?rref=d34a46c931009cc6045094fcca6e5b4b",
+      "description": "Tiny but powerful single file wavefront obj loader",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/syoyo/tinyobjloader"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "tinyobjloader",
+      "purl": "pkg:conan/tinyobjloader@2.0.0-rc10",
+      "type": "library",
+      "version": "2.0.0-rc10"
+    },
+    {
+      "bom-ref": "pkg:conan/open3d-tinygltf@1.0.0?rref=e4ea49af78222159ad051c7404a11c53",
+      "description": "tinygltf static library matching Open3D's pinned commit.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/syoyo/tinygltf"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "open3d-tinygltf",
+      "purl": "pkg:conan/open3d-tinygltf@1.0.0",
+      "type": "library",
+      "version": "1.0.0"
+    },
+    {
+      "bom-ref": "pkg:conan/assimp@5.4.3?rref=f412ee9f2646f8320fbde9e3a08ecf2e",
+      "description": "A library to import and export various 3d-model-formats including scene-post-processing to generate missing render data.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/assimp/assimp"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "name": "assimp",
+      "purl": "pkg:conan/assimp@5.4.3",
+      "type": "library",
+      "version": "5.4.3"
+    },
+    {
+      "bom-ref": "pkg:conan/open3d-qhull@8.0.2?rref=d59935e171382913e27becf629000881",
+      "description": "Qhull with reentrant C library and C++ wrapper for Open3D.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/qhull/qhull"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "Qhull"
+          }
+        }
+      ],
+      "name": "open3d-qhull",
+      "purl": "pkg:conan/open3d-qhull@8.0.2",
+      "type": "library",
+      "version": "8.0.2"
+    },
+    {
+      "bom-ref": "pkg:conan/onetbb@2021.12.0?rref=02b7ccab7c1a6ad703936fba6af87a5a",
+      "description": "oneAPI Threading Building Blocks (oneTBB) lets you easily write parallel C++ programs that take full advantage of multicore performance, that are portable, composable and have future-proof scalability.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/oneapi-src/oneTBB"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
+      "name": "onetbb",
+      "purl": "pkg:conan/onetbb@2021.12.0",
+      "type": "library",
+      "version": "2021.12.0"
+    },
+    {
+      "bom-ref": "pkg:conan/embree@4.3.3?rref=f1e5698cb1b7c13f73b8e367330d577b",
+      "description": "Intel's collection of high-performance ray tracing kernels.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://embree.github.io/"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
+      "name": "embree",
+      "purl": "pkg:conan/embree@4.3.3",
+      "type": "library",
+      "version": "4.3.3"
+    },
+    {
+      "bom-ref": "pkg:conan/libcurl@8.6.0?rref=1daf20281d5c28d4999ecde631e15790",
+      "description": "command line tool and library for transferring data with URLs",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://curl.se"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "curl"
+          }
+        }
+      ],
+      "name": "libcurl",
+      "purl": "pkg:conan/libcurl@8.6.0",
+      "type": "library",
+      "version": "8.6.0"
+    },
+    {
+      "bom-ref": "pkg:conan/openssl@3.2.1?rref=0aeacdc0b5e7a314f44916c8fabd4595",
+      "description": "A toolkit for the Transport Layer Security (TLS) and Secure Sockets Layer (SSL) protocols",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/openssl/openssl"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
+      "name": "openssl",
+      "purl": "pkg:conan/openssl@3.2.1",
+      "type": "library",
+      "version": "3.2.1"
+    },
+    {
+      "bom-ref": "pkg:conan/open3d-vtk@9.1.0?rref=2f6ced5a64595b9ae4eb6aace8ac56ab",
+      "description": "Minimal Visualization Toolkit (VTK) build covering the modules consumed by Open3D.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://gitlab.kitware.com/vtk/vtk"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "name": "open3d-vtk",
+      "purl": "pkg:conan/open3d-vtk@9.1.0",
+      "type": "library",
+      "version": "9.1.0"
+    },
+    {
+      "bom-ref": "pkg:conan/open3d-rply@1.1.4?rref=8ca8f8ea2b73795b9f4857cbc902af22",
+      "description": "Lightweight library to read/write Stanford PLY files.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "http://w3.impa.br/~diego/software/rply/"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "open3d-rply",
+      "purl": "pkg:conan/open3d-rply@1.1.4",
+      "type": "library",
+      "version": "1.1.4"
+    },
+    {
+      "bom-ref": "pkg:conan/open3d-tinyfiledialogs@3.13.2?rref=cac181bdcc74788971907bb6a8b3e548",
+      "description": "Tiny cross-platform native file dialogs (Open3D fork).",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://sourceforge.net/projects/tinyfiledialogs/"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "Zlib"
+          }
+        }
+      ],
+      "name": "open3d-tinyfiledialogs",
+      "purl": "pkg:conan/open3d-tinyfiledialogs@3.13.2",
+      "type": "library",
+      "version": "3.13.2"
+    },
+    {
+      "bom-ref": "pkg:conan/open3d-tomasakeninemoeller@1.0?rref=c6a34302f64977cb6289ac78733a7976",
+      "description": "Triangle/triangle intersection routines (header-only, Open3D copy).",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://web.archive.org/web/20210405040253/https://fileadmin.cs.lth.se/cs/personal/tomas_akenine-moller/code/"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "name": "Public-Domain"
+          }
+        }
+      ],
+      "name": "open3d-tomasakeninemoeller",
+      "purl": "pkg:conan/open3d-tomasakeninemoeller@1.0",
+      "type": "library",
+      "version": "1.0"
+    },
+    {
+      "bom-ref": "pkg:conan/open3d-liblzf@3.6?rref=32b60557487747a6fab089fc8f725840",
+      "description": "Small and fast LZF data-compression library (Open3D copy).",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "http://oldhome.schmorp.de/marc/liblzf.html"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-2-Clause"
+          }
+        }
+      ],
+      "name": "open3d-liblzf",
+      "purl": "pkg:conan/open3d-liblzf@3.6",
+      "type": "library",
+      "version": "3.6"
+    },
+    {
+      "bom-ref": "pkg:conan/open3d-poissonrecon@12.0.0?rref=a3b6031f780d2633289569b47efcac7d",
+      "description": "Open3D's Poisson Surface Reconstruction fork (header-only).",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/isl-org/Open3D-PoissonRecon"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-2-Clause"
+          }
+        }
+      ],
+      "name": "open3d-poissonrecon",
+      "purl": "pkg:conan/open3d-poissonrecon@12.0.0",
+      "type": "library",
+      "version": "12.0.0"
+    },
+    {
+      "bom-ref": "pkg:conan/open3d-uvatlas@1.7.0?rref=840c7d2fadfdd2598111f520c097a0d6",
+      "description": "Isochart texture atlas creation library (UVAtlas).",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/microsoft/UVAtlas"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "open3d-uvatlas",
+      "purl": "pkg:conan/open3d-uvatlas@1.7.0",
+      "type": "library",
+      "version": "1.7.0"
+    },
+    {
+      "bom-ref": "pkg:conan/glfw@3.4?rref=41cc24c744dc4c80571f5dd10dcd9cda",
+      "description": "GLFW is a free, Open Source, multi-platform library for OpenGL, OpenGL ES and Vulkanapplication development. It provides a simple, platform-independent API for creatingwindows, contexts and surfaces, reading input, handling events, etc.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/glfw/glfw"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "Zlib"
+          }
+        }
+      ],
+      "name": "glfw",
+      "purl": "pkg:conan/glfw@3.4",
+      "type": "library",
+      "version": "3.4"
+    },
+    {
+      "bom-ref": "pkg:conan/open3d-glew-source@2.1.0?rref=89f6d081a70bbf7f24a6898b621227b8",
+      "description": "GLEW built from source, matching Open3D's bundled version.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "http://glew.sourceforge.net/"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "open3d-glew-source",
+      "purl": "pkg:conan/open3d-glew-source@2.1.0",
+      "type": "library",
+      "version": "2.1.0"
+    },
+    {
+      "bom-ref": "pkg:conan/minizip@1.2.13?rref=9e87d57804bd372d6d1e32b1871517a3",
+      "description": "An experimental package to read and write files in .zip format, written on top of zlib",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://zlib.net"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "Zlib"
+          }
+        }
+      ],
+      "name": "minizip",
+      "purl": "pkg:conan/minizip@1.2.13",
+      "type": "library",
+      "version": "1.2.13"
+    },
+    {
+      "bom-ref": "pkg:conan/open3d-cutlass@1.3.3?rref=cbfbac605430aa04a0d7b2cfaa47ce72",
+      "description": "CUDA Templates for Linear Algebra Subroutines (header-only).",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/NVIDIA/cutlass"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "name": "open3d-cutlass",
+      "purl": "pkg:conan/open3d-cutlass@1.3.3",
+      "type": "library",
+      "version": "1.3.3"
+    },
+    {
+      "bom-ref": "pkg:conan/open3d-stdgpu@1.3.0?rref=0c000895fe3ed28c36ef325b807de608",
+      "description": "Efficient STL-like data structures on the GPU.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/stotko/stdgpu"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
+      "name": "open3d-stdgpu",
+      "purl": "pkg:conan/open3d-stdgpu@1.3.0",
+      "type": "library",
+      "version": "1.3.0"
+    },
+    {
+      "bom-ref": "pkg:conan/open3d-cub@1.8.0?rref=633cc668a31309597fc7577344dca2e5",
+      "description": "Cooperative primitives for CUDA kernel programming.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/NVlabs/cub"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "name": "open3d-cub",
+      "purl": "pkg:conan/open3d-cub@1.8.0",
+      "type": "library",
+      "version": "1.8.0"
+    },
+    {
+      "bom-ref": "pkg:conan/openblas@0.3.27?rref=29e844a5c715afe1d8e678b823731e02",
+      "description": "An optimized BLAS library based on GotoBLAS2 1.13 BSD version",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://www.openblas.net"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "name": "openblas",
+      "purl": "pkg:conan/openblas@0.3.27",
+      "type": "library",
+      "version": "0.3.27"
+    },
+    {
+      "bom-ref": "pkg:conan/ade@0.1.2d?rref=82546b5d78a6a8393f705a8f4f826dff",
+      "description": "Graph construction, manipulation, and processing framework",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/opencv/ade"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
+      "name": "ade",
+      "purl": "pkg:conan/ade@0.1.2d",
+      "type": "library",
+      "version": "0.1.2d"
+    },
+    {
+      "bom-ref": "pkg:conan/openjpeg@2.5.2?rref=6f7b733e151d1bbf5ed05cbabb846828",
+      "description": "OpenJPEG is an open-source JPEG 2000 codec written in C language.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/uclouvain/openjpeg"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-2-Clause"
+          }
+        }
+      ],
+      "name": "openjpeg",
+      "purl": "pkg:conan/openjpeg@2.5.2",
+      "type": "library",
+      "version": "2.5.2"
+    },
+    {
+      "bom-ref": "pkg:conan/openexr@3.2.3?rref=9729562cfe706ed8d5a9a7f398d09eab",
+      "description": "OpenEXR is a high dynamic-range (HDR) image file format developed by Industrial Light & Magic for use in computer imaging applications.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/AcademySoftwareFoundation/openexr"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "name": "openexr",
+      "purl": "pkg:conan/openexr@3.2.3",
+      "type": "library",
+      "version": "3.2.3"
+    },
+    {
+      "bom-ref": "pkg:conan/libtiff@4.6.0?rref=b3fb32a80480ba4d4d9a71dd310ead02",
+      "description": "Library for Tag Image File Format (TIFF)",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "http://www.simplesystems.org/libtiff"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "libtiff"
+          }
+        }
+      ],
+      "name": "libtiff",
+      "purl": "pkg:conan/libtiff@4.6.0",
+      "type": "library",
+      "version": "4.6.0"
+    },
+    {
+      "bom-ref": "pkg:conan/libwebp@1.3.2?rref=48800423705f4739ed8e3eba9bb4e2db",
+      "description": "Library to encode and decode images in WebP format",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://chromium.googlesource.com/webm/libwebp"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "name": "libwebp",
+      "purl": "pkg:conan/libwebp@1.3.2",
+      "type": "library",
+      "version": "1.3.2"
+    },
+    {
+      "bom-ref": "pkg:conan/quirc@1.2?rref=5398c0f120ebdeeeb3b2535a32774d25",
+      "description": "QR decoder library",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/dlbeer/quirc"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "ISC"
+          }
+        }
+      ],
+      "name": "quirc",
+      "purl": "pkg:conan/quirc@1.2",
+      "type": "library",
+      "version": "1.2"
+    },
+    {
+      "bom-ref": "pkg:conan/boost@1.91.0?rref=ea540ca2133d831b560036aa24dece3c",
+      "description": "Boost provides free peer-reviewed portable C++ source libraries",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://www.boost.org"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSL-1.0"
+          }
+        }
+      ],
+      "name": "boost",
+      "purl": "pkg:conan/boost@1.91.0",
+      "type": "library",
+      "version": "1.91.0"
+    },
+    {
+      "bom-ref": "pkg:conan/libsodium@1.0.21?rref=97a4d338addc5776009f94afde8b493d",
+      "description": "A modern and easy-to-use crypto library.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://doc.libsodium.org/"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "ISC"
+          }
+        }
+      ],
+      "name": "libsodium",
+      "purl": "pkg:conan/libsodium@1.0.21",
+      "type": "library",
+      "version": "1.0.21"
+    },
+    {
+      "bom-ref": "pkg:conan/pugixml@1.14?rref=c6afdcf73d71858303d8260b0d76ff91",
+      "description": "Light-weight, simple and fast XML parser for C++ with XPath support",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://pugixml.org/"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "pugixml",
+      "purl": "pkg:conan/pugixml@1.14",
+      "type": "library",
+      "version": "1.14"
+    },
+    {
+      "bom-ref": "pkg:conan/utfcpp@4.0.1?rref=e879ce0ad3e77ff6e04713ada5549655",
+      "description": "UTF-8 with C++ in a Portable Way",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/nemtrif/utfcpp"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSL-1.0"
+          }
+        }
+      ],
+      "name": "utfcpp",
+      "purl": "pkg:conan/utfcpp@4.0.1",
+      "type": "library",
+      "version": "4.0.1"
+    },
+    {
+      "bom-ref": "pkg:conan/kuba-zip@0.3.0?rref=a94374066e7536ed2edeece35a18af59",
+      "description": "A portable, simple zip library written in C",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/kuba--/zip"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "Unlicense"
+          }
+        }
+      ],
+      "name": "kuba-zip",
+      "purl": "pkg:conan/kuba-zip@0.3.0",
+      "type": "library",
+      "version": "0.3.0"
+    },
+    {
+      "bom-ref": "pkg:conan/poly2tri@cci.20130502?rref=003141589c1a86aaa9e7cd8dcd05af73",
+      "description": "Poly2Tri is a sweepline constrained Delaunay Polygon Triangulation Library.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/greenm01/poly2tri"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "name": "poly2tri",
+      "purl": "pkg:conan/poly2tri@cci.20130502",
+      "type": "library",
+      "version": "cci.20130502"
+    },
+    {
+      "bom-ref": "pkg:conan/rapidjson@cci.20230929?rref=8dc0392af2b3aaea7312095f0ba53467",
+      "description": "A fast JSON parser/generator for C++ with both SAX/DOM style API",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "http://rapidjson.org"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "rapidjson",
+      "purl": "pkg:conan/rapidjson@cci.20230929",
+      "type": "library",
+      "version": "cci.20230929"
+    },
+    {
+      "bom-ref": "pkg:conan/draco@1.5.6?rref=c4fd529402e7954b0ed2305a386b0973",
+      "description": "Draco is a library for compressing and decompressing 3D geometric meshes and point clouds. It is intended to improve the storage and transmission of 3D graphics.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://google.github.io/draco/"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
+      "name": "draco",
+      "purl": "pkg:conan/draco@1.5.6",
+      "type": "library",
+      "version": "1.5.6"
+    },
+    {
+      "bom-ref": "pkg:conan/clipper@6.4.2?rref=2eb7263b5ad1225edddca68a6f93c11d",
+      "description": "Clipper is an open source freeware polygon clipping library",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "http://www.angusj.com/delphi/clipper.php"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSL-1.0"
+          }
+        }
+      ],
+      "name": "clipper",
+      "purl": "pkg:conan/clipper@6.4.2",
+      "type": "library",
+      "version": "6.4.2"
+    },
+    {
+      "bom-ref": "pkg:conan/stb@cci.20230920?rref=ed79bd361e974a99137f214efb117eef",
+      "description": "single-file public domain libraries for C/C++",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/nothings/stb"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "Unlicense"
+          }
+        },
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "stb",
+      "purl": "pkg:conan/stb@cci.20230920",
+      "type": "library",
+      "version": "cci.20230920"
+    },
+    {
+      "bom-ref": "pkg:conan/openddl-parser@0.5.1?rref=1ed71b6fc636be990a506c802bf64831",
+      "description": "A simple and fast OpenDDL Parser",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/kimkulling/openddl-parser"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "openddl-parser",
+      "purl": "pkg:conan/openddl-parser@0.5.1",
+      "type": "library",
+      "version": "0.5.1"
+    },
+    {
+      "bom-ref": "pkg:conan/hwloc@2.12.2?rref=81314118300a8ee69b352f2d1b21d9d7",
+      "description": "Portable Hardware Locality (hwloc)",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://www.open-mpi.org/projects/hwloc/"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "name": "hwloc",
+      "purl": "pkg:conan/hwloc@2.12.2",
+      "type": "library",
+      "version": "2.12.2"
+    },
+    {
+      "bom-ref": "pkg:conan/open3d-directx-headers@1.606.3?rref=a3df41c4a3782a98a6a84be3c8dacc9e",
+      "description": "Official DirectX headers for Open3D's UVAtlas build.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/microsoft/DirectX-Headers"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "open3d-directx-headers",
+      "purl": "pkg:conan/open3d-directx-headers@1.606.3",
+      "type": "library",
+      "version": "1.606.3"
+    },
+    {
+      "bom-ref": "pkg:conan/open3d-directxmath@may2022?rref=c5c53de34d167c42cda6543a05fb6bb3",
+      "description": "Microsoft DirectXMath SIMD linear-algebra library.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/microsoft/DirectXMath"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "open3d-directxmath",
+      "purl": "pkg:conan/open3d-directxmath@may2022",
+      "type": "library",
+      "version": "may2022"
+    },
+    {
+      "bom-ref": "pkg:conan/opengl@system?rref=cfcf523b9d2bad75cbf377f56562634c",
+      "description": "cross-platform virtual conan package for the OpenGL support",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://www.opengl.org/"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "opengl",
+      "purl": "pkg:conan/opengl@system",
+      "type": "library",
+      "version": "system"
+    },
+    {
+      "bom-ref": "pkg:conan/bzip2@1.0.8?rref=c470882369c2d95c5c77e970c0c7e321",
+      "description": "bzip2 is a free and open-source file compression program that uses the Burrows Wheeler algorithm.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://sourceware.org/bzip2"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "bzip2-1.0.6"
+          }
+        }
+      ],
+      "name": "bzip2",
+      "purl": "pkg:conan/bzip2@1.0.8",
+      "type": "library",
+      "version": "1.0.8"
+    },
+    {
+      "bom-ref": "pkg:conan/imath@3.1.9?rref=20f703aa156f46ddc326e668ed22ffb6",
+      "description": "Imath is a C++ and python library of 2D and 3D vector, matrix, and math operations for computer graphics.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/AcademySoftwareFoundation/Imath"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "name": "imath",
+      "purl": "pkg:conan/imath@3.1.9",
+      "type": "library",
+      "version": "3.1.9"
+    },
+    {
+      "bom-ref": "pkg:conan/libdeflate@1.19?rref=3ea74a4549efc14d4b1202dc4bfbf602",
+      "description": "Heavily optimized library for DEFLATE/zlib/gzip compression and decompression.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/ebiggers/libdeflate"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "libdeflate",
+      "purl": "pkg:conan/libdeflate@1.19",
+      "type": "library",
+      "version": "1.19"
+    },
+    {
+      "bom-ref": "pkg:conan/xz_utils@5.8.3?rref=a8432fead347c69d8b2737c35f936132",
+      "description": "XZ Utils is free general-purpose data compression software with a high compression ratio. XZ Utils were written for POSIX-like systems, but also work on some not-so-POSIX systems. XZ Utils are the successor to LZMA Utils.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://tukaani.org/xz"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "Unlicense"
+          }
+        },
+        {
+          "license": {
+            "id": "LGPL-2.1-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-2.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-3.0-or-later"
+          }
+        }
+      ],
+      "name": "xz_utils",
+      "purl": "pkg:conan/xz_utils@5.8.3",
+      "type": "library",
+      "version": "5.8.3"
+    },
+    {
+      "bom-ref": "pkg:conan/libbacktrace@cci.20210118?rref=a7691bfccd8caaf66309df196790a5a1",
+      "description": "A C library that may be linked into a C/C++ program to produce symbolic backtraces.",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/ianlancetaylor/libbacktrace"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "name": "libbacktrace",
+      "purl": "pkg:conan/libbacktrace@cci.20210118",
+      "type": "library",
+      "version": "cci.20210118"
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "41913e87-3fc9-455f-9f60-74e217498d8c",
+      "dependsOn": [
+        "pkg:conan/open3d@0.19.0?rref=2dfffeefdf18c5f830ced7d957f7bf90",
+        "pkg:conan/nlohmann_json@3.12.0?rref=2d634ab0ec8d9f56353e5ccef6d6612c",
+        "pkg:conan/opencv@4.10.0?rref=4458605981a42d26f29ea75e7ad54a90",
+        "pkg:conan/pybind11@3.0.1?rref=81ed7e3cc5c945080013ca4c5c3abbbb"
+      ]
+    },
+    {
+      "ref": "pkg:conan/open3d@0.19.0?rref=2dfffeefdf18c5f830ced7d957f7bf90",
+      "dependsOn": [
+        "pkg:conan/eigen@3.4.0?rref=e7256a460e38f651ab0aa5246f94cf6a",
+        "pkg:conan/fmt@10.2.1?rref=25441914a1da0c98628fb50c865639f8",
+        "pkg:conan/nanoflann@1.9.0?rref=daab9d61bab13ef3c34e7b9283447526",
+        "pkg:conan/jsoncpp@1.9.5?rref=9415a4cf4d2e8965408f3a01a8339b48",
+        "pkg:conan/libjpeg-turbo@3.0.4?rref=ae8ff9220a5ee8615fb1f5133f7d38df",
+        "pkg:conan/libpng@1.6.43?rref=47094e8522b0f0744acfc731eadf308d",
+        "pkg:conan/zlib@1.3.1?rref=cac0f6daea041b0ccf42934163defb20",
+        "pkg:conan/msgpack-cxx@6.1.1?rref=4740d30c68b15a6791d46ee4b0e23c67",
+        "pkg:conan/zeromq@4.3.5?rref=8cc1512649270a4781c130d9a25ec37c",
+        "pkg:conan/cppzmq@4.10.0?rref=654e309a7fb0213aac79c59d168c6157",
+        "pkg:conan/tinyobjloader@2.0.0-rc10?rref=d34a46c931009cc6045094fcca6e5b4b",
+        "pkg:conan/open3d-tinygltf@1.0.0?rref=e4ea49af78222159ad051c7404a11c53",
+        "pkg:conan/assimp@5.4.3?rref=f412ee9f2646f8320fbde9e3a08ecf2e",
+        "pkg:conan/open3d-qhull@8.0.2?rref=d59935e171382913e27becf629000881",
+        "pkg:conan/onetbb@2021.12.0?rref=02b7ccab7c1a6ad703936fba6af87a5a",
+        "pkg:conan/embree@4.3.3?rref=f1e5698cb1b7c13f73b8e367330d577b",
+        "pkg:conan/libcurl@8.6.0?rref=1daf20281d5c28d4999ecde631e15790",
+        "pkg:conan/openssl@3.2.1?rref=0aeacdc0b5e7a314f44916c8fabd4595",
+        "pkg:conan/open3d-vtk@9.1.0?rref=2f6ced5a64595b9ae4eb6aace8ac56ab",
+        "pkg:conan/open3d-rply@1.1.4?rref=8ca8f8ea2b73795b9f4857cbc902af22",
+        "pkg:conan/open3d-tinyfiledialogs@3.13.2?rref=cac181bdcc74788971907bb6a8b3e548",
+        "pkg:conan/open3d-tomasakeninemoeller@1.0?rref=c6a34302f64977cb6289ac78733a7976",
+        "pkg:conan/open3d-liblzf@3.6?rref=32b60557487747a6fab089fc8f725840",
+        "pkg:conan/open3d-poissonrecon@12.0.0?rref=a3b6031f780d2633289569b47efcac7d",
+        "pkg:conan/open3d-uvatlas@1.7.0?rref=840c7d2fadfdd2598111f520c097a0d6",
+        "pkg:conan/glfw@3.4?rref=41cc24c744dc4c80571f5dd10dcd9cda",
+        "pkg:conan/open3d-glew-source@2.1.0?rref=89f6d081a70bbf7f24a6898b621227b8",
+        "pkg:conan/minizip@1.2.13?rref=9e87d57804bd372d6d1e32b1871517a3",
+        "pkg:conan/open3d-cutlass@1.3.3?rref=cbfbac605430aa04a0d7b2cfaa47ce72",
+        "pkg:conan/open3d-stdgpu@1.3.0?rref=0c000895fe3ed28c36ef325b807de608",
+        "pkg:conan/open3d-cub@1.8.0?rref=633cc668a31309597fc7577344dca2e5",
+        "pkg:conan/openblas@0.3.27?rref=29e844a5c715afe1d8e678b823731e02"
+      ]
+    },
+    {
+      "ref": "pkg:conan/nlohmann_json@3.12.0?rref=2d634ab0ec8d9f56353e5ccef6d6612c"
+    },
+    {
+      "ref": "pkg:conan/opencv@4.10.0?rref=4458605981a42d26f29ea75e7ad54a90",
+      "dependsOn": [
+        "pkg:conan/zlib@1.3.1?rref=cac0f6daea041b0ccf42934163defb20",
+        "pkg:conan/eigen@3.4.0?rref=e7256a460e38f651ab0aa5246f94cf6a",
+        "pkg:conan/ade@0.1.2d?rref=82546b5d78a6a8393f705a8f4f826dff",
+        "pkg:conan/libjpeg-turbo@3.0.4?rref=ae8ff9220a5ee8615fb1f5133f7d38df",
+        "pkg:conan/openjpeg@2.5.2?rref=6f7b733e151d1bbf5ed05cbabb846828",
+        "pkg:conan/libpng@1.6.43?rref=47094e8522b0f0744acfc731eadf308d",
+        "pkg:conan/openexr@3.2.3?rref=9729562cfe706ed8d5a9a7f398d09eab",
+        "pkg:conan/libtiff@4.6.0?rref=b3fb32a80480ba4d4d9a71dd310ead02",
+        "pkg:conan/libwebp@1.3.2?rref=48800423705f4739ed8e3eba9bb4e2db",
+        "pkg:conan/quirc@1.2?rref=5398c0f120ebdeeeb3b2535a32774d25"
+      ]
+    },
+    {
+      "ref": "pkg:conan/pybind11@3.0.1?rref=81ed7e3cc5c945080013ca4c5c3abbbb"
+    },
+    {
+      "ref": "pkg:conan/eigen@3.4.0?rref=e7256a460e38f651ab0aa5246f94cf6a"
+    },
+    {
+      "ref": "pkg:conan/fmt@10.2.1?rref=25441914a1da0c98628fb50c865639f8"
+    },
+    {
+      "ref": "pkg:conan/nanoflann@1.9.0?rref=daab9d61bab13ef3c34e7b9283447526"
+    },
+    {
+      "ref": "pkg:conan/jsoncpp@1.9.5?rref=9415a4cf4d2e8965408f3a01a8339b48"
+    },
+    {
+      "ref": "pkg:conan/libjpeg-turbo@3.0.4?rref=ae8ff9220a5ee8615fb1f5133f7d38df"
+    },
+    {
+      "ref": "pkg:conan/libpng@1.6.43?rref=47094e8522b0f0744acfc731eadf308d",
+      "dependsOn": [
+        "pkg:conan/zlib@1.3.1?rref=cac0f6daea041b0ccf42934163defb20"
+      ]
+    },
+    {
+      "ref": "pkg:conan/zlib@1.3.1?rref=cac0f6daea041b0ccf42934163defb20"
+    },
+    {
+      "ref": "pkg:conan/msgpack-cxx@6.1.1?rref=4740d30c68b15a6791d46ee4b0e23c67",
+      "dependsOn": [
+        "pkg:conan/boost@1.91.0?rref=ea540ca2133d831b560036aa24dece3c"
+      ]
+    },
+    {
+      "ref": "pkg:conan/zeromq@4.3.5?rref=8cc1512649270a4781c130d9a25ec37c",
+      "dependsOn": [
+        "pkg:conan/libsodium@1.0.21?rref=97a4d338addc5776009f94afde8b493d"
+      ]
+    },
+    {
+      "ref": "pkg:conan/cppzmq@4.10.0?rref=654e309a7fb0213aac79c59d168c6157",
+      "dependsOn": [
+        "pkg:conan/zeromq@4.3.5?rref=8cc1512649270a4781c130d9a25ec37c"
+      ]
+    },
+    {
+      "ref": "pkg:conan/tinyobjloader@2.0.0-rc10?rref=d34a46c931009cc6045094fcca6e5b4b"
+    },
+    {
+      "ref": "pkg:conan/open3d-tinygltf@1.0.0?rref=e4ea49af78222159ad051c7404a11c53"
+    },
+    {
+      "ref": "pkg:conan/assimp@5.4.3?rref=f412ee9f2646f8320fbde9e3a08ecf2e",
+      "dependsOn": [
+        "pkg:conan/minizip@1.2.13?rref=9e87d57804bd372d6d1e32b1871517a3",
+        "pkg:conan/pugixml@1.14?rref=c6afdcf73d71858303d8260b0d76ff91",
+        "pkg:conan/utfcpp@4.0.1?rref=e879ce0ad3e77ff6e04713ada5549655",
+        "pkg:conan/zlib@1.3.1?rref=cac0f6daea041b0ccf42934163defb20",
+        "pkg:conan/kuba-zip@0.3.0?rref=a94374066e7536ed2edeece35a18af59",
+        "pkg:conan/poly2tri@cci.20130502?rref=003141589c1a86aaa9e7cd8dcd05af73",
+        "pkg:conan/rapidjson@cci.20230929?rref=8dc0392af2b3aaea7312095f0ba53467",
+        "pkg:conan/draco@1.5.6?rref=c4fd529402e7954b0ed2305a386b0973",
+        "pkg:conan/clipper@6.4.2?rref=2eb7263b5ad1225edddca68a6f93c11d",
+        "pkg:conan/stb@cci.20230920?rref=ed79bd361e974a99137f214efb117eef",
+        "pkg:conan/openddl-parser@0.5.1?rref=1ed71b6fc636be990a506c802bf64831"
+      ]
+    },
+    {
+      "ref": "pkg:conan/open3d-qhull@8.0.2?rref=d59935e171382913e27becf629000881"
+    },
+    {
+      "ref": "pkg:conan/onetbb@2021.12.0?rref=02b7ccab7c1a6ad703936fba6af87a5a",
+      "dependsOn": [
+        "pkg:conan/hwloc@2.12.2?rref=81314118300a8ee69b352f2d1b21d9d7"
+      ]
+    },
+    {
+      "ref": "pkg:conan/embree@4.3.3?rref=f1e5698cb1b7c13f73b8e367330d577b",
+      "dependsOn": [
+        "pkg:conan/onetbb@2021.12.0?rref=02b7ccab7c1a6ad703936fba6af87a5a"
+      ]
+    },
+    {
+      "ref": "pkg:conan/libcurl@8.6.0?rref=1daf20281d5c28d4999ecde631e15790",
+      "dependsOn": [
+        "pkg:conan/openssl@3.2.1?rref=0aeacdc0b5e7a314f44916c8fabd4595",
+        "pkg:conan/zlib@1.3.1?rref=cac0f6daea041b0ccf42934163defb20"
+      ]
+    },
+    {
+      "ref": "pkg:conan/openssl@3.2.1?rref=0aeacdc0b5e7a314f44916c8fabd4595",
+      "dependsOn": [
+        "pkg:conan/zlib@1.3.1?rref=cac0f6daea041b0ccf42934163defb20"
+      ]
+    },
+    {
+      "ref": "pkg:conan/open3d-vtk@9.1.0?rref=2f6ced5a64595b9ae4eb6aace8ac56ab"
+    },
+    {
+      "ref": "pkg:conan/open3d-rply@1.1.4?rref=8ca8f8ea2b73795b9f4857cbc902af22"
+    },
+    {
+      "ref": "pkg:conan/open3d-tinyfiledialogs@3.13.2?rref=cac181bdcc74788971907bb6a8b3e548"
+    },
+    {
+      "ref": "pkg:conan/open3d-tomasakeninemoeller@1.0?rref=c6a34302f64977cb6289ac78733a7976"
+    },
+    {
+      "ref": "pkg:conan/open3d-liblzf@3.6?rref=32b60557487747a6fab089fc8f725840"
+    },
+    {
+      "ref": "pkg:conan/open3d-poissonrecon@12.0.0?rref=a3b6031f780d2633289569b47efcac7d"
+    },
+    {
+      "ref": "pkg:conan/open3d-uvatlas@1.7.0?rref=840c7d2fadfdd2598111f520c097a0d6",
+      "dependsOn": [
+        "pkg:conan/open3d-directx-headers@1.606.3?rref=a3df41c4a3782a98a6a84be3c8dacc9e",
+        "pkg:conan/open3d-directxmath@may2022?rref=c5c53de34d167c42cda6543a05fb6bb3"
+      ]
+    },
+    {
+      "ref": "pkg:conan/glfw@3.4?rref=41cc24c744dc4c80571f5dd10dcd9cda",
+      "dependsOn": [
+        "pkg:conan/opengl@system?rref=cfcf523b9d2bad75cbf377f56562634c"
+      ]
+    },
+    {
+      "ref": "pkg:conan/open3d-glew-source@2.1.0?rref=89f6d081a70bbf7f24a6898b621227b8"
+    },
+    {
+      "ref": "pkg:conan/minizip@1.2.13?rref=9e87d57804bd372d6d1e32b1871517a3",
+      "dependsOn": [
+        "pkg:conan/zlib@1.3.1?rref=cac0f6daea041b0ccf42934163defb20",
+        "pkg:conan/bzip2@1.0.8?rref=c470882369c2d95c5c77e970c0c7e321"
+      ]
+    },
+    {
+      "ref": "pkg:conan/open3d-cutlass@1.3.3?rref=cbfbac605430aa04a0d7b2cfaa47ce72"
+    },
+    {
+      "ref": "pkg:conan/open3d-stdgpu@1.3.0?rref=0c000895fe3ed28c36ef325b807de608"
+    },
+    {
+      "ref": "pkg:conan/open3d-cub@1.8.0?rref=633cc668a31309597fc7577344dca2e5"
+    },
+    {
+      "ref": "pkg:conan/openblas@0.3.27?rref=29e844a5c715afe1d8e678b823731e02"
+    },
+    {
+      "ref": "pkg:conan/ade@0.1.2d?rref=82546b5d78a6a8393f705a8f4f826dff"
+    },
+    {
+      "ref": "pkg:conan/openjpeg@2.5.2?rref=6f7b733e151d1bbf5ed05cbabb846828"
+    },
+    {
+      "ref": "pkg:conan/openexr@3.2.3?rref=9729562cfe706ed8d5a9a7f398d09eab",
+      "dependsOn": [
+        "pkg:conan/zlib@1.3.1?rref=cac0f6daea041b0ccf42934163defb20",
+        "pkg:conan/imath@3.1.9?rref=20f703aa156f46ddc326e668ed22ffb6",
+        "pkg:conan/libdeflate@1.19?rref=3ea74a4549efc14d4b1202dc4bfbf602"
+      ]
+    },
+    {
+      "ref": "pkg:conan/libtiff@4.6.0?rref=b3fb32a80480ba4d4d9a71dd310ead02",
+      "dependsOn": [
+        "pkg:conan/zlib@1.3.1?rref=cac0f6daea041b0ccf42934163defb20",
+        "pkg:conan/xz_utils@5.8.3?rref=a8432fead347c69d8b2737c35f936132",
+        "pkg:conan/libjpeg-turbo@3.0.4?rref=ae8ff9220a5ee8615fb1f5133f7d38df"
+      ]
+    },
+    {
+      "ref": "pkg:conan/libwebp@1.3.2?rref=48800423705f4739ed8e3eba9bb4e2db"
+    },
+    {
+      "ref": "pkg:conan/quirc@1.2?rref=5398c0f120ebdeeeb3b2535a32774d25"
+    },
+    {
+      "ref": "pkg:conan/boost@1.91.0?rref=ea540ca2133d831b560036aa24dece3c",
+      "dependsOn": [
+        "pkg:conan/zlib@1.3.1?rref=cac0f6daea041b0ccf42934163defb20",
+        "pkg:conan/bzip2@1.0.8?rref=c470882369c2d95c5c77e970c0c7e321",
+        "pkg:conan/libbacktrace@cci.20210118?rref=a7691bfccd8caaf66309df196790a5a1"
+      ]
+    },
+    {
+      "ref": "pkg:conan/libsodium@1.0.21?rref=97a4d338addc5776009f94afde8b493d"
+    },
+    {
+      "ref": "pkg:conan/pugixml@1.14?rref=c6afdcf73d71858303d8260b0d76ff91"
+    },
+    {
+      "ref": "pkg:conan/utfcpp@4.0.1?rref=e879ce0ad3e77ff6e04713ada5549655"
+    },
+    {
+      "ref": "pkg:conan/kuba-zip@0.3.0?rref=a94374066e7536ed2edeece35a18af59"
+    },
+    {
+      "ref": "pkg:conan/poly2tri@cci.20130502?rref=003141589c1a86aaa9e7cd8dcd05af73"
+    },
+    {
+      "ref": "pkg:conan/rapidjson@cci.20230929?rref=8dc0392af2b3aaea7312095f0ba53467"
+    },
+    {
+      "ref": "pkg:conan/draco@1.5.6?rref=c4fd529402e7954b0ed2305a386b0973"
+    },
+    {
+      "ref": "pkg:conan/clipper@6.4.2?rref=2eb7263b5ad1225edddca68a6f93c11d"
+    },
+    {
+      "ref": "pkg:conan/stb@cci.20230920?rref=ed79bd361e974a99137f214efb117eef"
+    },
+    {
+      "ref": "pkg:conan/openddl-parser@0.5.1?rref=1ed71b6fc636be990a506c802bf64831"
+    },
+    {
+      "ref": "pkg:conan/hwloc@2.12.2?rref=81314118300a8ee69b352f2d1b21d9d7"
+    },
+    {
+      "ref": "pkg:conan/open3d-directx-headers@1.606.3?rref=a3df41c4a3782a98a6a84be3c8dacc9e"
+    },
+    {
+      "ref": "pkg:conan/open3d-directxmath@may2022?rref=c5c53de34d167c42cda6543a05fb6bb3"
+    },
+    {
+      "ref": "pkg:conan/opengl@system?rref=cfcf523b9d2bad75cbf377f56562634c"
+    },
+    {
+      "ref": "pkg:conan/bzip2@1.0.8?rref=c470882369c2d95c5c77e970c0c7e321"
+    },
+    {
+      "ref": "pkg:conan/imath@3.1.9?rref=20f703aa156f46ddc326e668ed22ffb6"
+    },
+    {
+      "ref": "pkg:conan/libdeflate@1.19?rref=3ea74a4549efc14d4b1202dc4bfbf602"
+    },
+    {
+      "ref": "pkg:conan/xz_utils@5.8.3?rref=a8432fead347c69d8b2737c35f936132"
+    },
+    {
+      "ref": "pkg:conan/libbacktrace@cci.20210118?rref=a7691bfccd8caaf66309df196790a5a1"
+    }
+  ],
+  "metadata": {
+    "component": {
+      "bom-ref": "41913e87-3fc9-455f-9f60-74e217498d8c",
+      "name": "argus-synchro-lib/0.1.0",
+      "type": "library"
+    },
+    "timestamp": "2026-05-28T11:59:23Z",
+    "tools": {
+      "components": [
+        {
+          "type": "application",
+          "name": "Conan-io",
+          "version": "2.28.1"
+        }
+      ]
+    }
+  },
+  "serialNumber": "urn:uuid:687123dc-8487-454f-b00d-8c9a3647bf2a",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.6",
+  "version": 1
+}

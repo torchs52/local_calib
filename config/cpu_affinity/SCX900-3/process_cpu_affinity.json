@@ -1,0 +1,19 @@
+{
+    "ErrorMonitor": [0],
+    "CameraProviderProcess[0]": [1],
+    "CameraProviderProcess[1]": [1],
+    "CameraProviderProcess[2]": [1],
+    "PointsProviderProcess[0]": [1],
+    "PointsProviderProcess[1]": [1],
+    "ImuProviderProcess[0]": [1],
+    "ImuProviderProcess[1]": [1],
+    "CanDataProviderProcess": [1],
+    "LidarShiftMonitorProcess": [1],
+    "GetDataProcess": [1],
+    "ObjectDetectProcess": [2,3],
+    "PointsRefineProcess": [4, 5, 6, 7, 8],
+    "VisualProcess": [4, 5, 6, 7, 8],
+    "AppManager": [0],
+    "FIFOProcess": [2, 3, 4, 5, 6, 7, 8],
+    "CalibProcess": [2, 3, 4, 5, 6, 7, 8]
+}

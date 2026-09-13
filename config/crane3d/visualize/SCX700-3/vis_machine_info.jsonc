@@ -1,0 +1,63 @@
+[
+    {
+        "file_base": "01_upper_part.obj",
+        "load_order": 1,
+        "color": [1, 1, 0.9],
+        "rotatable": false
+    },
+    {
+        "file_base": "10_Letters.obj",
+        "load_order": 2,
+        "color": [1, 1, 0],
+        "offsets": [-0.01, 0, 0],
+        "rotatable": false
+    },
+    {
+        "file_base": "02_CW.obj",
+        "load_order": 3,
+        "color": [0, 0.4, 0.8],
+        "rotatable": false
+    },
+    {
+        "file_base": "03_senkai_chushin.obj",
+        "load_order": 4,
+        "color": [0.3, 0.3, 0.3],
+        "rotatable": true
+    },
+    {
+        "file_base": "04_front_right_L_ji_part.obj",
+        "load_order": 5,
+        "color": [0.4, 0.4, 0.4],
+        "rotatable": true
+    },
+    {
+        "file_base": "05_front_left_L_ji_part.obj",
+        "load_order": 6,
+        "color": [0.4, 0.4, 0.4],
+        "rotatable": true
+    },
+    {
+        "file_base": "06_back_right_L_ji_part.obj",
+        "load_order": 7,
+        "color": [0.4, 0.4, 0.4],
+        "rotatable": true
+    },
+    {
+        "file_base": "07_back_left_L_ji_part.obj",
+        "load_order": 8,
+        "color": [0.4, 0.4, 0.4],
+        "rotatable": true
+    },
+    {
+        "file_base": "08_crawler_right.obj",
+        "load_order": 9,
+        "color": [0.1, 0.1, 0.1],
+        "rotatable": true
+    },
+    {
+        "file_base": "09_crawler_left.obj",
+        "load_order": 10,
+        "color": [0.1, 0.1, 0.1],
+        "rotatable": true
+    }
+]

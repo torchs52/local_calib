@@ -1,0 +1,527 @@
+{
+    "lidar_n_connection_error": {
+        "is_enabled": true,
+        "error_threshold_sec": 5.0,
+        "error_recovery_confirm_duration_sec": 5.0,
+        "failsafe_recovery_confirm_duration_sec": 5.0,
+        "recovery_receive_interval_sec": 1.0
+    },
+    "camera_n_connection_error": {
+        "is_enabled": true,
+        "error_threshold_sec": 5.0,
+        "error_recovery_confirm_duration_sec": 5.0,
+        "failsafe_recovery_confirm_duration_sec": 5.0,
+        "recovery_receive_interval_sec": 1.0
+    },
+    "can_connection_error": {
+        "is_enabled": true,
+        "error_threshold_sec": 5.0,
+        "error_recovery_confirm_duration_sec": 5.0,
+        "failsafe_recovery_confirm_duration_sec": 5.0,
+        "recovery_receive_interval_sec": 1.0
+    },
+    "lidar_n_comm_quality_degraded": {
+        "is_enabled": true,
+        "dot_num_low_threshold": 50,
+        "recent_event_threshold_sec": 1.0,
+        "error_confirm_duration_sec": 3.0,
+        "recovery_confirm_duration_sec": 5.0
+    },
+    "camera_n_comm_quality_degraded": {
+        "is_enabled": true,
+        "error_threshold_count": 5,
+        "error_threshold_sec": 1.0,
+        "error_recovery_receive_interval_sec": 1.0,
+        "fail_safe_recovery_receive_interval_sec": 1.0,
+        "error_recovery_threshold_count": 5,
+        "fail_safe_recovery_threshold_count": 5
+    },
+    "lidar_n_comm_quality_error": {
+        "is_enabled": true,
+        "error_confirm_duration_sec": 30.0,
+        "recovery_confirm_duration_sec": 30.0,
+        "failsafe_recovery_confirm_duration_sec": 60.0
+    },
+    "camera_n_comm_quality_error": {
+        "is_enabled": true,
+        "read_error_threshold_sec": 3.0,
+        "read_error_threshold_count": 10,
+        "read_error_rate_window_sec": 10.0,
+        "read_error_rate_threshold": 0.3,
+        "recovery_receive_interval_sec": 1.0,
+        "fail_safe_recovery_receive_interval_sec": 1.0,
+        "read_error_recovery_confirm_duration_sec": 3.0,
+        "fail_safe_recovery_confirm_duration_sec": 3.0,
+        "read_error_recovery_threshold_count": 10,
+        "fail_safe_recovery_threshold_count": 10,
+        "error_rate_recovery_confirm_duration_sec": 10.0,
+        "fail_safe_rate_recovery_confirm_duration_sec": 10.0
+    },
+    "lidar_n_invalid_data": {
+        "is_enabled": true,
+        "invalid_ratio_threshold": 0.7,
+        "error_confirm_duration_sec": 3.0,
+        "recovery_ratio_threshold": 0.3,
+        "recovery_confirm_duration_sec": 3.0,
+        "failsafe_recovery_confirm_duration_sec": 5.0
+    },
+    "camera_n_invalid_data": {
+        "is_enabled": true,
+        "error_threshold_frames": 5,
+        "error_recovery_frame_threshold": 5,
+        "fail_safe_recovery_frame_threshold": 5
+    },
+    "yaw_angle_info_error": {
+        "is_enabled": true,
+        "error_duration_sec": 5.0,
+        "error_recovery_duration_sec": 5.0,
+        "fail_safe_recovery_duration_sec": 5.0,
+        "recovery_receive_interval_sec": 1.0,
+        "fail_safe_recovery_receive_interval_sec": 1.0
+    },
+    "can_comm_quality_degraded": {
+        "is_enabled": true,
+        "angle_can_id": "18FFD1D1",
+        "lever_can_id": "18FC4401",
+        "error_threshold_count": {
+            "18FFD1D1": 5,
+            "18FC4401": 5
+        },
+        "error_threshold_sec": {
+            "18FFD1D1": 1.0,
+            "18FC4401": 1.0
+        },
+        "recovery_receive_interval_sec": {
+            "18FFD1D1": 1.0,
+            "18FC4401": 1.0
+        },
+        "fail_safe_recovery_receive_interval_sec": {
+            "18FFD1D1": 1.0,
+            "18FC4401": 1.0
+        },
+        "recovery_threshold_count": {
+            "18FFD1D1": 5,
+            "18FC4401": 5
+        },
+        "fail_safe_recovery_threshold_count": {
+            "18FFD1D1": 5,
+            "18FC4401": 5
+        }
+    },
+    "can_comm_quality_error": {
+        "is_enabled": true,
+        "angle_can_id": "18FFD1D1",
+        "lever_can_id": "18FC4401",
+        "read_error_threshold_sec": {
+            "18FFD1D1": 3.0,
+            "18FC4401": 3.0
+        },
+        "read_error_threshold_count": {
+            "18FFD1D1": 10,
+            "18FC4401": 10
+        },
+        "read_error_rate_window_sec": {
+            "18FFD1D1": 10.0,
+            "18FC4401": 10.0
+        },
+        "read_error_rate_threshold": {
+            "18FFD1D1": 0.3,
+            "18FC4401": 0.3
+        },
+        "recovery_receive_interval_sec": {
+            "18FFD1D1": 1.0,
+            "18FC4401": 1.0
+        },
+        "fail_safe_recovery_receive_interval_sec": {
+            "18FFD1D1": 1.0,
+            "18FC4401": 1.0
+        },
+        "read_error_recovery_confirm_duration_sec": {
+            "18FFD1D1": 3.0,
+            "18FC4401": 3.0
+        },
+        "fail_safe_recovery_confirm_duration_sec": {
+            "18FFD1D1": 3.0,
+            "18FC4401": 3.0
+        },
+        "read_error_recovery_threshold_count": {
+            "18FFD1D1": 10,
+            "18FC4401": 10
+        },
+        "fail_safe_recovery_threshold_count": {
+            "18FFD1D1": 10,
+            "18FC4401": 10
+        },
+        "error_rate_recovery_confirm_duration_sec": {
+            "18FFD1D1": 10.0,
+            "18FC4401": 10.0
+        },
+        "fail_safe_rate_recovery_confirm_duration_sec": {
+            "18FFD1D1": 10.0,
+            "18FC4401": 10.0
+        }
+    },
+    "can_invalid_data": {
+        "is_enabled": true,
+        "params_by_canid": {
+            "18FFD1D1": {
+                "is_enabled": true,
+                "required_length": 4,
+                "error_recovery_confirm_duration_sec": 5.0,
+                "failsafe_recovery_confirm_duration_sec": 5.0
+            },
+            "18FC4401": {
+                "is_enabled": true,
+                "required_length": 18,
+                "error_recovery_confirm_duration_sec": 5.0,
+                "failsafe_recovery_confirm_duration_sec": 5.0
+            }
+        }
+    },
+    "storage_space_low": {
+        "is_enabled": true,
+        "error_threshold_gb": 10.0,
+        "error_recovery_threshold_gb": 10.0,
+        "fail_safe_recovery_threshold_gb": 10.0,
+        "error_duration_sec": 5.0,
+        "error_recovery_duration_sec": 5.0,
+        "fail_safe_recovery_duration_sec": 5.0
+    },
+    "processing_speed_degraded": {
+        "is_enabled": true
+    },
+    "processing_speed_degradation_trend": {
+        "is_enabled": true
+    },
+    "out_of_memory": {
+        "is_enabled": true,
+        "threshold_mb": 10240.0,
+        "error_duration_sec": 3.0,
+        "error_recovery_duration_sec": 3.0,
+        "fail_safe_recovery_duration_sec": 3.0
+    },
+    "gpu_performance_degraded": {
+        "is_enabled": true,
+        "error_duration_sec": 5.0,
+        "error_recovery_duration_sec": 5.0,
+        "fail_safe_recovery_duration_sec": 5.0
+    },
+    "monitor_process_not_responding": {
+        "is_enabled": false,
+        "error_threshold_sec": 5.0
+    },
+    "status_info_not_updated": {
+        "is_enabled": true
+    },
+    "surround_monitor_module_not_responding": {
+        "is_enabled": true,
+        "error_threshold_sec": 5.0
+    },
+    "lidar_position_misalignment_not_responding": {
+        "is_enabled": true,
+        "error_threshold_sec": 5.0,
+        "recovery_receive_interval_sec": 1.0,
+        "error_recovery_confirm_duration_sec": 5.0,
+        "failsafe_recovery_confirm_duration_sec": 5.0
+    },
+    "application_manager_not_responding": {
+        "is_enabled": true,
+        "error_threshold_sec": 5.0
+    },
+    "imu_n_connection_error": {
+        "is_enabled": true,
+        "error_threshold_sec": 5.0,
+        "error_recovery_confirm_duration_sec": 5.0,
+        "failsafe_recovery_confirm_duration_sec": 5.0,
+        "recovery_receive_interval_sec": 1.0
+    },
+    "log_output_stopped": {
+        "is_enabled": true,
+        "error_threshold_sec": 5.0,
+        "error_recovery_confirm_duration_sec": 5.0,
+        "failsafe_recovery_confirm_duration_sec": 5.0,
+        "recovery_receive_interval_sec": 1.0
+    },
+    "internal_temperature_rise": {
+        "is_enabled": true,
+        "least_sample_count": 5,
+        "moving_avg_window_sec": 5.0,
+        "error_threshold_degree": 60.0
+    },
+    "temperature_sensor_abnormal": {
+        "is_enabled": true,
+        "error_threshold_sec": 5.0,
+        "error_recovery_duration_sec": 5.0,
+        "fail_safe_recovery_duration_sec": 5.0
+    },
+    "temperature_rise_trend_continues": {
+        "is_enabled": true,
+        "least_sample_count": 5,
+        "moving_avg_window_sec": 5.0,
+        "error_threshold_degree": 70.0
+    },
+    "lidar_position_misalignment_detected": {
+        "is_enabled": true
+    },
+    "sensor_calibration_required": {
+        "is_enabled": true
+    },
+    "model_info_mismatch": {
+        "is_enabled": true
+    },
+    "crane_model_file_missing": {
+        "is_enabled": true
+    },
+    "config_file_missing": {
+        "is_enabled": true
+    },
+    "sensor_calib_data_invalid": {
+        "is_enabled": false,
+        "check_lidar2lidar": false,
+        "check_lidar2crane": true,
+        "enforce_shape_4x4": true,
+        "finite_value_only": true,
+        "enable_reference_diff_check": true,
+        "translation_threshold_m": 99.9,
+        "rotation_threshold_deg": 99.9,
+        "max_xy_displacement_threshold_m": 1.5,
+        "grid_radius_m": 5.0,
+        "grid_spacing_m": 1.0,
+        "comparison_atol": 1e-12
+    },
+    "camera_n_calib_data_invalid": {
+        "is_enabled": true,
+        "enforce_shape_4x4": true,
+        "finite_value_only": true,
+        "check_fisheye_intrinsics": true,
+        "enable_reference_diff_check": false,
+        "reference_data_path": "",
+        "diff_threshold": 0.0
+    },
+    "mmap_read_write_error": {
+        "is_enabled": true
+    },
+    "reboot_loop_detected": {
+        "is_enabled": true,
+        "uptime_state_path": "/var/lib/argus3d/uptime/uptime_state.json",
+        "required_boot_count": 5,
+        "window_sec": 600.0
+    },
+    "ai_model_load_failed": {
+        "is_enabled": true
+    },
+    "operation_mode_transition_error": {
+        "is_enabled": true
+    },
+    "log_file_io_error": {
+        "is_enabled": true
+    },
+    "monitor_connection_error": {
+        "is_enabled": true
+    },
+    "lidar_data_missing": {
+        "is_enabled": true,
+        "min_point_count": 100
+    },
+    "camera_data_missing": {
+        "is_enabled": true,
+        "black_frame_rate_window_sec": 3.0,
+        "black_frame_rate_threshold": 0.2
+    },
+    "memory_leak_detected": {
+        "is_enabled": true,
+        "window_sec": 300.0,
+        "min_samples": 300,
+        "leak_ratio_threshold": 1.5
+    },
+    "other_hardware_error": {
+        "is_enabled": true,
+        "hardware_types": {
+            "TOUCHSCREEN": "ID_INPUT_TOUCHSCREEN=1",
+            "KEYBOARD": "ID_INPUT_KEYBOARD=1",
+            "MOUSE": "ID_INPUT_MOUSE=1",
+            "SPATIAL_CONTROLLER": "SPATIAL_CONTROLLER_IS_NO_ID"
+        }
+    },
+    "invalid_data_input": {
+        "is_enabled": true
+    },
+    "numeric_anomaly_exception": {
+        "is_enabled": true
+    },
+    "array_shape_error": {
+        "is_enabled": true,
+        "expected_shape_by_array_name": {
+            "pcds_point_cloud": [
+                -1,
+                3
+            ],
+            "lever_pressure": [
+                4
+            ],
+            "images": [
+                -1,
+                -1,
+                3
+            ],
+            "frames_buf": [
+                -1,
+                -1,
+                -1,
+                3
+            ],
+            "imu_values": [
+                -1,
+                6
+            ],
+            "removed_pcds_point_cloud": [
+                -1,
+                3
+            ],
+            "accum_ground_pcd_point_cloud": [
+                -1,
+                3
+            ],
+            "accum_pcds_point_cloud": [
+                -1,
+                3
+            ],
+            "edge_points": [
+                -1,
+                3
+            ],
+            "edge_lines": [
+                -1,
+                2
+            ],
+            "edge_length": [
+                -1
+            ],
+            "camera_detections_boxes": [
+                3,
+                -1,
+                4
+            ],
+            "camera_detections_scores": [
+                3,
+                -1
+            ],
+            "camera_detections_classes": [
+                3,
+                -1
+            ],
+            "camera_detections_valid_detects": [
+                3
+            ],
+            "camera_detections_image": [
+                -1,
+                -1,
+                -1,
+                3
+            ],
+            "visual_d3_boxes": [
+                -1,
+                3
+            ],
+            "visual_2d3d_boxes": [
+                -1,
+                3
+            ],
+            "minmax": [
+                -1,
+                6
+            ],
+            "valid_detects": [
+                1
+            ]
+        }
+    },
+    "file_io_error": {
+        "is_enabled": true
+    },
+    "ai_inference_result_error": {
+        "is_enabled": true,
+        "score_min": 0.0,
+        "score_max": 1.0
+    },
+    "detection_target_error": {
+        "is_enabled": true
+    },
+    "consecutive_retry_limit_exceeded": {
+        "is_enabled": true
+    },
+    "process_forced_termination": {
+        "is_enabled": true
+    },
+    "log_compression_failure": {
+        "is_enabled": true
+    },
+    "log_time_reversal": {
+        "is_enabled": true,
+        "allowed_backward_sec": 0.0
+    },
+    "lidar_module_error": {
+        "is_enabled": true,
+        "ongoing_log_interval_sec": 60.0
+    },
+    "camera_module_error": {
+        "is_enabled": true,
+        "ongoing_log_interval_sec": 60.0
+    },
+    "storage_module_error": {
+        "is_enabled": true,
+        "ongoing_log_interval_sec": 60.0
+    },
+    "can_module_error": {
+        "is_enabled": true,
+        "ongoing_log_interval_sec": 60.0
+    },
+    "linkage_2d3d_module_error": {
+        "is_enabled": true,
+        "ongoing_log_interval_sec": 60.0
+    },
+    "object3_d_detection_module_error": {
+        "is_enabled": true,
+        "ongoing_log_interval_sec": 60.0
+    },
+    "camera_human_detection_module_error": {
+        "is_enabled": true,
+        "ongoing_log_interval_sec": 60.0
+    },
+    "collision_judgment_module_error": {
+        "is_enabled": true,
+        "ongoing_log_interval_sec": 60.0
+    },
+    "calibration_module_error": {
+        "is_enabled": true,
+        "ongoing_log_interval_sec": 60.0
+    },
+    "imu_module_error": {
+        "is_enabled": true,
+        "ongoing_log_interval_sec": 60.0
+    },
+    "app_manager_module_error": {
+        "is_enabled": true,
+        "ongoing_log_interval_sec": 60.0
+    },
+    "main_module_error": {
+        "is_enabled": true,
+        "ongoing_log_interval_sec": 60.0
+    },
+    "points_refine_module_error": {
+        "is_enabled": true,
+        "ongoing_log_interval_sec": 60.0
+    },
+    "visual_module_error": {
+        "is_enabled": true,
+        "ongoing_log_interval_sec": 60.0
+    },
+    "lidar_shift_monitor_module_error": {
+        "is_enabled": true,
+        "ongoing_log_interval_sec": 60.0
+    },
+    "get_data_module_error": {
+        "is_enabled": true,
+        "ongoing_log_interval_sec": 60.0
+    }
+}

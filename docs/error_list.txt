@@ -1,0 +1,87 @@
+エラー番号	エラーレベル	実装分担	エラー名
+SE001	重要度 A	SHI	Lidar0接続エラー
+SE002	重要度 A	SHI	Lidar1接続エラー
+SE003	重要度 B	NSW	カメラ0接続エラー
+SE004	重要度 B	NSW	カメラ1接続エラー
+SE005	重要度 B	NSW	カメラ2接続エラー
+SE006	重要度 B	NSW	カメラ3接続エラー
+SE007	重要度 A	NSW	CAN接続エラー
+SE008	重要度 C	SHI	Lidar0通信品質低下
+SE009	重要度 C	SHI	Lidar1通信品質低下
+SE010	重要度 C	NSW	カメラ0通信品質低下
+SE011	重要度 C	NSW	カメラ1通信品質低下
+SE012	重要度 C	NSW	カメラ2通信品質低下
+SE013	重要度 C	NSW	カメラ3通信品質低下
+SE014	重要度 B	SHI	Lidar0通信品質エラー
+SE015	重要度 B	SHI	Lidar1通信品質エラー
+SE016	重要度 B	NSW	カメラ0通信品質エラー
+SE017	重要度 B	NSW	カメラ1通信品質エラー
+SE018	重要度 B	NSW	カメラ2通信品質エラー
+SE019	重要度 B	NSW	カメラ3通信品質エラー
+SE020	重要度 B	SHI	Lidar0データ不正
+SE021	重要度 B	SHI	Lidar1データ不正
+SE022	重要度 B	NSW	カメラ0データ不正
+SE023	重要度 B	NSW	カメラ1データ不正
+SE024	重要度 B	NSW	カメラ2データ不正
+SE025	重要度 B	NSW	カメラ3データ不正
+SE026	重要度 A	NSW	旋回角情報エラー
+SE027	重要度 C	NSW	CAN 通品品質低下
+SE028	重要度 B	NSW	CAN通信品質エラー
+SE029	重要度 B	NSW	CANデータ不正
+SE030	重要度 B	NSW	ストレージ残容量低下
+SE031	重要度 C	NSW	処理速度低下
+SE032	重要度 B	NSW	処理速度低下トレンド
+SE033	重要度 C	NSW	メモリ不足
+SE034	重要度 C	NSW	GPU性能低下
+SE035	重要度 A	NSW	Monitorプロセス未応答
+SE036	重要度 A	SHI	ステータス情報　未更新
+SE037	重要度 A	SHI	周辺監視モジュール 未応答
+SE038	重要度 B	NSW	Lidar位置ズレ検出　未応答
+SE039	重要度 B	SHI	アプリケーションマネージャー未応答
+SE040	重要度 B	SHI	imu0接続エラー
+SE041	重要度 B	SHI	imu1接続エラー
+SE042	重要度 C	SHI	ログ出力停止
+SE043	重要度 B	NSW	内部温度上昇
+SE044	重要度 B	NSW	温度センサ異常
+SE045	重要度 A	NSW	温度上昇傾向の継続
+エラー番号	エラーレベル	実装分担	エラー名
+CE001	重要度 A	NSW	LiDAR位置ズレ検出
+CE002	重要度 A	NSW	要センサ校正
+CE003	重要度 A	SHI	機種情報不一致
+○CE004	重要度 A	SHI	機体モデルファイル欠損/破損
+CE005	重要度 A	SHI	設定ファイル欠損/破損
+CE006	重要度 B	SHI	センサ校正データ不正
+CE007	重要度 B	SHI	カメラ0校正データ不正
+CE008	重要度 B	SHI	カメラ1校正データ不正
+CE009	重要度 B	SHI	カメラ2校正データ不正
+CE010	重要度 B	SHI	カメラ3校正データ不正
+CE011	重要度 B	SHI	MMAP read/writeエラー
+CE012	重要度 A	SHI	再起動ループ検出
+○CE013	重要度 B	SHI	AIモデルロード失敗/破損
+CE014	重要度 B	NSW	動作モード遷移エラー
+CE015	重要度 B	SHI	ログファイルI/Oエラー
+以降はログ記録のみ			
+	重要度 D	SHI	モニタ接続エラー
+	重要度 D	SHI	Lidarデータ欠落
+	重要度 D	NSW	カメラデータ欠落
+	重要度 D	NSW	メモリリーク検出
+	重要度 D	NSW	その他のエラー（ハードウェア）
+	重要度 D	NSW	不正データ入力（空データなど）
+	重要度 D	NSW	不正演算（NaN／ゼロ除算等）
+	重要度 D	NSW	配列形状エラー
+	重要度 D	SHI	ファイルI/Oエラー
+	重要度 D	SHI	AI推論結果異常
+	重要度 D	SHI	検知対象エラー
+	重要度 D	SHI	連続リトライ上限超過
+	重要度 D	NSW	プロセス強制終了
+	重要度 D	SHI	ログ圧縮失敗
+	重要度 D	SHI	ログ時刻逆転
+	重要度 D	SHI/NSW	LiDARモジュールエラー
+	重要度 D	SHI/NSW	カメラモジュールエラー
+	重要度 D	SHI/NSW	蓄積モジュールエラー
+	重要度 D	SHI/NSW	CANモジュールエラー
+	重要度 D	SHI/NSW	2D–3D紐づけモジュールエラー
+	重要度 D	SHI/NSW	3D物体検知モジュールエラー
+	重要度 D	SHI/NSW	カメラ人検知モジュールエラー
+	重要度 D	SHI/NSW	衝突判定モジュールエラー
+	重要度 D	SHI/NSW	校正モジュールエラー

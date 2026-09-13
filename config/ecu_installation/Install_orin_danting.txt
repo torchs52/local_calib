@@ -1,0 +1,222 @@
+################## Install Jetpack ####################3
+# Check your L4T version first to see if you have a unit flashed with older version of the BSP.
+cat /etc/nv_tegra_release
+
+
+sudo apt update
+sudo apt dist-upgrade
+sudo reboot
+
+
+# Please edit your nvidia-l4t-apt-source.list to r34.1:
+
+deb https://repo.download.nvidia.com/jetson/common r34.1 main
+deb https://repo.download.nvidia.com/jetson/t234 r34.1 main
+
+
+cat /etc/apt/sources.list.d/nvidia-l4t-apt-source.list
+ls -l /etc/apt/sources.list.d/nvidia-l4t-apt-source.list
+sudo vim /etc/apt/sources.list.d/nvidia-l4t-apt-source.list
+
+sudo apt update
+sudo apt dist-upgrade
+sudo reboot
+sudo apt install nvidia-jetpack
+
+
+
+###################### Check CUDA Version ###################
+sudo apt install python3-pip
+sudo -H pip3 install jetson-stats
+sudo apt show nvidia-jetpack
+
+
+/usr/local/cuda/bin/nvcc --version
+
+
+
+###################### Install yolov4 #########################
+sudo apt install python3.8-venv
+sudo apt install -y python3.8-dev 
+python3 -m venv yolov4
+
+source yolov4/bin/activate
+
+sudo apt-get update
+sudo apt-get install libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev liblapack-dev libblas-dev gfortran
+
+pip3 install -U pip testresources setuptools==49.6.0 
+pip3 install -U --no-deps numpy==1.19.4 future==0.18.2 mock==3.0.5 keras_preprocessing==1.1.2 keras_applications==1.0.8 gast==0.4.0 protobuf pybind11 cython pkgconfig wheel
+
+sudo ln -s /usr/include/locale.h /usr/include/xlocale.
+
+pip3 install h5py==3.1.0 --no-build-isolation
+
+pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v50 tensorflow
+
+pip3 install opencv-python lxml tqdm absl-py easydict pillow 
+
+####################Install VS code########################
+sudo dpkg -i xxx.deb
+
+
+####################Check USB camera#########################
+
+sudo apt-get install v4l-utils
+v4l2-ctl --list-devices
+
+
+
+####################Record videos#########################
+sudo apt install simplescreenrecorder
+
+sudo apt update
+sudo apt install vlc
+
+
+
+
+####################Install ZED#########################
+python3 -m venv ZED
+source ZED/bin/activate
+export LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libgomp.so.1
+
+python3 -m pip install --upgrade pip
+
+chmod +x ZED_SDK_Tegra_L4T34.1_v3.7.4.run
+./ZED_SDK_Tegra_L4T34.1_v3.7.4.run
+
+/usr/local/zed/tools/ZED_Explorer
+
+python3 -m pip install opencv-python pyopengl
+
+cd "/usr/local/zed/"
+python3 get_python_api.py
+# Command out part to check L4T version
+
+pip3 install -U pip testresources setuptools==49.6.0 
+pip3 install -U --no-deps numpy==1.19.4 future==0.18.2 mock==3.0.5 keras_preprocessing==1.1.2 keras_applications==1.0.8 gast==0.4.0 protobuf pybind11 cython pkgconfig wheel
+
+touch /home/shiuser/zed/ZED/lib/python3.8/site-packages/numpy-1.22.3.dist-info/METADATA
+pip3 install h5py==3.1.0 --no-build-isolation
+
+pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v50 tensorflow
+
+pip3 install opencv-python lxml tqdm absl-py easydict pillow 
+
+SITE_PACKAGES_FOLDER=$(python3 -c "import sysconfig; print(sysconfig.get_paths()['purelib'])")
+echo $SITE_PACKAGES_FOLDER
+ls $SITE_PACKAGES_FOLDER/numpy*
+pip3 install trash-cli
+trash $SITE_PACKAGES_FOLDER/numpy*
+
+pip3 install --force-reinstall --no-deps numpy==1.22.3
+
+import pyzed.sl as sl
+
+
+
+
+
+
+####################Install wireshark#########################
+sudo apt install wireshark
+
+
+sudo wireshark
+
+
+
+
+####################Install firewall#########################
+sudo apt install ufw
+
+sudo ufw status
+
+
+
+
+###################### Auto start up ###########################
+============== Not working ==================
+ls -la /etc/rc.local
+sudo vi /etc/rc.local
+sudo chmod 700 /etc/rc.local
+
+#!/bin/sh
+source ZED/bin/activate
+cd home/ZED
+/home/shiuser/zed/ZED/bin/python /home/shiuser/zed/Camera_aizawa.py
+
+
+sudo systemctl restart rc-local
+sudo systemctl status rc-local
+
+chmod +x /etc/rc.local
+==========================================
+
+
+
+
+
+============== Not working ==================
+ls /lib/systemd/system
+
+sudo vi /lib/systemd/system/rc-local.service
+
+----------------------------
+[Install]
+WantedBy=multi-user.target
+Alias=rc-local.service
+---------------------------
+
+ls -la /etc/rc.local
+sudo vi /etc/rc.local
+
+-----------------------------
+#!/bin/bash
+cd /home/shiuser/zed/
+source ZED/bin/activate
+python /home/shiuser/zed/Camera_aizawa.py
+-----------------------------
+
+
+sudo chmod +x /etc/rc.local
+
+sudo ln -s /lib/systemd/system/rc.local.service /etc/systemd/system/
+==========================================
+
+
+
+
+
+auto_start.sh
+sudo chmod +x /home/shiuser/zed/auto_start.sh
+
+gnome-terminal -x /home/shiuser/zed/auto_start.sh
+gnome-terminal --command “bash /home/shiuser/zed/auto_start.sh”
+
+
+
+pip install pysimplegui pyyaml
+python3 -m pip install 'ouster-sdk[examples]'
+
+
+
+
+
+##########################Calibrate ZED##########################
+python3 -m venv calib
+
+source calib/bin/activate
+
+
+
+
+cd /home/shiuser/zed/
+source ZED/bin/activate
+python /home/shiuser/zed/Main.py
+
+
+
+source /home/shiuser/zed/ZED/bin/activate
+/home/shiuser/zed/ZED/bin/python /home/shiuser/zed/Main.py

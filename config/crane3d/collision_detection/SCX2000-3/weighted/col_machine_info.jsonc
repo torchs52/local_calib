@@ -1,0 +1,130 @@
+
+[
+    //{ 
+    //    "pcd_points_file": "immobile_pts/BOOM.csv",
+    //    "load_order": 1,
+    //    "instance_name": "MachineCollisionImmobileCuboid"
+    //},
+    {
+        "pcd_points_file": "immobile_pts/CAB.csv",
+        "load_order": 1,
+        "instance_name": "MachineCollisionImmobileCuboid",
+        "is_mobile": false
+    },
+    //{
+    //    "pcd_points_file": "immobile_pts/CATWALK.csv",
+    //    "load_order": 3,
+    //    "instance_name": "MachineCollisionImmobileCuboid"
+    //},
+    {
+        "pcd_points_file": "immobile_pts/CATWALK_LEFT.csv",
+        "load_order": 2,
+        "instance_name": "MachineCollisionImmobileCuboid",
+        "is_mobile": false
+    },
+    {
+        "pcd_points_file": "immobile_pts/CATWALK_RIGHT.csv",
+        "load_order": 3,
+        "instance_name": "MachineCollisionImmobileCuboid",
+        "is_mobile": false
+    },
+    {
+        "pcd_points_file": "immobile_pts/CTWT.csv",
+        "load_order": 4,
+        "instance_name": "MachineCollisionImmobileHexaPrism",
+        "form_points_pattern": "hierarchy",
+        "is_mobile": false
+    },
+    {
+        "pcd_points_file": "immobile_pts/HOUSE_COVER.csv",
+        "load_order": 5,
+        "instance_name": "MachineCollisionImmobileCuboid",
+        "is_mobile": false
+    },
+    {
+        "pcd_points_file": "immobile_pts/HOUSE_L.csv",
+        "load_order": 6,
+        "instance_name": "MachineCollisionImmobileCuboid",
+        "is_mobile": false
+    },
+    {
+        "pcd_points_file": "immobile_pts/HOUSE_R.csv",
+        "load_order": 7,
+        "instance_name": "MachineCollisionImmobileCuboid",
+        "is_mobile": false
+    },
+    //{
+    //    "pcd_points_file": "immobile_pts/JIB_SPREADER.csv",
+    //    "load_order": 8,
+    //    "instance_name": "MachineCollisionImmobileCuboid"
+    //},
+    //{
+    //    "pcd_points_file": "immobile_pts/JIB.csv",
+    //    "load_order": 9,
+    //    "instance_name": "MachineCollisionImmobileCuboid"
+    //},
+    {
+        "pcd_points_file": "immobile_pts/MAIN_FRAME.csv",
+        "load_order": 8,
+        "instance_name": "MachineCollisionImmobileCuboid",
+        "is_mobile": false
+    },
+    //{
+    //    "pcd_points_file": "immobile_pts/MAST.csv",
+    //    "load_order": 11,
+    //    "instance_name": "MachineCollisionImmobileCuboid"
+    //},
+    //{
+    //    "pcd_points_file": "immobile_pts/WIRE.csv",
+    //    "load_order": 12,
+    //    "instance_name": "MachineCollisionImmobileCuboid"
+    //},
+    { 
+        "pcd_points_file": "mobile_pts/CARBODY.csv",
+        "load_order": 9,
+        "instance_name": "MachineCollisionMobileCuboid",
+        "is_mobile": true
+    },
+    {
+        "pcd_points_file": "mobile_pts/CONNECTOR.csv",
+        "load_order": 10,
+        "instance_name": "MachineCollisionMobileCuboid",
+        "is_mobile": true
+    },
+    {
+        "pcd_points_file": "mobile_pts/CRAWLER_LEFT.csv",
+        "load_order": 11,
+        "instance_name": "MachineCollisionMobileCuboid",
+        "is_mobile": true
+    },
+    {
+        "pcd_points_file": "mobile_pts/CRAWLER_RIGHT.csv",
+        "load_order": 12,
+        "instance_name": "MachineCollisionMobileCuboid",
+        "is_mobile": true
+    },
+    {
+        "pcd_points_file": "mobile_pts/JACK_UP_LEFT_BACK.csv",
+        "load_order": 13,
+        "instance_name": "MachineCollisionMobileCuboid",
+        "is_mobile": true
+    },
+    {
+        "pcd_points_file": "mobile_pts/JACK_UP_LEFT_FRONT.csv",
+        "load_order": 14,
+        "instance_name": "MachineCollisionMobileCuboid",
+        "is_mobile": true
+    },
+    {
+        "pcd_points_file": "mobile_pts/JACK_UP_RIGHT_BACK.csv",
+        "load_order": 15,
+        "instance_name": "MachineCollisionMobileCuboid",
+        "is_mobile": true
+    },
+    {
+        "pcd_points_file": "mobile_pts/JACK_UP_RIGHT_FRONT.csv",
+        "load_order": 16,
+        "instance_name": "MachineCollisionMobileCuboid",
+        "is_mobile": true
+    }
+]

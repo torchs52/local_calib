@@ -1,0 +1,14 @@
+[build-system]
+requires = ["pybind11[global]>=3.0", "setuptools", "wheel", "cmake>=3.26,<4"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "argus_synchro_lib"
+version = "2026.8.25"
+requires-python = ">=3.8"
+
+[tool.setuptools]
+packages = []
+
+[tool.setuptools.package-data]
+"*" = ["*.h"]

@@ -1,0 +1,7 @@
+prefix=/home/matsuoka/argus_pipe_filter/argus_synchro_lib/install
+includedir=${prefix}/include
+
+Name: nlohmann_json
+Description: JSON for Modern C++
+Version: 3.12.0
+Cflags: -I${includedir}

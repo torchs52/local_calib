@@ -1,0 +1,9 @@
+crane_model,can_id,signal_type,decoder
+# SCX900-3の以前の状態でデータ取得した時の設定
+SCX900-3,0x18FFD1D1,yaw_angle,handle_angle_newcan
+SCX900-3,0x18FC4401,lever_pressure,handle_lever
+
+# 候補設定。使用時は対象機種を指定し、同じsignal_typeの有効行を1件にする。
+# SCX900-3,0x18FCE402,yaw_angle,handle_angle_oldcan
+# SCX900-3,0x18FFD1D1,yaw_angle,handle_angle_newcan_inverted
+# SCX2000-3,0x18F0E211,yaw_angle,handle_angle_can_scx2000

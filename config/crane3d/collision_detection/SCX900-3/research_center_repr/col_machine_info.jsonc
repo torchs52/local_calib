@@ -1,0 +1,13 @@
+
+[
+    { 
+        "pcd_points_file": "steel_machine.csv",
+        "load_order": 1,
+        "instance_name": "MachineCollisionImmobileCuboid"
+    },
+    { 
+        "pcd_points_file": "steel_machine.csv",
+        "load_order": 2,
+        "instance_name": "MachineCollisionMobileCuboid"
+    }
+]

@@ -1,0 +1,7 @@
+# This is a generated file and its contents are an internal implementation detail.
+# The patch step will be re-executed if anything in this file changes.
+# No other meaning or use of this file is supported.
+
+command (connected)=/tmp/pip-build-env-7az6phcd/overlay/lib/python3.12/site-packages/cmake/data/bin/cmake;-Dcan_fetch=YES;-DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE;-P;/home/matsuoka/argus_pipe_filter/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/octotree/_deps/eigen-subbuild/eigen-populate-prefix/tmp/eigen-populate-gitupdate.cmake
+command (disconnected)=/tmp/pip-build-env-7az6phcd/overlay/lib/python3.12/site-packages/cmake/data/bin/cmake;-Dcan_fetch=NO;-DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE;-P;/home/matsuoka/argus_pipe_filter/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/octotree/_deps/eigen-subbuild/eigen-populate-prefix/tmp/eigen-populate-gitupdate.cmake
+work_dir=/home/matsuoka/argus_pipe_filter/argus_synchro_lib/../3rdparty/eigen

@@ -1,0 +1,48 @@
+[
+    { 
+        "pcd_points_file": "interpolated_SCX900_01_upper_part.csv",
+        "load_order": 1,
+        "instance_name": "MachineCollisionImmobileCuboid"
+    },
+    {
+        "pcd_points_file": "interpolated_SCX900_02_CW.csv",
+        "load_order": 2,
+        "instance_name": "MachineCollisionImmobileRoundCuboid",
+        "form_points_pattern": "curound_points"
+    },
+    {
+        "pcd_points_file": "interpolated_SCX900_03_senkai_chushin.csv",
+        "load_order": 3,
+        "instance_name": "MachineCollisionMobileCuboid"
+    },
+    {
+        "pcd_points_file": "interpolated_SCX900_04_front_right_L_ji_part.csv",
+        "load_order": 4,
+        "instance_name": "MachineCollisionMobileCuboid"
+    },
+    {
+        "pcd_points_file": "interpolated_SCX900_05_front_left_L_ji_part.csv",
+        "load_order": 5,
+        "instance_name": "MachineCollisionMobileCuboid"
+    },
+    {
+        "pcd_points_file": "interpolated_SCX900_06_back_right_L_ji_part.csv",
+        "load_order": 6,
+        "instance_name": "MachineCollisionMobileCuboid"
+    },
+    {
+        "pcd_points_file": "interpolated_SCX900_07_back_left_L_ji_part.csv",
+        "load_order": 7,
+        "instance_name": "MachineCollisionMobileCuboid"
+    },
+    {
+        "pcd_points_file": "interpolated_SCX900_08_crawler_right.csv",
+        "load_order": 8,
+        "instance_name": "MachineCollisionMobileCuboid"
+    },
+    {
+        "pcd_points_file": "interpolated_SCX900_09_crawler_left.csv",
+        "load_order": 9,
+        "instance_name": "MachineCollisionMobileCuboid"
+    }
+]

@@ -1,0 +1,19 @@
+{
+  "engine": {
+    "base_dir": "~/argus_godot_ui",
+    "godot_engine": "godot_engine/Godot_v4.4-stable_mono_linux.x86_64",   
+    "godot_project_dir": "CraneViewerGodot",
+    "godot_args": [
+      "--settings",
+      "../settings/godotSettings.cfg"
+    ]
+  },
+  "appimage": {
+    "base_dir": "/opt/argus3d/distribution/ui",
+    "godot_appimage": "CraneViewer-x86_64.AppImage",
+    "godot_args": [
+      "--settings",
+      "/opt/argus3d/config/ui/godotSettings_appimage.cfg"
+    ]
+  }
+}

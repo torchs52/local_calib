@@ -1,0 +1,17 @@
+# デバッグ向けデータダンプにて高速化のために除外する項目の一覧。先頭に#でコメントアウトされる。
+
+detect2d_frame
+detect2d_frame_pred
+
+xyz_data_raw
+xyz_frame
+xyz_accum
+
+yoloBB_all_yoloformat
+filter_bbox_inside
+filter_validbbox_byimg
+filter_bbox
+yoloBB_all_yoloformat_filtered
+
+
+

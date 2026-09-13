@@ -1,0 +1,87 @@
+[
+    {
+        "file_base": "immobile/CAB.obj",
+        "load_order": 1,
+        "color": [1, 1, 0.9],
+        "rotatable": false
+    },
+    {
+        "file_base": "immobile/CATWALK.obj",
+        "load_order": 2,
+        "color": [1, 1, 0],
+        "offsets": [-0.01, 0, 0],
+        "rotatable": false
+    },
+    {
+        "file_base": "immobile/CTWT.obj",
+        "load_order": 3,
+        "color": [0, 0.4, 0.8],
+        "rotatable": false
+    },
+    {
+        "file_base": "immobile/HOUSE_COVER.obj",
+        "load_order": 4,
+        "color": [0.3, 0.3, 0.3],
+        "rotatable": false
+    },
+    {
+        "file_base": "immobile/HOUSE_L.obj",
+        "load_order": 5,
+        "color": [0.4, 0.4, 0.4],
+        "rotatable": false
+    },
+    {
+        "file_base": "immobile/HOUSE_R.obj",
+        "load_order": 6,
+        "color": [0.4, 0.4, 0.4],
+        "rotatable": false
+    },
+    {
+        "file_base": "immobile/MAIN_FRAME.obj",
+        "load_order": 7,
+        "color": [0.4, 0.4, 0.4],
+        "rotatable": false
+    },
+    {
+        "file_base": "mobile/CARBODY.obj",
+        "load_order": 8,
+        "color": [0.1, 0.1, 0.1],
+        "rotatable": true
+    },
+    {
+        "file_base": "mobile/CRAWLER_LEFT.obj",
+        "load_order": 9,
+        "color": [0.1, 0.1, 0.1],
+        "rotatable": true
+    },
+    {
+        "file_base": "mobile/CRAWLER_RIGHT.obj",
+        "load_order": 10,
+        "color": [0.1, 0.1, 0.1],
+        "rotatable": true
+    },
+    {
+        "file_base": "mobile/JACK_UP_LEFT_BACK.obj",
+        "load_order": 11,
+        "color": [0.1, 0.1, 0.1],
+        "rotatable": true
+    },
+    {
+        "file_base": "mobile/JACK_UP_LEFT_FRONT.obj",
+        "load_order": 12,
+        "color": [0.1, 0.1, 0.1],
+        "rotatable": true
+    },
+    {
+        "file_base": "mobile/JACK_UP_RIGHT_BACK.obj",
+        "load_order": 13,
+        "color": [0.1, 0.1, 0.1],
+        "rotatable": true
+    },
+    {
+        "file_base": "mobile/JACK_UP_RIGHT_FRONT.obj",
+        "load_order": 14,
+        "color": [0.1, 0.1, 0.1],
+        "rotatable": true
+    }
+]

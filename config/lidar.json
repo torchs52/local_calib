@@ -1,0 +1,9 @@
+{
+    "queue_size": 5,
+    "loglevel": "DEBUG",
+    "record_file_path": "./",
+    "log_file_path": "./",
+    "cpus": [0, 1],
+    "lidar_config_path" : "/home/shiuser/ataka/shi_crawler_cranes/sample/python/multiprocess/config/mid360_two_config.json",
+    "record_extension" : "pcd"
+}

@@ -1,0 +1,101 @@
+[build-system]
+requires = ["hatchling >= 1.26", "hatch-requirements-txt"]
+build-backend = "hatchling.build"
+
+[project]
+name = "argus_synchro"
+version = "2026.8.25"
+requires-python = ">= 3.11"
+dynamic = ["dependencies", "optional-dependencies"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["argus_synchro"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.metadata.hooks.requirements_txt]
+files = ["requirements/base.txt"]
+
+[tool.hatch.metadata.hooks.requirements_txt.optional-dependencies]
+general = ["requirements/general.txt"]
+jetpack = ["requirements/jetpack.txt"]
+jetpack60 = ["requirements/jetpack60.txt"]
+dev = ["requirements/dev.txt"]
+
+[tool.ruff.lint]
+extend-select = [
+    "F",   # Pyflakes - 未使用 import / 変数などのバグ検知
+    "E",   # pycodestyle errors - PEP 8 に反する致命的違反
+    "W",   # pycodestyle warnings - 軽微なスタイル警告
+    "I",   # isort - import 順序チェック(自動整列も可)
+    "UP",  # pyupgrade - 新しい文法 / 標準ライブラリへの移行提案
+    "N",   # pep8-naming - 命名規則
+    "D",   # pydocstyle - Docstring 規約
+    "B",   # flake8-bugbear - 潜在バグやアンチパターン
+    "ARG", # flake8-unused-arguments - 未使用引数の検出
+    "TID", # flake8-tidy-imports - 相対 import や高コスト import の誤用を防止
+    "SLF", # flake8-self - プライベートメンバー直叩きを検知し、API破壊リスクを低減
+    "ANN", # flake8-annotations - 型アノテーション規約
+    "T20", # flake8-print - printの検知
+    "TD",  # flake8-todos - TODOコメントの検知
+    "COM", # flake8-commas - カンマの欠落検知
+    "PIE", # flake8-pie - その他の lints を実装する flake8 拡張
+    "ISC", # flake8-implicit-str-concat - 正しい文字列リテラルの連結を促進
+    "PYI", # flake8-pyi - スタブファイルのリンティングを有効
+    "RET", # flake8-return - 戻り値をチェックする
+    "PL",  # pylint - 全般
+    "RUF", # ruff - 全般
+    "C4",  # flake8-comprehensions - リスト内包表記やジェネレータ式の最適化
+    "SIM", # flake8-simplify - 簡略化できるコードをチェック
+]
+ignore = [
+    "D", # pydocstyle 全般: すべての Docstring 規約違反を無視
+    # flake8-type-checking
+    "TC001",   # TYPE_CHECKING への移動提案を無視
+    "TC002",   # 同上
+    "TC003",   # 同上
+    "PLR09",   # pylint(PLR09xx) リファクタ系: 引数が多い/分岐が多い 等の指摘を一括で無視
+    "COM812",  # flake8-commas: 末尾カンマ(trailing comma) の欠落を無視
+    "E501",    # 行が長すぎる(行長制限) を無視
+    "PLC0415", # 性能測定時のメモリ使用量を抑制するために遅延importが必要
+]
+
+[tool.ruff.lint.per-file-ignores]
+"scripts/**/*.py" = ["T201"] # CLIスクリプトはprintを許可
+
+[tool.ruff]
+target-version = "py311"
+exclude = [
+    ".venv",
+    "**/__pycache__",
+    "3rdparty",
+    "argus_synchro_lib",
+    "octotree",
+    "cpp_helper_lib",
+    "typings",
+    "*.ipynb",
+]
+
+[tool.pyright]
+pythonVersion = "3.11"
+pythonPlatform = "All"
+typeCheckingMode = "strict"
+useLibraryCodeForTypes = true
+include = ["argus_synchro"]
+exclude = [
+    ".venv",
+    "**/__pycache__",
+    "3rdparty",
+    "argus_synchro_lib",
+    "octotree",
+    "cpp_helper_lib",
+    "typings",
+]
+stubPath = "typings"
+reportMissingModuleSource = "none"
+reportUnknownMemberType = "information"
+reportArgumentType = "information"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

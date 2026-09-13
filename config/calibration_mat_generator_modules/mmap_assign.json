@@ -1,0 +1,8 @@
+{
+    "Start_ADDR":0,
+    "IsWriting":{ "ADDR": 0,   "WIDTH": 1 },
+    "IsReading":{ "ADDR": 1,   "WIDTH": 1 },
+    "UNIX_TIME":{ "ADDR": 2,   "WIDTH": 8 },
+    "ERROR": {    "ADDR": 10,  "WIDTH": 4 },
+    "CamImg": {   "ADDR": 14,  "WIDTH": -1 }
+}

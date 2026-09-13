@@ -1,0 +1,25 @@
+{
+    "width": 1280,
+    "height": 720,
+    "fps": 30,
+    "queue_size": 5,
+    "loglevel": "DEBUG",
+    "record_file_path": "./",
+    "log_file_path": "./",
+    "cpus": [6, 7],
+    "camera_device_params": [
+        {
+            "ip_addr": "192.168.1.77",
+            "port": "10770"
+        },
+        {
+            "ip_addr": "192.168.1.75",
+            "port": "10750"
+        },
+        {
+            "ip_addr": "192.168.1.76",
+            "port": "10760"
+        }
+    ]
+}
+
