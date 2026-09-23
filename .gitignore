@@ -41,3 +41,6 @@ ui_setting/*.cfg
 .vscode/
 checkpoints/
 *.pyc
+3rdparty/
+*.whl
+*.so
