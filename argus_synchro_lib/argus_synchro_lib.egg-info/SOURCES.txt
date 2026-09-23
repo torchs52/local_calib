@@ -1,6 +1,0 @@
-pyproject.toml
-setup.py
-argus_synchro_lib.egg-info/PKG-INFO
-argus_synchro_lib.egg-info/SOURCES.txt
-argus_synchro_lib.egg-info/dependency_links.txt
-argus_synchro_lib.egg-info/top_level.txt

@@ -83,7 +83,6 @@ def test_pre_sets_running_before_initial_mmap_transmit() -> None:
     ]
     assert controller.debug_index == 0
     assert controller.frame_info == []
-    assert controller.read_count == 0
     assert controller._debug_video_writers == [None, None]
 
 
@@ -91,7 +90,6 @@ def test_post_uses_tracking_reasons_before_transmit(tmp_path: Path) -> None:
     controller = cast(calibcheck2d3d, object.__new__(calibcheck2d3d))
     controller._logger = cast(Any, _LoggerStub())
     controller._evaluation_camera_count = 3
-    controller.camera_scores_rawdata = [[1.0], [1.0], [1.0]]
     controller.checked_points3d = []
     controller.checked_points3d_score = []
     controller.checked_points2d = []

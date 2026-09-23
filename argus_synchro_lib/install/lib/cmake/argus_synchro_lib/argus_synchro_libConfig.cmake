@@ -1,5 +1,0 @@
-
-
-include(CMakeFindDependencyMacro)
-
-include("${CMAKE_CURRENT_LIST_DIR}/argus_synchro_libTargets.cmake")

@@ -1,4 +1,3 @@
-import copy
 from collections.abc import Callable
 from time import sleep
 
@@ -6,12 +5,9 @@ import cv2
 import numpy as np
 from numpy.typing import NDArray
 
-from argus_synchro.calibration_mat_generator_modules.ctrl.calibcheck2d3d import (
-    calibcheck_detection_2d3d,
-)
 from argus_synchro.calibration_mat_generator_modules.ctrl.calibcheck2d3d.debug_artifacts import (
-    append_trace_event,
     append_evaluation_debug_info,
+    append_trace_event,
     close_video_writers,
     conv_intarr,
     create_evaluation_debug_summary,
@@ -25,62 +21,51 @@ from argus_synchro.calibration_mat_generator_modules.ctrl.calibcheck2d3d.debug_a
     should_trace_eval_frame,
     write_video_frames,
 )
-from argus_synchro.calibration_mat_generator_modules.utils.calibration_utils import (
-    conbine3d3d,
-    read_rtvec,
-)
-from argus_synchro.calibration_mat_generator_modules.ctrl.calibcheck2d3d.SceneDesc import (
-    Scene,
-)
-from argus_synchro.calibration_mat_generator_modules.ctrl.calibcheck2d3d.scene_calibcheck2d3d import (
-    Scene_CalibCheck2d3d,
-)
-from argus_synchro.calibration_mat_generator_modules.ctrl.calibcheck2d3d.YOLOadapter import (
-    YOLODamoBatchAdapter,
-)
 from argus_synchro.calibration_mat_generator_modules.ctrl.calibcheck2d3d.evaluator import (
     EvaluationRuntime,
     create_evaluation_debug_state,
     create_evaluation_metric_debug,
-    evaluate_bbox_overlap_scenedesc,
     evaluate_2d3d,
+    evaluate_bbox_overlap_scenedesc,
     has_positive_2d_intersection,
     judge_calibration_result,
     passes_center_diff_gate,
-    project_3dbbox_core,
     project_3d_track_bboxes,
+    project_3dbbox_core,
     run_data_evaluation_process,
     select_camera_evaluation_result,
     select_visible_evaluation_frames,
     shrink_bbox2d,
 )
 from argus_synchro.calibration_mat_generator_modules.ctrl.calibcheck2d3d.processor import (
-    apply_static_point_filter,
-    create_calibcheck_session_state,
-    diagnose_input_data,
-    load_calibration_settings,
-    make_empty_yoloresult,
-    process_camera_frame,
-    process_calibcheck_frame,
-    process_lidar_frame,
-    publish_yolo_bboxes_to_ui,
-    lidar_points_to_ui_data,
-    yolo_result_to_ui_bboxes,
     EvaluationMetricDebug,
     TrackProximityWarning,
     VirtualBBoxDebugCounts,
+    apply_static_point_filter,
+    create_calibcheck_session_state,
+    diagnose_input_data,
+    lidar_points_to_ui_data,
+    load_calibration_settings,
+    make_empty_yoloresult,
+    process_calibcheck_frame,
+    process_camera_frame,
+    process_lidar_frame,
+    publish_yolo_bboxes_to_ui,
+    yolo_result_to_ui_bboxes,
 )
 from argus_synchro.calibration_mat_generator_modules.ctrl.calibcheck2d3d.reporting import (
-    publish_calibcheck_lifecycle_status,
     error_reason_to_string,
     error_reason_to_ui_errornum,
+    publish_calibcheck_lifecycle_status,
     publish_camera_calibcheck_statuses,
     write_calibcheck_result_files,
     write_evaluation_point_debug_file,
 )
-from argus_synchro.calibration_mat_generator_modules.ctrl.calibcheck2d3d.tracker_recorder import (
-    calibcheck2d_bboxtracker_recorder,
-    calibcheck3d_bboxtracker_recorder,
+from argus_synchro.calibration_mat_generator_modules.ctrl.calibcheck2d3d.scene_calibcheck2d3d import (
+    Scene_CalibCheck2d3d,
+)
+from argus_synchro.calibration_mat_generator_modules.ctrl.calibcheck2d3d.SceneDesc import (
+    Scene,
 )
 from argus_synchro.calibration_mat_generator_modules.ctrl.calibcheck2d3d.tracker import (
     collect_bbox_log_observation,
@@ -91,6 +76,13 @@ from argus_synchro.calibration_mat_generator_modules.ctrl.calibcheck2d3d.tracker
     select_3dbbox_tracking_results,
     track_2dbbox,
     track_3dbbox,
+)
+from argus_synchro.calibration_mat_generator_modules.ctrl.calibcheck2d3d.tracker_recorder import (
+    calibcheck2d_bboxtracker_recorder,
+    calibcheck3d_bboxtracker_recorder,
+)
+from argus_synchro.calibration_mat_generator_modules.ctrl.calibcheck2d3d.YOLOadapter import (
+    YOLODamoBatchAdapter,
 )
 from argus_synchro.calibration_mat_generator_modules.ctrl.calibration2d3d.track_main.interface_definition import (
     Tracking2dDataInterface,
@@ -112,6 +104,9 @@ from argus_synchro.calibration_mat_generator_modules.facade import (
     CalibrationUIGodot,
 )
 from argus_synchro.calibration_mat_generator_modules.utils import utils3d
+from argus_synchro.calibration_mat_generator_modules.utils.calibration_utils import (
+    read_rtvec,
+)
 from argus_synchro.calibration_mat_generator_modules.utils.debugdata_store import (
     debug_config,
     debug_force_snapshot,
@@ -135,10 +130,8 @@ from argus_synchro.diagnosis.calibcheck2d3d_result_diagnosis import (
     BBoxLogObservation,
     CalibCheck2d3dDiagnosis,
     CalibCheckFrameObservation,
-    CalibCheckFailureReason,
     CameraCalibCheckDiagnosisResult,
     TrackingObservation,
-    calibcheck_reason_to_status,
 )
 from argus_synchro.diagnosis.error_diagnosis import ResultDiagnosis
 from argus_synchro.message.calib_fifo_message import FIFOData
@@ -166,12 +159,8 @@ VIRTUAL_BBOX_CANDIDATE_NAMES: tuple[str, ...] = (
 BBOX_SHRINK_FACTOR: float = 1.0  # バウンディングボックスの縮小率。1.0で縮小なし、0.9で10%縮小、0.8で20%縮小など。
 BBOX_CENTER_DIFF_RATIO_THRESHOLD: float = 0.7  # バウンディングボックスの中心点の差の割合の閾値。0.2で20%以内、0.1で10%以内など。
 
-DATAPROC_READ_INTERVAL: int = 3 # 以前10だった、nフレームおきに処理実行するパラメータ。5や3のように小さくする可能性あり。
-
-
 def log_register(app_logger_factory: AppLoggerFactory) -> None:
     app_logger_factory.append_logger(_logger)
-    calibcheck_detection_2d3d.log_register(app_logger_factory)
 
 
 class calibcheck2d3d:
@@ -945,7 +934,6 @@ class calibcheck2d3d:
 
         state = create_calibcheck_session_state(self.calibcheck2d3d_conf.camera_count)
         self.frame_info = state.frame_info  # 2D bbox(list) x camera, 3D bbox
-        self.read_count = state.read_count
         self._debug_video_writers = state.debug_video_writers
         self._debug_video_paths = state.debug_video_paths
         self._debug_eval_info = state.debug_eval_info
@@ -953,7 +941,6 @@ class calibcheck2d3d:
         self.checked_points3d_score = state.checked_points3d_score
         self.checked_points2d = state.checked_points2d
         self.checked_points2d_score = state.checked_points2d_score
-        self.camera_scores_rawdata = state.camera_scores_rawdata  # カメラごとのbbox評価値のリスト
 
     def input_data_diagnosis(
         self,
@@ -1080,73 +1067,6 @@ class calibcheck2d3d:
             logger=self._logger,
         )
 
-    # except KeyboardInterrupt as e:
-    #     self._logger.info(f"{e}, calibcheck2d3d app_loopmain ended")
-    # except Exception as ea:
-    #     self._logger.error(
-    #         f"app_loopmain: exception! {ea} - \n{traceback.format_exc()}"
-    #     )
-    #     monitor.set_errorcode_unexpected_exception(True)
-    # finally:
-
-    # # CalibStatus:D3
-    # monitor.set_status_calibcommon(2)
-    # monitor.set_dummydata(
-    #     enable_systemerrorflag=True,
-    #     enable_errorflag=True,
-    #     overwrite_checkresult=True,
-    #     enable_yawangle=True,
-    # )
-    # monitor.transmit_setdata(sec=sec, ref_t=None)
-    # for camera_ix, camera_values in enumerate(self.camera_scores_rawdata):
-    #     resultstr = "Unknown"
-    #     camera_score = 0
-    #     if (
-    #         len(camera_values)
-    #         >= self.calibcheck2d3d_conf.score_accept_count_threshold
-    #     ):
-    #         camera_score = np.median(camera_values)
-    #         if (
-    #             camera_score
-    #             >= self.calibcheck2d3d_conf.score_value_threshold
-    #         ):
-    #             resultstr = "OK"
-    #         else:
-    #             resultstr = "NG"
-
-    #     with open(
-    #         self.calibcheck2d3d_conf.resultfiles[camera_ix], "w"
-    #     ) as wf:
-    #         print(resultstr, file=wf)
-    #     self._logger.info(
-    #         f"Camera{camera_ix} result: {resultstr}, camera_score:{camera_score}, score_count:{len(camera_values)}",
-    #     )
-
-    # with open(
-    #     "argus_synchro/calibration_mat_generator_modules/temp/calibcheck2d3d_results.txt",
-    #     "w",
-    # ) as wf:
-    #     print("checked_points3d", file=wf)
-    #     for v in self.checked_points3d:
-    #         print(v, file=wf)
-    #     print("checked_points3d_score", file=wf)
-    #     for v in self.checked_points3d_score:
-    #         print(v, file=wf)
-    #     print("checked_points2d", file=wf)
-    #     for v in self.checked_points2d:
-    #         print(v, file=wf)
-    #     print("checked_points2d_score", file=wf)
-    #     for v in self.checked_points2d_score:
-    #         print(v, file=wf)
-
-    # except Exception as ea:
-    #     self._logger.error(
-    #         f"app_loopmain (status D3~): exception! {ea} - \n{traceback.format_exc()}",
-    #     )
-    #     monitor.set_errorcode_unexpected_exception(True)
-
-    # self.end_wait(sec, sac, monitor)
-
     def post_app_loopmain(
         self,
         monitor: CalibrationUIGodot,
@@ -1230,322 +1150,6 @@ class calibcheck2d3d:
             status=CalibrationCommonStatus.INACTIVE,
         )
 
-    def dataproc(
-        self,
-        readresult_pop: FIFOData,
-        monitor: CalibrationUIGodot,
-        sec: SharedExcepts,
-    ) -> bool:  # 継続可否を返す Falseで終了
-        # readresults = self.proccap.read(data_capture_inst)
-        comparemode = "max"
-        # データ入力
-        # 10回ごとに入力を受け付け
-        self.read_count += 1
-        if self.read_count % DATAPROC_READ_INTERVAL != 0:
-            return True
-
-        # for _ in range(10):
-        #     readresult_pop  # 同期センサデータ入力
-        # if readresult_pop is None:
-        #     return False
-
-        # データ入力 - カメラ入力
-        camera_datalist, lidar_datalist, can_data, framecounter = readresult_pop
-        if self.input_data_diagnosis(
-            camera_datalist,
-            lidar_datalist,
-            can_data,
-        ):
-            return False
-
-        camera_count = self.dataCapture_conf.Camera.count
-        frame_cameras: list[NDArray[np.uint8] | None] = [None] * camera_count
-        for ix, camera_rawdatatuple in enumerate(camera_datalist):
-            if camera_rawdatatuple is None:
-                self._logger.info(f"frame {ix} is invalid, skip")
-                continue
-            if ix >= camera_count:
-                self._logger.warning(
-                    f"camera index {ix} is out of configured range {camera_count}, skip"
-                )
-                continue
-            frame = camera_rawdatatuple[0]
-            frame_cameras[ix] = self.ud.get_undistort_image(frame)
-
-        yoloresult_whole_list = self.yolo_adapter.predict_batch(
-            sec=sec,
-            frames=frame_cameras,
-        )
-
-        for ix, frame in enumerate(frame_cameras):
-            yoloresult_whole = yoloresult_whole_list[ix]
-            if frame is None:
-                monitor.set_2Dbbox(ix, np.empty((0, 4), dtype=np.int32))
-                continue
-            frame, _ = draw_multibbox(frame, yoloresult_whole)
-
-            bbox_for_ui: list[list[int]] = []
-            image_h, image_w, _ = frame.shape
-            for result_ix in range(int(yoloresult_whole[3])):
-                coor = yoloresult_whole[0].reshape((-1, 4))[result_ix]
-                # prob = yoloresult_whole[1][result_ix]
-                # cls_id = yoloresult_whole[2][result_ix]
-
-                # メインアプリ core - utils.py - draw_bbox 関数より編集
-                bbox_ymin = coor[0] * image_h
-                bbox_ymax = coor[2] * image_h
-                bbox_xmin = coor[1] * image_w
-                bbox_xmax = coor[3] * image_w
-
-                bbox_for_ui.append([bbox_xmin, bbox_ymin, bbox_xmax, bbox_ymax])
-
-            monitor.set_2Dbbox(ix, np.array(bbox_for_ui, dtype=np.int32))
-
-        # データ入力 - LiDAR入力
-        lidar_data = [x[0] for x in lidar_datalist if x is not None]
-
-        if len(lidar_data) == 0:
-            return False
-
-        for x in range(len(lidar_data)):
-            lidar_data[x] = np.array(lidar_data[x], dtype=np.float32)
-
-        pts = conbine3d3d(
-            xyz_data=lidar_data, trans_mat3D3D_eachlidar=self.trans_mat3D3D_eachlidar
-        )
-
-        # pts[:, 3] = np.where(pts[:, 3] < 0, pts[:, 3] + 256, pts[:, 3])
-        # pts = pts[pts[:, 3] > 0]
-        pts[:, 1] = -pts[:, 1]
-        pts[:, 2] = -pts[:, 2]  # yz反転
-        points = self._sub_detect_apply_static_point_filter(
-            pcdframe=pts,
-            timestamp_pcd=framecounter,
-        )
-        del pts
-
-        # 点群処理：　地面点群除去と点群クラスタリング
-
-        th = self.calibcheck2d3d_conf.z_threshold
-        points = points[points[:, 2] > th]
-
-        pts_obj_lim = np.array(
-            utils3d.np_to_pcd(points[:, :3]).voxel_down_sample(0.2).points
-        )
-        (multi_points, multi_lines, multi_minmax), pcd_limited, db = internal_make_BB(
-            pts_obj_lim
-        )
-        self.record_bbox1f(multi_minmax, yoloresult_whole_list)
-
-        # 評価
-
-        # integrated_retults_2d3d_old = None
-        evaluate_results = []  # integrated_retults_2d3d, box3ds_reproj_list をカメラ個数分
-        integrated_retults_2d3d_allcamera = []
-        for camera_ix in range(3):
-            # YOLO推定結果を取得
-            yoloresult_whole = yoloresult_whole_list[camera_ix]
-
-            # YOLO結果と3D bboxを入力し3D bboxごとの評価結果を得る。
-            evaluate_results.append(
-                calibcheck_detection_2d3d.evaluate2d3d(
-                    width=self.calibcheck2d3d_conf.image_w,
-                    height=self.calibcheck2d3d_conf.image_h,
-                    multi_points=multi_points,
-                    linkmethod="iou",
-                    yoloresult_whole=yoloresult_whole,
-                    rvec=self.rtvec_mat[camera_ix][0],
-                    tvec=self.rtvec_mat[camera_ix][1],
-                    ncm1=self.ud.ncm1,
-                    integrated_retults_2d3d_old=None,  # integrated_retults_2d3d_old
-                    # ここでoldを指定するとこの3D bboxごとの属性リストに上書きする形で登録。カメラごとの結果を知りたい場合はnoneにして混ぜないようにする
-                )
-            )
-
-            # 直前にappendした要素からintegrated_retults_2d3d（3D bboxごとの評価結果リスト）を取り出し、カメラごとに人のbboxの評価値を取得し記録する。
-            integrated_retults_2d3d = evaluate_results[-1][0]
-            for elem_ix, elem in enumerate(integrated_retults_2d3d):
-                if elem[0] == "human":
-                    self.camera_scores_rawdata[camera_ix].append(
-                        elem[2]
-                    )  # カメラごとの評価値を記録しておく（後で統計を取る
-
-            # integrated_retults_2d3d_old = evaluate_results[-1][0]
-
-            # 3カメラ分の結果を統合　カメラ0の結果を土台に、同じcluster_ixでよりスコアの高い結果を上書きする。　←統合してはいけない　【Todo】
-            if camera_ix == 0:
-                integrated_retults_2d3d_allcamera = copy.deepcopy(
-                    integrated_retults_2d3d
-                )
-            else:
-                for cluster_ix, Z in enumerate(integrated_retults_2d3d):
-                    (category, bbox_ix, score, box3ds_reproj_box, box2d) = Z
-                    if category == "human":
-                        if comparemode == "min":
-                            eval_result: bool = (
-                                score < integrated_retults_2d3d_allcamera[cluster_ix][2]
-                            )
-                        else:
-                            eval_result: bool = (
-                                score > integrated_retults_2d3d_allcamera[cluster_ix][2]
-                            )
-                        if eval_result:
-                            # 該当3dBBの情報を書き換え
-                            integrated_retults_2d3d_allcamera[cluster_ix] = (
-                                copy.deepcopy(Z)
-                            )
-
-        # 評価値をUI送信用に加工
-        reason_camera_notvalid: list[int] = []
-        camera_evaluation_results: list[bool] = []
-        for camera_values in self.camera_scores_rawdata:
-            reason = 1
-            result = False
-            if (
-                len(camera_values)
-                >= self.calibcheck2d3d_conf.score_accept_count_threshold
-            ):
-                reason = 0
-                camera_score = np.median(camera_values)
-                result = camera_score >= self.calibcheck2d3d_conf.score_value_threshold
-
-            reason_camera_notvalid.append(reason)
-            camera_evaluation_results.append(result)
-
-        diagnosis_results: list[CameraCalibCheckDiagnosisResult] = []
-        for camera_index, (reason, result) in enumerate(
-            zip(reason_camera_notvalid, camera_evaluation_results, strict=True)
-        ):
-            normalized_reason = CalibCheckFailureReason(reason)
-            effective_result = result if normalized_reason == 0 else None
-            diagnosis_results.append(
-                CameraCalibCheckDiagnosisResult(
-                    camera_index=camera_index,
-                    status=calibcheck_reason_to_status(
-                        normalized_reason,
-                        calibration_is_acceptable=effective_result,
-                    ),
-                    primary_reason=normalized_reason,
-                    all_reasons=(normalized_reason,) if normalized_reason else (),
-                    calibration_is_acceptable=effective_result,
-                )
-            )
-        self.camera_evaluation_results_to_monitor(monitor, diagnosis_results)
-
-        del yoloresult_whole
-        del integrated_retults_2d3d
-
-        # 以下描画用の処理
-
-        integrated_retults_2d3d = integrated_retults_2d3d_allcamera
-        for camera_ix in range(3):
-            # yoloresult_whole = yoloresult_whole_list[camera_ix]
-            frame = frame_cameras[camera_ix]
-            if frame is None:
-                continue
-            box3ds_reproj = evaluate_results[camera_ix][1]
-
-            for ix, (lines, attr) in enumerate(
-                zip(
-                    multi_lines.reshape(-1, 12, 2),
-                    integrated_retults_2d3d,
-                    strict=False,
-                )
-            ):
-                if attr[0] == "human":
-                    boxcolor = (0, 0, 255)
-                    self.checked_points3d.append(
-                        multi_points[int(ix * 8) : int(ix * 8) + 8].mean(axis=0)
-                    )
-                    self.checked_points3d_score.append(attr[2])
-                    self.checked_points2d.append(attr[3].mean(axis=0))
-                    self.checked_points2d_score.append(attr[2])
-                    # print(f"ix: {ix}, human, {multi_points[int(ix/8):int(ix/8)+8]}, {multi_points[int(ix/8):int(ix/8)+8].mean(axis=0)}, score: {attr[2]}")
-
-                else:
-                    boxcolor = (10, 10, 10)
-
-                for pt1ix, pt2ix in lines:
-                    cv2.line(
-                        frame,
-                        conv_intarr(box3ds_reproj[pt1ix]),
-                        conv_intarr(box3ds_reproj[pt2ix]),
-                        boxcolor,
-                        2,
-                    )
-
-                cv2.putText(
-                    frame,
-                    f"{ix}",
-                    conv_intarr(box3ds_reproj[pt1ix]),
-                    fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=1.0,
-                    color=boxcolor,
-                    thickness=2,
-                    lineType=cv2.LINE_4,
-                )
-
-            # human_scores = np.array(
-            #    [x[2] for x in integrated_retults_2d3d if x[0] == "human"]
-            # )
-
-            # cv2.imshow(f"frame{camera_ix}", cv2.resize(frame, dsize=None, fx=0.25, fy=0.25))
-
-            # monitor.put_data(
-            #    "dataproc",
-            #    f"detect2d_image{camera_ix}",
-            #    cv2.resize(frame, dsize=None, fx=0.25, fy=0.25),
-            # )
-            monitor.set_image(camera_ix, frame)
-
-        # monitor.put_data("dataproc", "detect3d_points_raw", (pcd_limited, 0))
-        if pcd_limited.shape[-1] == 4:
-            monitor.set_points(
-                pcd_limited[:, :3],
-                monitor.convert_intensity_to_color(pcd_limited[:, 3]),
-            )
-        elif pcd_limited.shape[-1] == 3:
-            monitor.set_points(
-                pcd_limited, np.tile([0.2, 0.2, 0.2], (pcd_limited.shape[0], 1))
-            )
-        else:
-            monitor.set_points(
-                np.zeros((0, 3), dtype=np.float32), np.zeros((0, 3), dtype=np.float32)
-            )
-        # monitor.put_data("dataproc", "detect3d_multipoints", multi_points)
-        monitor.set_boxes(
-            points_multipoints=multi_points, points_multi_lines=multi_lines
-        )
-        # monitor.put_data("dataproc", "detect3d_multi_lines", multi_lines)
-
-        if len(self.checked_points3d) > 0:
-            scores = np.array(
-                self.checked_points3d_score
-            )  # checked_points3dと同じ長さのスコア情報 max1
-            # monitor.put_data(
-            #    "dataproc", f"3dobj_{0}_pts", np.array(self.checked_points3d)
-            # )
-            monitor.set_cornerpoints(
-                np.array(self.checked_points3d),
-                np.outer(scores, [0, 1, 0]) + np.outer(1 - scores, [1, 0, 0]),
-            )
-            # monitor.put_data(
-            #    "dataproc",
-            #    f"3dobj_{0}_clr",
-            #    ,
-            # )
-
-        monitor.set_dummydata(
-            enable_systemerrorflag=True,
-            enable_errorflag=True,
-            overwrite_checkresult=True,
-            enable_yawangle=True,
-        )
-        self._write_debug_video_frames(monitor, self.debug_index)
-        monitor.transmit_setdata(sec=sec, ref_t=self.debug_index)
-
-        self.debug_index += 1
-        return True
 
     def _sub_detect_apply_static_point_filter(self, pcdframe, timestamp_pcd):
         proc3d_conf = self.app_config_calib.calib2d3d.Proc3d

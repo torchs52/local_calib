@@ -87,7 +87,7 @@ flowchart TD
 ```
 
 外部からは `calib_process.py` が `pre_app_loopmain()`、`app_loopmain()`、
-`post_app_loopmain()` を呼ぶ。従って、この三つと `dataproc()`、`end_wait()`、
+`post_app_loopmain()` を呼ぶ。従って、この三つと`end_wait()`、
 `send_end_wait()` は facade に残す。これらは UI と設定ファイルの状態遷移を表す public protocol
 であり、単なる orchestration helper ではない。
 
@@ -102,7 +102,6 @@ classDiagram
         +post_app_loopmain()
         +end_wait()
         +send_end_wait()
-        +dataproc()
     }
     class FrameRecorder {
         +record(multi_minmax, yolo_results)
@@ -324,12 +323,9 @@ adapter をモックして検証する。
 
 静的検索では `calibcheck2d3d.dataproc()` の呼び出し元は見つからず、通常の
 2D-3D calibcheck は `calib_process.py` から `app_loopmain()` を通る。
-`dataproc()` 以下には、現在の `proc_lidar1f()` / `proc_camera1f()` と並行する古い
-点群・画像・描画処理が残っている可能性がある。
-
-この経路は直ちに削除しない。リファクタリング後半で `legacy_dataproc.py` などの明示的な
-旧互換モジュールへ処理をまとめ、入口には互換ラッパーだけを残す。その時点で起動ログと
-上位呼び出しをもう一度確認し、実運用で未使用であることを確定してから削除候補にする。
+このため旧`dataproc()`と、その経路だけが使用していた`calibcheck_detection_2d3d.py`を削除した。
+旧処理を別ファイルへ退避せず、現行経路で必要な処理は既存の`processor.py`、`evaluator.py`、
+`debug_artifacts.py`にある実装をそのまま使用する。
 
 静的点群フィルタは `dataproc()` 専用ではない。通常経路の `app_loopmain()` から
 `proc_lidar1f()` を経由しても適用されるため、旧経路の退避・削除時に現行フィルタを
@@ -396,15 +392,11 @@ python -m pytest -q tests/test_calibcheck2d3d_*.py
      現在は公開入口・周辺 helper・評価 orchestration を移したが、loop 本体は facade の
      `_evaluate_2d3d_impl()` に残る。trace、score、reason 9/10/11、virtual bbox 統計を
      既存テストで維持しながら移す。
-2. 旧 `dataproc()` 経路を `legacy_dataproc.py` などへ退避する。
-     現時点で外部呼出元は静的検索で見つかっていないが、削除はしない。通常の
-     `app_loopmain()` 経路と異なる旧アルゴリズム、画像・点群描画、評価、MMAP 更新を含むため、
-     実機または記録データでの確認後に削除候補とする。
-3. `debuginfo_and_functions.py` の最終整理を行う。
+2. `debuginfo_and_functions.py` の最終整理を行う。
      現在は本処理の `conbine3d3d`、`internal_make_BB`、`read_rtvec` と、debug 描画・
      Open3D 表示が混在している。`wait_app` も前者を利用するため、計算処理を debug 専用として
      削除しない。名称変更・互換 re-export・描画の分離は後段で判断する。
-4. 分割済み module の import と type hint を整理し、対象外を含む test suite を実行する。
+3. 分割済み module の import と type hint を整理し、対象外を含む test suite を実行する。
      TensorRT の再作成や実機 YOLO 推論を必要とする処理は、adapter をモックする。
 
 これらは振る舞い保存の分割が完了し、回帰テストで基準を固定してから個別に判断する。

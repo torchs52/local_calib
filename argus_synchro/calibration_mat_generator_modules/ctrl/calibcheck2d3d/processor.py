@@ -47,7 +47,6 @@ class TrackProximityWarning(TypedDict):
 @dataclass
 class CalibCheckSessionState:
     frame_info: list[tuple[list[list[NDArray[np.float32]]], NDArray[np.float32]]]
-    read_count: int
     debug_video_writers: list[object | None]
     debug_video_paths: list[str]
     debug_eval_info: dict[str, object]
@@ -55,14 +54,12 @@ class CalibCheckSessionState:
     checked_points3d_score: list[object]
     checked_points2d: list[object]
     checked_points2d_score: list[object]
-    camera_scores_rawdata: list[list[float]]
 
 
 def create_calibcheck_session_state(camera_count: int) -> CalibCheckSessionState:
     """評価開始時に蓄積・debug・カメラ別 score の状態を初期化する。"""
     return CalibCheckSessionState(
         frame_info=[],
-        read_count=0,
         debug_video_writers=[None for _ in range(camera_count)],
         debug_video_paths=["" for _ in range(camera_count)],
         debug_eval_info={},
@@ -70,7 +67,6 @@ def create_calibcheck_session_state(camera_count: int) -> CalibCheckSessionState
         checked_points3d_score=[],
         checked_points2d=[],
         checked_points2d_score=[],
-        camera_scores_rawdata=[[] for _ in range(camera_count)],
     )
 
 

@@ -189,8 +189,7 @@ flowchart LR
 | `debug_artifacts.py` | トレース、動画/pickle出力、bbox描画、`vis_viewer`（Open3D可視化） |
 | `reporting.py` | reason変換、MMAPステータス公開、結果ファイル出力（旧 lifecycle/reason_codes/result_artifacts統合） |
 | `YOLOadapter.py` | `YOLODamoBatchAdapter`。Detect2dDamoYoloOnnxのバッチ推論ラッパー |
-| `calibcheck_detection_2d3d.py` | 旧アルゴリズム(`evaluate2d3d`等)。現行の `pre/app/post_app_loopmain` からは呼ばれず、未使用の `dataproc()` レガシーメソッドからのみ参照される |
-| `calibration_mat_generator_modules/utils/calibration_utils.py`（上位モジュール） | LiDAR統合(`conbine3d3d`)、キャリブレーション行列読込(`read_rtvec`)。`calibcheck2d3d` と `wait_app` の双方が対等に参照する共通モジュール |
+| `calibration_mat_generator_modules/utils/calibration_utils.py`（上位モジュール） | キャリブレーション行列読込(`read_rtvec`)を提供する。LiDAR統合(`conbine3d3d`)は`wait_app`が使用する |
 
 ### 6.2 処理フロー
 
@@ -362,12 +361,6 @@ classDiagram
         +predict_batch()
     }
 
-    class LegacyDetection2d3d {
-        <<calibcheck_detection_2d3d.py, 現行フロー未使用>>
-        +evaluate2d3d()
-        +get_human_3bb_withscore()
-    }
-
     calibcheck2d3d --> ProcessorModule
     calibcheck2d3d --> TrackerModule
     calibcheck2d3d --> EvaluatorModule
@@ -376,8 +369,6 @@ classDiagram
     calibcheck2d3d --> CalibrationUtilsModule
     calibcheck2d3d --> ReportingModule
     calibcheck2d3d --> YOLODamoBatchAdapter
-    calibcheck2d3d ..> LegacyDetection2d3d : dataproc() のみ(未使用経路)
-
     ProcessorModule --> YOLODamoBatchAdapter
     ProcessorModule --> DebugArtifactsModule
     TrackerModule --> calibcheck2d_bboxtracker_recorder
@@ -392,9 +383,9 @@ classDiagram
   パッケージ階層を1段上げて `calibration_mat_generator_modules/utils/` に配置している。
   これにより `wait_app` が `calibcheck2d3d` の内部モジュールを直接importするという
   不自然な依存方向を解消した。
-- `calibcheck_detection_2d3d.py` は `pre_app_loopmain`/`app_loopmain`/`post_app_loopmain`
-  のいずれからも呼ばれない。参照は未使用の `dataproc()` メソッド内のみで、実運用の校正診断
-  フローには関与しない（削除・整理の候補だが、現時点では安全のため残置）。
+- 呼び出し元がなかった旧`dataproc()`経路と、その経路専用だった
+  `calibcheck_detection_2d3d.py`は削除済みである。現行処理に必要な評価処理は`evaluator.py`、
+  描画・クラスタ生成処理は`debug_artifacts.py`、フレーム処理は`processor.py`に存在する。
 - MMAPへの書き込みは引き続き `CalibrationUIGodot.transmit_setdata()` に集約されており、
   各モジュールは値を facade に返すのみで MMAP を直接操作しない。
 - リファクタリング前後で `pre_app_loopmain`/`app_loopmain`/`post_app_loopmain` の外部シグネチャ・
