@@ -44,3 +44,5 @@ checkpoints/
 3rdparty/
 *.whl
 *.so
+3rdparty/
+*.whl
