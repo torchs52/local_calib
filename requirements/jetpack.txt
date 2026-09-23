@@ -1,0 +1,6 @@
+# requirements/wheelsのバージョンに合わせる
+--find-links ./requirements/wheels
+--prefer-binary
+onnxruntime-gpu==1.23.2
+open3d==0.19.0
+opencv-contrib-python-headless==4.13.0.92

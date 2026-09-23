@@ -2,17 +2,17 @@
 # File that provides "make uninstall" target
 #  We use the file 'install_manifest.txt'
 # -----------------------------------------------
-IF(NOT EXISTS "/home/matsuoka/argus_pipe_filter/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/nanoflann-build/install_manifest.txt")
-  MESSAGE(FATAL_ERROR "Cannot find install manifest: \"/home/matsuoka/argus_pipe_filter/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/nanoflann-build/install_manifest.txt\"")
-ENDIF(NOT EXISTS "/home/matsuoka/argus_pipe_filter/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/nanoflann-build/install_manifest.txt")
+IF(NOT EXISTS "/home/matsuoka/local_calib/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/nanoflann-build/install_manifest.txt")
+  MESSAGE(FATAL_ERROR "Cannot find install manifest: \"/home/matsuoka/local_calib/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/nanoflann-build/install_manifest.txt\"")
+ENDIF(NOT EXISTS "/home/matsuoka/local_calib/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/nanoflann-build/install_manifest.txt")
 
-FILE(READ "/home/matsuoka/argus_pipe_filter/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/nanoflann-build/install_manifest.txt" files)
+FILE(READ "/home/matsuoka/local_calib/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/nanoflann-build/install_manifest.txt" files)
 STRING(REGEX REPLACE "\n" ";" files "${files}")
 FOREACH(file ${files})
   MESSAGE(STATUS "Uninstalling \"$ENV{DESTDIR}${file}\"")
   IF(EXISTS "$ENV{DESTDIR}${file}")
     EXEC_PROGRAM(
-      "/tmp/pip-build-env-uyrja1pa/overlay/lib/python3.12/site-packages/cmake/data/bin/cmake" ARGS "-E remove \"$ENV{DESTDIR}${file}\""
+      "/tmp/pip-build-env-794wvxpo/overlay/lib/python3.12/site-packages/cmake/data/bin/cmake" ARGS "-E remove \"$ENV{DESTDIR}${file}\""
       OUTPUT_VARIABLE rm_out
       RETURN_VALUE rm_retval
       )

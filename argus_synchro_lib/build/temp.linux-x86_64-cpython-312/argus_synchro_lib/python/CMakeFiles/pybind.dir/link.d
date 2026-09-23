@@ -1,4 +1,4 @@
-/home/matsuoka/argus_pipe_filter/argus_synchro_lib/build/lib.linux-x86_64-cpython-312/argus_synchro_lib.cpython-312-x86_64-linux-gnu.so: \
+/home/matsuoka/local_calib/argus_synchro_lib/build/lib.linux-x86_64-cpython-312/argus_synchro_lib.cpython-312-x86_64-linux-gnu.so: \
   /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crti.o \
   /usr/lib/gcc/x86_64-linux-gnu/13/crtbeginS.o \
   CMakeFiles/pybind.dir/src/target.cpp.o \
@@ -15,14 +15,11 @@
   CMakeFiles/pybind.dir/src/visualizer_module.cpp.o \
   CMakeFiles/pybind.dir/src/detect3d_module.cpp.o \
   CMakeFiles/pybind.dir/src/spsc_slot_controller_module.cpp.o \
-  /home/matsuoka/argus_pipe_filter/argus_synchro_lib/build/lib.linux-x86_64-cpython-312/libargus_synchro_lib.so \
+  /home/matsuoka/local_calib/argus_synchro_lib/build/lib.linux-x86_64-cpython-312/libargus_synchro_lib.so \
   /usr/lib/gcc/x86_64-linux-gnu/13/libgomp.so \
   /usr/lib/x86_64-linux-gnu/libpthread.a \
-  /home/matsuoka/argus_pipe_filter/3rdparty/opencv/install/lib/libopencv_calib3d.so.4.13.0 \
-  /home/matsuoka/argus_pipe_filter/3rdparty/opencv/install/lib/libopencv_features2d.so.4.13.0 \
-  /home/matsuoka/argus_pipe_filter/3rdparty/opencv/install/lib/libopencv_flann.so.4.13.0 \
-  /home/matsuoka/argus_pipe_filter/3rdparty/opencv/install/lib/libopencv_imgproc.so.4.13.0 \
-  /home/matsuoka/argus_pipe_filter/3rdparty/opencv/install/lib/libopencv_core.so.4.13.0 \
+  /home/matsuoka/local_calib/argus_synchro_lib/../3rdparty/opencv/install/lib/libopencv_calib3d.so \
+  /home/matsuoka/local_calib/argus_synchro_lib/../3rdparty/opencv/install/lib/libopencv_core.so \
   /usr/lib/gcc/x86_64-linux-gnu/13/libstdc++.so \
   /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/libm.so \
   /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/libm.so \
@@ -80,21 +77,15 @@ CMakeFiles/pybind.dir/src/detect3d_module.cpp.o:
 
 CMakeFiles/pybind.dir/src/spsc_slot_controller_module.cpp.o:
 
-/home/matsuoka/argus_pipe_filter/argus_synchro_lib/build/lib.linux-x86_64-cpython-312/libargus_synchro_lib.so:
+/home/matsuoka/local_calib/argus_synchro_lib/build/lib.linux-x86_64-cpython-312/libargus_synchro_lib.so:
 
 /usr/lib/gcc/x86_64-linux-gnu/13/libgomp.so:
 
 /usr/lib/x86_64-linux-gnu/libpthread.a:
 
-/home/matsuoka/argus_pipe_filter/3rdparty/opencv/install/lib/libopencv_calib3d.so.4.13.0:
+/home/matsuoka/local_calib/argus_synchro_lib/../3rdparty/opencv/install/lib/libopencv_calib3d.so:
 
-/home/matsuoka/argus_pipe_filter/3rdparty/opencv/install/lib/libopencv_features2d.so.4.13.0:
-
-/home/matsuoka/argus_pipe_filter/3rdparty/opencv/install/lib/libopencv_flann.so.4.13.0:
-
-/home/matsuoka/argus_pipe_filter/3rdparty/opencv/install/lib/libopencv_imgproc.so.4.13.0:
-
-/home/matsuoka/argus_pipe_filter/3rdparty/opencv/install/lib/libopencv_core.so.4.13.0:
+/home/matsuoka/local_calib/argus_synchro_lib/../3rdparty/opencv/install/lib/libopencv_core.so:
 
 /usr/lib/gcc/x86_64-linux-gnu/13/libstdc++.so:
 

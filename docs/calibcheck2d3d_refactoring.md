@@ -152,3 +152,45 @@
 
 - `AppLogger` 利用時は標準 logging と同様に「第1引数は常にメッセージ文字列（または format 文字列）」を徹底する。
 - ユーティリティ関数の引数変更時は、呼び出し側 keyword と定義側シグネチャを同時に確認する。
+
+## 2026-09-18 追記（第一次リファクタリング後の実機ファイル入力テスト結果）
+
+### テストデータ
+
+`config/calib_settings.ini` の `[DEBUG_REF]` セクション、`othermode`（calibcheck2d3d が実際に使用する系統）向けデータを使用。
+
+- カメラ動画（cam1用データセット）
+  - `v0_file_cam1` = `.../experiment2025/ohbu20250203_0204/convvideo_can10fpssync/cam0_20250203_170738_10fps.mp4`
+  - `v1_file_cam1` = 同ディレクトリの `cam1_20250203_170738_10fps.mp4`
+  - `v2_file_cam1` = 同ディレクトリの `cam2_20250203_170738_10fps.mp4`
+- LiDAR点群（cam1用データセット）
+  - `lidar0_file_cam1` / `lidar1_file_cam1` = `.../convpoint/cap_0203_cam120250203_170738ts.csv/{L,R}/{L,R}point_`
+- CAN: `c_file` = `.../大府実験2403/10fps/20240314_134621/can_20240314_134621.csv`
+- `frame_info_maxlen = 100000`（同ファイル `[CalibCheck2d3d]`）のため、400〜600フレーム程度ではリングバッファによる古いフレーム破棄は発生しない。
+
+### 実行方法
+
+UIを介さず `scripts/run_calibcheck2d3d_filetest.py --frames <N>` で自動実行できる（詳細は同スクリプトの docstring、および repo memory `calibcheck2d3d_testing.md` を参照）。
+
+### フレーム数ごとの期待される診断結果（上記テストデータ限定）
+
+| frames | Camera0 | Camera1 | Camera2 |
+|---|---|---|---|
+| 400 | Unknown (reason:3) | Unknown (reason:3) | OK (reason:0) |
+| 500 | Unknown (reason:3) | OK (reason:0) | OK (reason:0) |
+| 600 | Unknown (reason:3) | OK (reason:0) | OK (reason:0) |
+
+- reason:3 = 2D bboxログが不正（Camera0の視野に人が入っておらずYOLO検出が全フレーム0件のため）。
+- Camera1 は 400→500 フレームの間で Unknown→OK に変わる。3D bboxトラッキングの累積長判定（`accum_track_length >= 50` 等）がこの付近で満たされるため。
+- Camera2 はいずれのフレーム数でも OK。
+
+### リファクタリング前後の比較（2026-09-18実施）
+
+- 対象コミット: `e67a024`（リファクタリング前）/ `9b61f22`（calibcheck2d3dの第一次リファクタリング、当時のmain）。
+- 400/500/600 フレームそれぞれで診断結果は完全一致（上表の期待値は両コミットで共通）。
+- 処理速度（fps）も大差なし（約3.8fps。1回だけ2.16fpsの外れ値があったが実行環境要因と推定、コード差ではない）。
+- 結論: 今回のリファクタリングによる回帰・挙動変化はなし。
+
+### 注意事項
+
+- 上記の期待値はこのテストデータ・パラメータでの実測値であり、別データセットや `calib_settings.ini` の閾値変更時は再測定が必要。

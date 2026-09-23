@@ -201,6 +201,9 @@ class detect2d_class:
             return self.yoloBB_all_yoloformat
         return self.yoloBB_all_yoloformat[0][0][0]
 
+    def get_last_yoloBB(self) -> list[NDArray[np.float64]] | None:
+        return self.yoloBB_all_yoloformat
+
     def get_tracking_results(self) -> Tracking2dDataInterface:
         res = self.bbox_track_and_record.get_rawresults()
         return Tracking2dDataInterface(

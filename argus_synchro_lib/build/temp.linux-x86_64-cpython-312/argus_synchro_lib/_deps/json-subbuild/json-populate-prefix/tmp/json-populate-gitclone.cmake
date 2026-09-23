@@ -3,11 +3,11 @@
 
 cmake_minimum_required(VERSION ${CMAKE_VERSION}) # this file comes with cmake
 
-if(EXISTS "/home/matsuoka/argus_pipe_filter/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/json-subbuild/json-populate-prefix/src/json-populate-stamp/json-populate-gitclone-lastrun.txt" AND EXISTS "/home/matsuoka/argus_pipe_filter/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/json-subbuild/json-populate-prefix/src/json-populate-stamp/json-populate-gitinfo.txt" AND
-  "/home/matsuoka/argus_pipe_filter/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/json-subbuild/json-populate-prefix/src/json-populate-stamp/json-populate-gitclone-lastrun.txt" IS_NEWER_THAN "/home/matsuoka/argus_pipe_filter/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/json-subbuild/json-populate-prefix/src/json-populate-stamp/json-populate-gitinfo.txt")
+if(EXISTS "/home/matsuoka/local_calib/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/json-subbuild/json-populate-prefix/src/json-populate-stamp/json-populate-gitclone-lastrun.txt" AND EXISTS "/home/matsuoka/local_calib/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/json-subbuild/json-populate-prefix/src/json-populate-stamp/json-populate-gitinfo.txt" AND
+  "/home/matsuoka/local_calib/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/json-subbuild/json-populate-prefix/src/json-populate-stamp/json-populate-gitclone-lastrun.txt" IS_NEWER_THAN "/home/matsuoka/local_calib/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/json-subbuild/json-populate-prefix/src/json-populate-stamp/json-populate-gitinfo.txt")
   message(VERBOSE
     "Avoiding repeated git clone, stamp file is up to date: "
-    "'/home/matsuoka/argus_pipe_filter/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/json-subbuild/json-populate-prefix/src/json-populate-stamp/json-populate-gitclone-lastrun.txt'"
+    "'/home/matsuoka/local_calib/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/json-subbuild/json-populate-prefix/src/json-populate-stamp/json-populate-gitclone-lastrun.txt'"
   )
   return()
 endif()
@@ -22,12 +22,12 @@ else()
 endif()
 
 execute_process(
-  COMMAND ${CMAKE_COMMAND} -E rm -rf "/home/matsuoka/argus_pipe_filter/argus_synchro_lib/../3rdparty/json"
+  COMMAND ${CMAKE_COMMAND} -E rm -rf "/home/matsuoka/local_calib/argus_synchro_lib/../3rdparty/json"
   RESULT_VARIABLE error_code
   ${maybe_show_command}
 )
 if(error_code)
-  message(FATAL_ERROR "Failed to remove directory: '/home/matsuoka/argus_pipe_filter/argus_synchro_lib/../3rdparty/json'")
+  message(FATAL_ERROR "Failed to remove directory: '/home/matsuoka/local_calib/argus_synchro_lib/../3rdparty/json'")
 endif()
 
 # try the clone 3 times in case there is an odd git clone issue
@@ -37,7 +37,7 @@ while(error_code AND number_of_tries LESS 3)
   execute_process(
     COMMAND "/usr/bin/git"
             clone --no-checkout --depth 1 --no-single-branch --config "advice.detachedHead=false" "https://github.com/nlohmann/json.git" "json"
-    WORKING_DIRECTORY "/home/matsuoka/argus_pipe_filter/argus_synchro_lib/../3rdparty"
+    WORKING_DIRECTORY "/home/matsuoka/local_calib/argus_synchro_lib/../3rdparty"
     RESULT_VARIABLE error_code
     ${maybe_show_command}
   )
@@ -53,7 +53,7 @@ endif()
 execute_process(
   COMMAND "/usr/bin/git"
           checkout "v3.12.0" --
-  WORKING_DIRECTORY "/home/matsuoka/argus_pipe_filter/argus_synchro_lib/../3rdparty/json"
+  WORKING_DIRECTORY "/home/matsuoka/local_calib/argus_synchro_lib/../3rdparty/json"
   RESULT_VARIABLE error_code
   ${maybe_show_command}
 )
@@ -66,22 +66,22 @@ if(init_submodules)
   execute_process(
     COMMAND "/usr/bin/git" 
             submodule update --recursive --init 
-    WORKING_DIRECTORY "/home/matsuoka/argus_pipe_filter/argus_synchro_lib/../3rdparty/json"
+    WORKING_DIRECTORY "/home/matsuoka/local_calib/argus_synchro_lib/../3rdparty/json"
     RESULT_VARIABLE error_code
     ${maybe_show_command}
   )
 endif()
 if(error_code)
-  message(FATAL_ERROR "Failed to update submodules in: '/home/matsuoka/argus_pipe_filter/argus_synchro_lib/../3rdparty/json'")
+  message(FATAL_ERROR "Failed to update submodules in: '/home/matsuoka/local_calib/argus_synchro_lib/../3rdparty/json'")
 endif()
 
 # Complete success, update the script-last-run stamp file:
 #
 execute_process(
-  COMMAND ${CMAKE_COMMAND} -E copy "/home/matsuoka/argus_pipe_filter/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/json-subbuild/json-populate-prefix/src/json-populate-stamp/json-populate-gitinfo.txt" "/home/matsuoka/argus_pipe_filter/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/json-subbuild/json-populate-prefix/src/json-populate-stamp/json-populate-gitclone-lastrun.txt"
+  COMMAND ${CMAKE_COMMAND} -E copy "/home/matsuoka/local_calib/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/json-subbuild/json-populate-prefix/src/json-populate-stamp/json-populate-gitinfo.txt" "/home/matsuoka/local_calib/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/json-subbuild/json-populate-prefix/src/json-populate-stamp/json-populate-gitclone-lastrun.txt"
   RESULT_VARIABLE error_code
   ${maybe_show_command}
 )
 if(error_code)
-  message(FATAL_ERROR "Failed to copy script-last-run stamp file: '/home/matsuoka/argus_pipe_filter/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/json-subbuild/json-populate-prefix/src/json-populate-stamp/json-populate-gitclone-lastrun.txt'")
+  message(FATAL_ERROR "Failed to copy script-last-run stamp file: '/home/matsuoka/local_calib/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/json-subbuild/json-populate-prefix/src/json-populate-stamp/json-populate-gitclone-lastrun.txt'")
 endif()

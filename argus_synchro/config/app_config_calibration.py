@@ -472,6 +472,7 @@ class Calib2d3dConf:
         # 設定値4：デフォルト値（範囲外参照時に返す）
         lid_workareadef_img_val_DEFAULT: list[float]
         enable_bbox3d_overlap_merge: bool = False
+        keep_lowest_z_bbox_on_merge: bool = True
         bbox3d_overlap_merge_threshold: float = 0.7
         is_headpoint_grid_overwrite: bool = False
         calc_headpoint_grid_axis: list[str] = field(
@@ -527,6 +528,7 @@ class Calib2d3dConf:
     @dataclass(frozen=True)
     class CalcAccuracyConf:
         check_enable: bool
+        accvalue: float
 
     CalcAccuracy: CalcAccuracyConf
 
@@ -764,6 +766,9 @@ def Calib2d3dConf_read(
             bbox3d_overlap_merge_threshold=ini.getfloat(
                 "Calib2d3d_Proc3d", "bbox3d_overlap_merge_threshold", fallback=0.7
             ),
+            keep_lowest_z_bbox_on_merge=ini.getboolean(
+                "Calib2d3d_Proc3d", "keep_lowest_z_bbox_on_merge"
+            ),
             is_headpoint_grid_overwrite=ini.getboolean(
                 "Calib2d3d_Proc3d", "is_headpoint_grid_overwrite", fallback=False
             ),
@@ -905,6 +910,7 @@ def Calib2d3dConf_read(
         ),
         CalcAccuracy=Calib2d3dConf.CalcAccuracyConf(
             check_enable=ini.getboolean("Calib2d3d_CalcAccuracy", "check_enable"),
+            accvalue=ini.getfloat("Calib2d3d_CalcAccuracy", "accvalue"),
         ),
     )
 
@@ -1049,6 +1055,7 @@ class CalibCheck2d3dConf:
     resultfiles: list[str]
     score_accept_count_threshold: int
     score_value_threshold: float
+    person_not_detected_sec: float
     frame_info_maxlen: int
     thresh_3dbbox_count_per_frame: int
     thresh_3dbbox_count_mean_ratio: float
@@ -1094,6 +1101,9 @@ def CalibCheck2d3dConf_read(
             "CalibCheck2d3d", "score_accept_count_threshold"
         ),
         score_value_threshold=ini.getfloat("CalibCheck2d3d", "score_value_threshold"),
+        person_not_detected_sec=ini.getfloat(
+            "CalibCheck2d3d", "person_not_detected_sec"
+        ),
         frame_info_maxlen=ini.getint("CalibCheck2d3d", "frame_info_maxlen"),
         thresh_3dbbox_count_per_frame=ini.getint(
             "CalibCheck2d3d", "thresh_3dbbox_count_per_frame"

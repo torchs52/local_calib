@@ -10,8 +10,8 @@ import traceback
 import typing
 from datetime import datetime as dt
 
-from pandas.errors import EmptyDataError, ParserError
 from argus_synchro_lib.visualizer import GodotUIVisualizer
+from pandas.errors import EmptyDataError, ParserError
 
 import argus_synchro.calibration_mat_generator_modules.ctrl.calibcheck2d3d as calibcheck2d3d_log
 from argus_synchro import SubScrutinizer
@@ -189,14 +189,16 @@ class CalibProcess(ProcessBase):
             self._logger.info(
                 f"{datetime.datetime.now()} - calibration_mat_generator started"
             )
-            admin_inst = calibration_mat_generator_modules.calibration2d3d_manager_class(
-                sec=self.sec,
-                ser=self._ser,
-                arglist=[],
-                shared_errors=self._ser,
-                inifilepath=self.inifilepath,
-                app_logger_factory=self._app_logger_factory,
-                directory_config=self._directory_config,
+            admin_inst = (
+                calibration_mat_generator_modules.calibration2d3d_manager_class(
+                    sec=self.sec,
+                    ser=self._ser,
+                    arglist=[],
+                    shared_errors=self._ser,
+                    inifilepath=self.inifilepath,
+                    app_logger_factory=self._app_logger_factory,
+                    directory_config=self._directory_config,
+                )
             )
         except (OSError, UnicodeError, json.JSONDecodeError) as error:
             self._report_file_io_error(
@@ -573,7 +575,17 @@ class CalibProcess(ProcessBase):
                         sac.read().CalibMode.cameraID
                     ],
                 )
-                # TODO: 下記構造検討　他のメソッドを下に追いやるか下記をどこかに格納するか？
+
+                # ファイル入力有効・自動終了有効時のみタイムアウトを設定。
+                # LiDAR入力終端にてFileNotFoundError時にデッドロックし終了しなくなる場合があり、自動校正の計算がされずに終了される場合があったため。
+                file_end_timeout_enabled = (
+                    app_config_calib.default.File_Input
+                    and app_config_calib.debug.calib2d3d_fileend_autoexit
+                    and app_config_calib.dataCapture.datawait_sec > 0
+                )
+                datawait_sec = app_config_calib.dataCapture.datawait_sec
+                last_fifo_data_time = time.monotonic()
+
                 while self.enable:
                     if self._sac.last_updated > self._last_updated:
                         self._config_load()
@@ -581,6 +593,7 @@ class CalibProcess(ProcessBase):
 
                     try:
                         with fifo_consumer.consume() as fifo_data:
+                            last_fifo_data_time = time.monotonic()
                             iscontinue = self.boss_inst.calibration2d3d_inst.app_loopmain(
                                 fifo_data,
                                 self.uimanager,
@@ -591,6 +604,15 @@ class CalibProcess(ProcessBase):
                                 ],
                             )
                     except queue.Empty:
+                        if (
+                            file_end_timeout_enabled
+                            and time.monotonic() - last_fifo_data_time >= datawait_sec
+                        ):
+                            self._logger.warning(
+                                "2D3D calibration input timeout reached; "
+                                "treating it as file end"
+                            )
+                            break
                         time.sleep(0.1)
                         continue
                     if not iscontinue:

@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/matsuoka/argus_pipe_filter/argus_synchro_lib/build/lib.linux-x86_64-cpython-312/libargus_synchro_lib.pdb"
-  "/home/matsuoka/argus_pipe_filter/argus_synchro_lib/build/lib.linux-x86_64-cpython-312/libargus_synchro_lib.so"
+  "/home/matsuoka/local_calib/argus_synchro_lib/build/lib.linux-x86_64-cpython-312/libargus_synchro_lib.pdb"
+  "/home/matsuoka/local_calib/argus_synchro_lib/build/lib.linux-x86_64-cpython-312/libargus_synchro_lib.so"
   "CMakeFiles/argus_synchro_lib.dir/link.d"
   "CMakeFiles/argus_synchro_lib.dir/src/clsmmap/ClsMMap.cpp.o"
   "CMakeFiles/argus_synchro_lib.dir/src/clsmmap/ClsMMap.cpp.o.d"

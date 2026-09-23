@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/matsuoka/argus_pipe_filter/argus_synchro_lib/build/lib.linux-x86_64-cpython-312/argus_synchro_lib.cpython-312-x86_64-linux-gnu.so"
-  "/home/matsuoka/argus_pipe_filter/argus_synchro_lib/build/lib.linux-x86_64-cpython-312/argus_synchro_lib.pdb"
+  "/home/matsuoka/local_calib/argus_synchro_lib/build/lib.linux-x86_64-cpython-312/argus_synchro_lib.cpython-312-x86_64-linux-gnu.so"
+  "/home/matsuoka/local_calib/argus_synchro_lib/build/lib.linux-x86_64-cpython-312/argus_synchro_lib.pdb"
   "CMakeFiles/pybind.dir/link.d"
   "CMakeFiles/pybind.dir/src/SceneModule.cpp.o"
   "CMakeFiles/pybind.dir/src/SceneModule.cpp.o.d"

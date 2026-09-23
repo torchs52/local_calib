@@ -92,7 +92,10 @@ class track_main_class:
         return continueflag
 
     def get_last_singleyoloBB(self) -> list[NDArray[np.float64]] | None:
-        self.detect2d.get_last_singleyoloBB()
+        return self.detect2d.get_last_singleyoloBB()
+
+    def get_last_yoloBB(self) -> list[NDArray[np.float64]] | None:
+        return self.detect2d.get_last_yoloBB()
 
     def get_monitor_data(self):  # -> dict[Any, Any]:
         return self.monitor_data
@@ -205,3 +208,9 @@ class track_main_class:
 
     def save_debugdata_2dtracker(self, openflag: str = "wb"):
         self.detect2d.save_debugdata(openflag=openflag)
+
+    def tracking_diagnosis(self, timestamp: int) -> bool:
+        # 現在はダミー。ここに人検知・点群検知・トラッキング系の検証処理・エラー処理を入れる。（長時間トラッキング無し等）
+        # self.detect2d, detect3dインスタンスにアクセスして最後の検知状況、追跡状況を取得。検証する。
+
+        return True

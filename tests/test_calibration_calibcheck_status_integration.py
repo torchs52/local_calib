@@ -19,8 +19,10 @@ from argus_synchro.calibration_mat_generator_modules.facade import (
     CalibrationUIGodot,
 )
 from argus_synchro.diagnosis.calibcheck2d3d_result_diagnosis import (
+    CalibCheck2d3dDiagnosis,
+    CalibCheckDiagnosisPhase,
+    CalibCheckFailureReason,
     CameraCalibCheckStatus,
-    CameraCalibCheckStatusDiagnosis,
 )
 
 
@@ -69,16 +71,20 @@ class _TransmitWriterStub:
 
 def test_score_results_are_converted_to_new_ui_statuses() -> None:
     controller = cast(calibcheck2d3d, object.__new__(calibcheck2d3d))
-    controller._calibcheck_status_diagnosis = CameraCalibCheckStatusDiagnosis()
     monitor = _MonitorStub()
+    diagnosis = CalibCheck2d3dDiagnosis(camera_count=3)
+    diagnosis.record_reason(
+        CalibCheckFailureReason.SENSOR_DATA_INVALID,
+        camera_index=2,
+        phase=CalibCheckDiagnosisPhase.FRAME_INPUT,
+    )
 
     controller.camera_evaluation_results_to_monitor(
         cast(CalibrationUIGodot, monitor),
-        reason_camera_notvalid=[0, 0, 1],
-        camera_evaluation_results=[True, False, False],
+        diagnosis.finalize([True, False, False]),
     )
 
-    assert monitor.statuses == [(0, 0), (1, 2), (2, 3)]
+    assert monitor.statuses == [(0, 0), (1, 2), (2, 6)]
 
 
 def test_facade_setter_validates_and_stores_status() -> None:

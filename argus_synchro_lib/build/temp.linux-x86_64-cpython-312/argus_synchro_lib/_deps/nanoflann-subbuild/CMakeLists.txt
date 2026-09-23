@@ -28,8 +28,8 @@ set_property(GLOBAL PROPERTY _CMAKE_FindGit_GIT_EXECUTABLE_VERSION
 include(ExternalProject)
 ExternalProject_Add(nanoflann-populate
                      "UPDATE_DISCONNECTED" "False" "GIT_REPOSITORY" "https://github.com/jlblancoc/nanoflann.git" "EXTERNALPROJECT_INTERNAL_ARGUMENT_SEPARATOR" "GIT_TAG" "v1.9.0" "GIT_SHALLOW" "TRUE" "GIT_PROGRESS" "FALSE"
-                    SOURCE_DIR          "/home/matsuoka/argus_pipe_filter/argus_synchro_lib/../3rdparty/nanoflann"
-                    BINARY_DIR          "/home/matsuoka/argus_pipe_filter/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/nanoflann-build"
+                    SOURCE_DIR          "/home/matsuoka/local_calib/argus_synchro_lib/../3rdparty/nanoflann"
+                    BINARY_DIR          "/home/matsuoka/local_calib/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/_deps/nanoflann-build"
                     CONFIGURE_COMMAND   ""
                     BUILD_COMMAND       ""
                     INSTALL_COMMAND     ""

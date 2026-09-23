@@ -98,6 +98,7 @@ def test_calibcheck_reports_eof_error_once(
         camera_calib_files=[path],
         new_axis_mode=False,
     )
+    process._logger = MagicMock()
     process._report_file_io_error = MagicMock()
     monkeypatch.setattr(
         calibcheck2d3d,

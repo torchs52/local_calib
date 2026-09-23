@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from types import SimpleNamespace
 from typing import Any, cast
 
 import numpy as np
 
+import argus_synchro.calibration_mat_generator_modules.ctrl.calibcheck2d3d.tracker as tracker_module
 from argus_synchro.calibration_mat_generator_modules.ctrl.calibcheck2d3d import (
     calibcheck2d3d,
     calibcheck2d_bboxtracker_recorder,
@@ -17,6 +17,10 @@ from argus_synchro.calibration_mat_generator_modules.ctrl.calibration2d3d.track_
     Tracking3dDataInterface,
     tracking2d_dataclass,
     tracking3d_dataclass,
+)
+from argus_synchro.diagnosis.calibcheck2d3d_result_diagnosis import (
+    CalibCheck2d3dDiagnosis,
+    CalibCheckFailureReason,
 )
 
 
@@ -63,31 +67,17 @@ class _Tracker3dStub:
                 np.array([[4, 6, 10, 12, 1.0, 7]], dtype=float),
             )
         )
-        self.reset_called = False
         self.last_bbox_multi_minmax: np.ndarray | None = None
+        self.reset_called = False
 
     def update(self, **kwargs: object) -> np.ndarray:
-        self.last_bbox_multi_minmax = cast(
-            np.ndarray, kwargs["bbox_multi_minmax"]
-        ).copy()
-        return next(self._results)
+        del kwargs
+        result = next(self._results)
+        self.last_bbox_multi_minmax = result
+        return result
 
     def reset(self) -> None:
         self.reset_called = True
-
-
-class _NegativeTrackerIdStub:
-    def __init__(self, *, is_2d: bool) -> None:
-        self._is_2d = is_2d
-        self.last_bbox_multi_minmax = np.array([[2, 6, 4, 8, 0, 1]], dtype=float)
-
-    def update(self, **kwargs: object) -> object:
-        del kwargs
-        result = np.array([[2, 4, 6, 8, 0.9, -1]], dtype=float)
-        return (result, True) if self._is_2d else result
-
-    def reset(self) -> None:
-        pass
 
 
 def _controller() -> calibcheck2d3d:
@@ -171,59 +161,87 @@ def test_3d_recorder_preserves_shi_evaluation_statistics() -> None:
     assert recorder.is_person_detected() is False
 
 
-def test_recorders_exclude_negative_tracker_ids_from_evaluation() -> None:
-    recorder_2d = cast(
-        calibcheck2d_bboxtracker_recorder,
-        object.__new__(calibcheck2d_bboxtracker_recorder),
+def test_track_3d_rescans_recorded_frames_in_order(monkeypatch) -> None:
+    updates: list[tuple[np.ndarray, int]] = []
+    result = Tracking3dDataInterface({}, {})
+
+    class _RecorderStub:
+        def __init__(self, *, app_config_calib: object, camera_index: int) -> None:
+            assert app_config_calib == "config"
+            assert camera_index == 2
+
+        def update(self, multi_minmax: np.ndarray, frame_ix: int) -> None:
+            updates.append((multi_minmax, frame_ix))
+
+        def get_rawresults(self) -> Tracking3dDataInterface:
+            return result
+
+    monkeypatch.setattr(
+        tracker_module,
+        "calibcheck3d_bboxtracker_recorder",
+        _RecorderStub,
     )
-    recorder_2d.mot_tracker = cast(Any, _NegativeTrackerIdStub(is_2d=True))
-    recorder_2d.image_size_hw = (720, 1280)
-    recorder_2d.trackingID_data = {}
-    recorder_2d.trackingID_bboxlog = {}
-    recorder_2d.last_tracker_result = None
-    recorder_2d.lastframe_person_detected = False
-    recorder_2d.evLUT2D = cast(Any, _SequenceLut([]))
-    recorder_2d.evLUT2D_workarea = cast(Any, _SequenceLut([]))
+    first = np.array([[1.0] * 6])
+    second = np.array([[2.0] * 6])
 
-    recorder_3d = cast(
-        calibcheck3d_bboxtracker_recorder,
-        object.__new__(calibcheck3d_bboxtracker_recorder),
+    tracked = tracker_module.track_3dbbox(
+        [([], first), ([], second)],
+        app_config_calib=cast(Any, "config"),
+        camera_index=2,
     )
-    recorder_3d.mot_tracker = cast(Any, _NegativeTrackerIdStub(is_2d=False))
-    recorder_3d.trackingID_data = {}
-    recorder_3d.trackingID_bboxlog = {}
-    recorder_3d.last_tracker_result = None
-    recorder_3d.lastframe_person_detected = False
-    recorder_3d.data_array_fbb_point_history = []
-    recorder_3d.evLUT3D = cast(Any, _SequenceLut([]))
-    recorder_3d.evLUT3D_workarea = cast(Any, _SequenceLut([]))
 
-    recorder_2d.update([], frame_ix=10)
-    recorder_3d.update(np.empty((0, 6)), frame_ix=10)
-
-    assert recorder_2d.trackingID_data == {}
-    assert recorder_2d.trackingID_bboxlog == {}
-    assert recorder_3d.trackingID_data == {}
-    assert recorder_3d.trackingID_bboxlog == {}
+    assert tracked is result
+    assert [frame_ix for _, frame_ix in updates] == [0, 1]
+    assert updates[0][0] is first
+    assert updates[1][0] is second
 
 
-def test_3d_recorder_history_uses_bbox_after_overlap_merge() -> None:
-    recorder = calibcheck3d_bboxtracker_recorder.__new__(
-        calibcheck3d_bboxtracker_recorder
+def test_track_2d_rescans_each_camera_with_configured_image_size(monkeypatch) -> None:
+    creations: list[tuple[int, tuple[int, int]]] = []
+    updates: list[tuple[int, object, int]] = []
+    results = [Tracking2dDataInterface({}, {}), Tracking2dDataInterface({}, {})]
+
+    class _RecorderStub:
+        def __init__(
+            self,
+            *,
+            app_config_calib: object,
+            image_size_hw: tuple[int, int],
+            camera_index: int,
+        ) -> None:
+            assert app_config_calib == "config"
+            self.camera_index = camera_index
+            creations.append((camera_index, image_size_hw))
+
+        def update(self, yoloresult_whole: object, frame_ix: int) -> None:
+            updates.append((self.camera_index, yoloresult_whole, frame_ix))
+
+        def get_rawresults(self) -> Tracking2dDataInterface:
+            return results[self.camera_index]
+
+    monkeypatch.setattr(
+        tracker_module,
+        "calibcheck2d_bboxtracker_recorder",
+        _RecorderStub,
     )
-    merged_bbox = np.array([[0.0, 3.0, 0.0, 2.0, -1.0, 2.0]])
-    recorder.mot_tracker = SimpleNamespace(
-        update=lambda bbox_multi_minmax: np.empty((0, 6)),
-        reset=lambda: None,
-        last_bbox_multi_minmax=merged_bbox,
+    first = ["camera-0-frame-0", "camera-1-frame-0"]
+    second = ["camera-0-frame-1", "camera-1-frame-1"]
+
+    tracked = tracker_module.track_2dbbox(
+        [(first, np.empty((0, 6))), (second, np.empty((0, 6)))],
+        app_config_calib=cast(Any, "config"),
+        image_size_hw=(720, 1280),
+        camera_count=2,
     )
-    recorder.trackingID_data = {}
-    recorder.trackingID_bboxlog = {}
-    recorder.data_array_fbb_point_history = []
 
-    recorder.update(np.ones((2, 6)), frame_ix=10)
-
-    assert np.array_equal(recorder.data_array_fbb_point_history[0][3], merged_bbox)
+    assert tracked == results
+    assert creations == [(0, (720, 1280)), (1, (720, 1280))]
+    assert updates == [
+        (0, "camera-0-frame-0", 0),
+        (1, "camera-1-frame-0", 0),
+        (0, "camera-0-frame-1", 1),
+        (1, "camera-1-frame-1", 1),
+    ]
 
 
 def _tracking_3d(
@@ -265,18 +283,31 @@ def _tracking_2d(*, frames: int, movement: float) -> Tracking2dDataInterface:
 def test_tracking_validation_reports_reason_4_for_short_3d_track() -> None:
     controller = _controller()
 
-    reasons = controller.validate_tracked_bboxes(
+    observation = controller.collect_tracking_observation(
         _tracking_3d(frames=29, movement=3.0, workarea_count=30),
         [_tracking_2d(frames=10, movement=50.0) for _ in range(3)],
     )
+    diagnosis = CalibCheck2d3dDiagnosis(camera_count=3)
 
-    assert reasons == [4, 4, 4]
+    assert diagnosis.diagnose_tracking(observation) == (False, False, False)
+    assert [result.primary_reason for result in diagnosis.finalize([None] * 3)] == [
+        CalibCheckFailureReason.TRACKING3D_INVALID,
+        CalibCheckFailureReason.TRACKING3D_INVALID,
+        CalibCheckFailureReason.TRACKING3D_INVALID,
+    ]
+    assert diagnosis.findings[0].details == {
+        "total_tracks": 1,
+        "alive_tracks": 0,
+        "minimum_alive_tracks": 1,
+        "proximity_warning_count": 0,
+        "proximity_warning_fails_validation": False,
+    }
 
 
 def test_tracking_validation_reports_reason_5_per_camera() -> None:
     controller = _controller()
 
-    reasons = controller.validate_tracked_bboxes(
+    observation = controller.collect_tracking_observation(
         _tracking_3d(frames=30, movement=3.0, workarea_count=30),
         [
             _tracking_2d(frames=10, movement=50.0),
@@ -284,8 +315,19 @@ def test_tracking_validation_reports_reason_5_per_camera() -> None:
             _tracking_2d(frames=10, movement=49.0),
         ],
     )
+    diagnosis = CalibCheck2d3dDiagnosis(camera_count=3)
 
-    assert reasons == [0, 5, 5]
+    assert diagnosis.diagnose_tracking(observation) == (True, False, False)
+    assert [result.primary_reason for result in diagnosis.finalize([True] * 3)] == [
+        CalibCheckFailureReason.NONE,
+        CalibCheckFailureReason.TRACKING2D_INVALID,
+        CalibCheckFailureReason.TRACKING2D_INVALID,
+    ]
+    assert diagnosis.findings[0].details == {
+        "total_tracks": 1,
+        "alive_tracks": 0,
+        "minimum_alive_tracks": 1,
+    }
 
 
 def test_3d_tracking_validation_rejects_tracks_that_remain_too_close() -> None:
@@ -311,5 +353,11 @@ def test_3d_tracking_validation_rejects_tracks_that_remain_too_close() -> None:
         2: [(frame_ix, (0.5, 0.0, 1.5, 1.0)) for frame_ix in range(5)],
     }
 
-    assert controller.validate_3dbbox_tracking_results(first) is False
+    observation = controller.collect_tracking_observation(
+        first,
+        [_tracking_2d(frames=10, movement=50.0) for _ in range(3)],
+    )
+    diagnosis = CalibCheck2d3dDiagnosis(camera_count=3)
+
+    assert diagnosis.diagnose_tracking(observation) == (False, False, False)
     assert controller._3d_track_proximity_warnings[0]["close_frame_count"] == 5

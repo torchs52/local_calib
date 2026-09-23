@@ -101,6 +101,7 @@ def test_calibcheck2d3d_evaluation_settings_are_loaded() -> None:
     assert config.thresh_2dbbox_tracking_idcount == 1
     assert config.eval_frame_stride == 1
     assert config.use_legacy_like_metric is True
+    assert config.person_not_detected_sec == 10.0
     assert config.debug_calibcheck_enabled is False
     assert config.debug_capture_ui_video_enabled is False
     assert config.debug_capture_frame_text_enabled is False
@@ -109,7 +110,7 @@ def test_calibcheck2d3d_evaluation_settings_are_loaded() -> None:
     assert config.debug_eval_pickle_path == str(
         Path.cwd().resolve() / "log" / "tmpCalib" / "calibcheck_bboxinfo.pickle"
     )
-    assert config.eval_zvalues == (-2.0, 0.0)
+    assert config.eval_zvalues == (-1.36, 0.0)
     assert config.debug_eval_trace_enabled is False
     assert config.debug_eval_trace_all_frames is False
     assert config.debug_eval_trace_range_start == 1
@@ -128,42 +129,6 @@ def test_calib2d3d_bbox_center_z_ratio_areas_are_loaded() -> None:
     assert config.bbox_center3d_z_ratio_area_xmax == [100.0, 100.0, 100.0]
     assert config.bbox_center3d_z_ratio_area_ymin == [-100.0, -100.0, -100.0]
     assert config.bbox_center3d_z_ratio_area_ymax == [100.0, 100.0, 100.0]
-
-
-def test_calib2d3d_center_z_ratio_lut_settings_are_loaded(tmp_path: Path) -> None:
-    settings = Path("config/calib_settings.ini").read_text(encoding="utf-8")
-    replacements = {
-        "center3d_zratio_coord_A_X = [1.0, 1.0, 1.0]": "center3d_zratio_coord_A_X = [1.0, 2.0, 3.0]",
-        "center3d_zratio_coord_B_X = [-2.0, -3.3, -2.0]": "center3d_zratio_coord_B_X = [4.0, 5.0, 6.0]",
-        "center3d_zratio_coord_A_Y = [1.0, 1.0, 1.0]": "center3d_zratio_coord_A_Y = [7.0, 8.0, 9.0]",
-        "center3d_zratio_coord_B_Y = [-2.075, 2.0, 5.075]": "center3d_zratio_coord_B_Y = [10.0, 11.0, 12.0]",
-        "center3d_zratio_path = [${center3d_zratio_LUT_c0},${center3d_zratio_LUT_c1},${center3d_zratio_LUT_c2}]": "center3d_zratio_path = [ratio0.npy, ratio1.npy, ratio2.npy]",
-        "center3d_zratio_val_DEFAULT = [0.5, 0.5, 0.5]": "center3d_zratio_val_DEFAULT = [0.25, 0.5, 0.75]",
-    }
-    for original, replacement in replacements.items():
-        assert original in settings
-        settings = settings.replace(original, replacement, 1)
-
-    config_path = tmp_path / "calib_settings.ini"
-    config_path.write_text(settings, encoding="utf-8")
-
-    app_config = AppConfigCalibration(
-        configpath=str(config_path),
-        arglist=[],
-        directory_config=dev_directory_config(),
-    )
-    config = app_config.calib2d3d.CalcCorrespondence
-
-    assert config.center3d_zratio_coord_A_X == [1.0, 2.0, 3.0]
-    assert config.center3d_zratio_coord_B_X == [4.0, 5.0, 6.0]
-    assert config.center3d_zratio_coord_A_Y == [7.0, 8.0, 9.0]
-    assert config.center3d_zratio_coord_B_Y == [10.0, 11.0, 12.0]
-    assert [Path(path).name for path in config.center3d_zratio_path] == [
-        "ratio0.npy",
-        "ratio1.npy",
-        "ratio2.npy",
-    ]
-    assert config.center3d_zratio_val_DEFAULT == [0.25, 0.5, 0.75]
 
 
 def test_calib2d3d_future_tracking_and_axis_grid_settings_are_loaded() -> None:

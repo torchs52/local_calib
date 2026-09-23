@@ -13,7 +13,7 @@ import cv2
 import numpy as np
 from numpy.typing import NDArray
 
-from argus_synchro.calibration_mat_generator_modules.ctrl.calibcheck2d3d.debuginfo_and_functions import (
+from argus_synchro.calibration_mat_generator_modules.utils.calibration_utils import (
     conbine3d3d,
     read_rtvec,
 )

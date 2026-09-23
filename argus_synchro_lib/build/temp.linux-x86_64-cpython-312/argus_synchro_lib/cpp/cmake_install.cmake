@@ -1,8 +1,8 @@
-# Install script for directory: /home/matsuoka/argus_pipe_filter/argus_synchro_lib/cpp
+# Install script for directory: /home/matsuoka/local_calib/argus_synchro_lib/cpp
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/matsuoka/argus_pipe_filter/argus_synchro_lib/install")
+  set(CMAKE_INSTALL_PREFIX "/home/matsuoka/local_calib/argus_synchro_lib/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -49,12 +49,12 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
          FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libargus_synchro_lib.so"
          RPATH "")
   endif()
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE SHARED_LIBRARY FILES "/home/matsuoka/argus_pipe_filter/argus_synchro_lib/build/lib.linux-x86_64-cpython-312/libargus_synchro_lib.so")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE SHARED_LIBRARY FILES "/home/matsuoka/local_calib/argus_synchro_lib/build/lib.linux-x86_64-cpython-312/libargus_synchro_lib.so")
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libargus_synchro_lib.so" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libargus_synchro_lib.so")
     file(RPATH_CHANGE
          FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libargus_synchro_lib.so"
-         OLD_RPATH "/home/matsuoka/argus_pipe_filter/3rdparty/open3d/install/lib:/home/matsuoka/argus_pipe_filter/3rdparty/opencv/install/lib:"
+         OLD_RPATH "/home/matsuoka/local_calib/argus_synchro_lib/../3rdparty/open3d/install/lib:/home/matsuoka/local_calib/argus_synchro_lib/../3rdparty/opencv/install/lib:"
          NEW_RPATH "")
     if(CMAKE_INSTALL_DO_STRIP)
       execute_process(COMMAND "/usr/bin/strip" "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libargus_synchro_lib.so")
@@ -66,12 +66,12 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include" TYPE DIRECTORY FILES "/home/matsuoka/argus_pipe_filter/argus_synchro_lib/cpp/include/")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include" TYPE DIRECTORY FILES "/home/matsuoka/local_calib/argus_synchro_lib/cpp/include/")
 endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
 if(CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "/home/matsuoka/argus_pipe_filter/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/cpp/install_local_manifest.txt"
+  file(WRITE "/home/matsuoka/local_calib/argus_synchro_lib/build/temp.linux-x86_64-cpython-312/argus_synchro_lib/cpp/install_local_manifest.txt"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()

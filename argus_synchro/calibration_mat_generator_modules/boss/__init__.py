@@ -53,6 +53,10 @@ class boss:
             self.app_config_calib.default.File_Input
         )  # センサ入力時は逐次再起動はしない　ファイル入力時は再起動で暫定対応
         self.verbose: bool = not self.app_config_calib.default.print_disabled
+        # mmapインターフェース・sec・sacを保存しておくためのメンバ。校正自動評価時post処理で使用するため
+        self._calib2d3d_monitor: CalibrationUIGodot | None = None
+        self._calib2d3d_sec: SharedExcepts | None = None
+        self._calib2d3d_sac: SharedAppConfig | None = None
 
     def update_settings(self, app_config_calib: AppConfigCalibration):
         self.app_config_calib: AppConfigCalibration = app_config_calib
@@ -93,6 +97,10 @@ class boss:
         app_config_calib: AppConfigCalibration,
     ):
         self.update_settings(app_config_calib=app_config_calib)
+        # mmapインターフェース, sec, sacを保存しておく（後でpost処理で使用するため）
+        self._calib2d3d_monitor = monitor
+        self._calib2d3d_sec = sec
+        self._calib2d3d_sac = sac
 
         self._logger.info("calib2d3d_app started")
         self._logger.info(
@@ -109,6 +117,27 @@ class boss:
     def post_calib2d3d_app(
         self,
     ):
+        if (
+            self.app_config_calib.default.File_Input
+            and self.app_config_calib.debug.calib2d3d_fileend_autoexit
+            and self._calib2d3d_monitor is not None
+            and self._calib2d3d_sec is not None
+            and self._calib2d3d_sac is not None
+        ):
+            camera_id = self._calib2d3d_sac.read().CalibMode.cameraID
+            resultmat_path = self.app_config_calib.filepath_io.Calib2d3dmat_cameras[
+                camera_id
+            ]
+            self._logger.info(
+                "calib2d3d_app ended before file-end finalization; "
+                "running finalization fallback"
+            )
+            self.calibration2d3d_inst.finalize_fileend_autoexit(
+                monitor=self._calib2d3d_monitor,
+                sec=self._calib2d3d_sec,
+                sac=self._calib2d3d_sac,
+                resultmat_path=resultmat_path,
+            )
         self._logger.info("calib2d3d_app finished")
         del self.calibration2d3d_inst
 

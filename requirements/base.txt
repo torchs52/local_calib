@@ -1,0 +1,16 @@
+numpy>=2
+pandas
+matplotlib
+Pillow
+scikit-learn
+scipy
+sortedcontainers
+python-can
+pybind11
+watchdog
+tqdm
+pyransac3d
+supervision
+trackers
+psutil
+argus_synchro_lib @ file:./argus_synchro_lib

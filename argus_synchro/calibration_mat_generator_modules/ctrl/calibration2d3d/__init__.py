@@ -96,9 +96,7 @@ class calibration2d3d_class:
             f"{type(error).__name__}: {error}",
         )
 
-    def _write_result_matrix(
-        self, resultmat_path: str, transmat: Any
-    ) -> None:
+    def _write_result_matrix(self, resultmat_path: str, transmat: Any) -> None:
         try:
             Path(resultmat_path).parent.mkdir(parents=True, exist_ok=True)
             np.savetxt(resultmat_path, transmat, delimiter=",")
@@ -259,26 +257,18 @@ class calibration2d3d_class:
                     "Center-3D Z-ratio LUT unavailable; using legacy fallback: %r",
                     error,
                 )
-        self.center3d_apply_zratio_x_min = (
-            self.app_config_calib.calib2d3d.CalcCorrespondence.bbox_center3d_z_ratio_area_xmin[
-                camerasel
-            ]
-        )
-        self.center3d_apply_zratio_x_max = (
-            self.app_config_calib.calib2d3d.CalcCorrespondence.bbox_center3d_z_ratio_area_xmax[
-                camerasel
-            ]
-        )
-        self.center3d_apply_zratio_y_min = (
-            self.app_config_calib.calib2d3d.CalcCorrespondence.bbox_center3d_z_ratio_area_ymin[
-                camerasel
-            ]
-        )
-        self.center3d_apply_zratio_y_max = (
-            self.app_config_calib.calib2d3d.CalcCorrespondence.bbox_center3d_z_ratio_area_ymax[
-                camerasel
-            ]
-        )
+        self.center3d_apply_zratio_x_min = self.app_config_calib.calib2d3d.CalcCorrespondence.bbox_center3d_z_ratio_area_xmin[
+            camerasel
+        ]
+        self.center3d_apply_zratio_x_max = self.app_config_calib.calib2d3d.CalcCorrespondence.bbox_center3d_z_ratio_area_xmax[
+            camerasel
+        ]
+        self.center3d_apply_zratio_y_min = self.app_config_calib.calib2d3d.CalcCorrespondence.bbox_center3d_z_ratio_area_ymin[
+            camerasel
+        ]
+        self.center3d_apply_zratio_y_max = self.app_config_calib.calib2d3d.CalcCorrespondence.bbox_center3d_z_ratio_area_ymax[
+            camerasel
+        ]
 
     def __delattr__(self, name: str) -> None:
         self._close()
@@ -429,6 +419,31 @@ class calibration2d3d_class:
         self._update_errors_calibcommon(monitor)
         return True
 
+    def _next_lidar_frame_is_missing(self, framecounter: int) -> bool:
+        """ファイル入力の次フレームが揃っているか確認する。"""
+        if not self.app_config_calib.default.File_Input:
+            return False
+
+        lidar_conf = self.app_config_calib.dataCapture.Lidar
+        lidar_files = (
+            lidar_conf.lidar_files_for_cam0calib,
+            lidar_conf.lidar_files_for_cam1calib,
+            lidar_conf.lidar_files_for_cam2calib,
+        )[self.camera_id]
+        next_frame = framecounter + 1
+        missing_files = [
+            f"{lidar_file}{next_frame:06d}.npy"
+            for lidar_file in lidar_files
+            if not Path(f"{lidar_file}{next_frame:06d}.npy").is_file()
+        ]
+        if missing_files:
+            _logger.warning(
+                "Next LiDAR frame is missing; treating it as data-source end: "
+                f"frame={next_frame}, files={missing_files}"
+            )
+            return True
+        return False
+
     def _log_calibration_matrix_difference(
         self, transmat: NDArray[np.float64], accvalue: float
     ) -> None:
@@ -441,12 +456,8 @@ class calibration2d3d_class:
 
             reference_rvec = np.asarray(reference_parameters["initial_rvec_rad"])
             reference_tvec = np.asarray(reference_parameters["initial_tvec"])
-            reference_rvec, reference_tvec = (
-                calib2d3d_matchecker.conv_4x4mat_to_rtvec(
-                    calib2d3d_matchecker.conv_rtvec_to_mat(
-                        reference_rvec, reference_tvec
-                    )
-                )
+            reference_rvec, reference_tvec = calib2d3d_matchecker.conv_4x4mat_to_rtvec(
+                calib2d3d_matchecker.conv_rtvec_to_mat(reference_rvec, reference_tvec)
             )
             result_rvec, result_tvec = calib2d3d_matchecker.conv_4x4mat_to_rtvec(
                 transmat, x_inverted=True
@@ -468,9 +479,7 @@ class calibration2d3d_class:
                 f"{tvec_diff=}, {accvalue=}"
             )
         except (OSError, IndexError, KeyError, TypeError, ValueError) as error:
-            _logger.warning(
-                "Calibration matrix reference check skipped: %r", error
-            )
+            _logger.warning("Calibration matrix reference check skipped: %r", error)
 
     def app_loopmain(
         self,
@@ -523,8 +532,15 @@ class calibration2d3d_class:
             self.datasource_endflag = True
             if self.app_config_calib.debug.calib2d3d_fileend_autoexit:
                 debug_allow_calibcalc_flag = True
+        elif (
+            self.app_config_calib.debug.calib2d3d_fileend_autoexit
+            and self._next_lidar_frame_is_missing(fifo_data[3])
+        ):
+            self.datasource_endflag = True
+            debug_allow_calibcalc_flag = True
 
-        last_persondetect_result = self.get_last_singleyoloBB()
+        last_persondetect_result = None  # self.get_last_singleyoloBB()
+        # 2D bbox描画周りで一旦保留 画像上のbboxが出るか否かだけ変化。
         if last_persondetect_result is not None:
             # last_persondetect_result: np.array([float(bbox_xmin), float(bbox_xmax), float(bbox_ymin), float(bbox_ymax), float(cls_id), float(prob)])
             monitor.set_2Dbbox(
@@ -860,8 +876,12 @@ class calibration2d3d_class:
                         _logger.info(
                             f"get_calibval: {transmat} accvalue: {accvalue}",
                         )
+
+                        self._log_calibration_matrix_difference(transmat, accvalue)
+
                         if (
-                            accvalue < 30
+                            accvalue
+                            < self.app_config_calib.calib2d3d.CalcAccuracy.accvalue
                             or (
                                 not self.app_config_calib.calib2d3d.CalcAccuracy.check_enable
                             )
@@ -877,7 +897,9 @@ class calibration2d3d_class:
                             endflag = True
                             monitor.set_camera_calibration_status(
                                 camera_id=self.camera_id,
-                                value=int(CameraCalibrationStatus.CALIBRATION_SUCCEEDED),
+                                value=int(
+                                    CameraCalibrationStatus.CALIBRATION_SUCCEEDED
+                                ),
                             )
 
                         else:
@@ -1093,6 +1115,11 @@ class calibration2d3d_class:
         )
         return result == ResultDiagnosis.DETECTION
 
+    def detection_diagnosis(self, timestamp: int) -> bool:
+        # 現在はダミー。ここに人検知系・トラッキング系の検証処理・エラー処理を入れる。（長時間人検知無し、追跡等）
+        self.track_main.tracking_diagnosis(timestamp=timestamp)
+        return True
+
     def dataproc(
         self,
         readresult_pop: FIFOData,
@@ -1127,6 +1154,8 @@ class calibration2d3d_class:
         if readresults is None:
             return False
         self.track_main.detect(indata=readresults)
+
+        self.detection_diagnosis(timestamp=framecounter)
 
         monitor.set_image(cameraID, self.track_main.monitor_data[f"detect2d_image{0}"])
 

@@ -8,10 +8,6 @@ from typing import Dict, Optional
 
 import cv2
 import numpy as np
-from numpy.typing import NDArray
-from supervision import Detections
-from trackers import SORTTracker
-
 from argus_synchro.calibration_mat_generator_modules.ctrl.calibration2d3d.track_main.interface_definition import (
     Tracking3dDataInterface,
     dtype_tracking3dIDbboxlog,
@@ -32,6 +28,9 @@ from argus_synchro.calibration_mat_generator_modules.utils.utils3d import (
 )
 from argus_synchro.config.app_config_calibration import AppConfigCalibration
 from argus_synchro.shared_app_config import SharedAppConfig
+from numpy.typing import NDArray
+from supervision import Detections
+from trackers import SORTTracker
 
 
 class bbox3d_mot_tracker_wrapper:
@@ -44,6 +43,7 @@ class bbox3d_mot_tracker_wrapper:
         minimum_iou_threshold: float = 0.001,
         enable_bbox3d_overlap_merge: bool = False,
         bbox3d_overlap_merge_threshold: float = 0.7,
+        keep_lowest_z_bbox_on_merge: bool = False,
     ) -> None:
         # 追跡器の作成：パラメータは必要に応じて調整
         self.mot = SORTTracker(
@@ -55,24 +55,38 @@ class bbox3d_mot_tracker_wrapper:
         )
         self.enable_bbox3d_overlap_merge = enable_bbox3d_overlap_merge
         self.bbox3d_overlap_merge_threshold = bbox3d_overlap_merge_threshold
+        self.keep_lowest_z_bbox_on_merge = keep_lowest_z_bbox_on_merge
+        self.minimum_iou_threshold = minimum_iou_threshold
         self.last_bbox_multi_minmax: NDArray | None = None
+        self.last_input_to_merged: NDArray[np.int32] | None = None
+        self.last_merged_to_track_id: NDArray[np.int32] | None = None
         self.reset()
 
     def reset(self) -> None:
         self.mot.reset()
         self.last_bbox_multi_minmax = None
+        self.last_input_to_merged = None
+        self.last_merged_to_track_id = None
 
     @staticmethod
     def merge_overlapping_bbox3d_xy(
         bbox3d: NDArray,
         overlap_threshold: float,
-    ) -> NDArray:
+        *,
+        return_input_to_merged: bool = False,
+        keep_lowest_z_bbox: bool = False,
+    ) -> NDArray | tuple[NDArray, NDArray[np.int32]]:
         bbox3d = np.asarray(bbox3d)
         if bbox3d.size == 0:
-            return bbox3d.reshape(0, 6)
+            merged_bbox3d = bbox3d.reshape(0, 6)
+            input_to_merged = np.empty((0,), dtype=np.int32)
+            if return_input_to_merged:
+                return merged_bbox3d, input_to_merged
+            return merged_bbox3d
         if bbox3d.ndim != 2 or bbox3d.shape[1] != 6:
             raise ValueError(f"Expected shape (N,6), got {bbox3d.shape}")
 
+        # 入力bboxをXY平面で比較できる形式に正規化する
         overlap_threshold = float(np.clip(overlap_threshold, 0.0, 1.0))
         xyxy = bbox3d[:, [0, 2, 1, 3]].astype(np.float64, copy=False)
         x1 = np.minimum(xyxy[:, 0], xyxy[:, 2])
@@ -83,6 +97,8 @@ class bbox3d_mot_tracker_wrapper:
 
         used = np.zeros(len(bbox3d), dtype=bool)
         merged_bbox3d: list[list[float]] = []
+        input_to_merged = np.full(len(bbox3d), -1, dtype=np.int32)
+        # 重なりが連鎖するbboxを同一グループとして統合する
         for start_ix in range(len(bbox3d)):
             if used[start_ix]:
                 continue
@@ -115,18 +131,100 @@ class bbox3d_mot_tracker_wrapper:
                 group_ixs.extend(linked_ixs.tolist())
 
             group_bbox3d = bbox3d[group_ixs]
-            merged_bbox3d.append(
-                [
-                    float(np.min(group_bbox3d[:, 0])),
-                    float(np.max(group_bbox3d[:, 1])),
-                    float(np.min(group_bbox3d[:, 2])),
-                    float(np.max(group_bbox3d[:, 3])),
-                    float(np.min(group_bbox3d[:, 4])),
-                    float(np.max(group_bbox3d[:, 5])),
-                ]
-            )
+            # 各入力bboxが統合後bboxのどの行に属するかを記録する
+            input_to_merged[group_ixs] = len(merged_bbox3d)
+            if keep_lowest_z_bbox:
+                # 上下に重なるbboxでは、zminが最小の元bboxを代表として残す
+                lowest_z_bbox_ix = np.argmin(group_bbox3d[:, 4])
+                merged_bbox3d.append(group_bbox3d[lowest_z_bbox_ix].tolist())
+            else:
+                # グループ全体を包含する新しいbboxを作成する
+                merged_bbox3d.append(
+                    [
+                        float(np.min(group_bbox3d[:, 0])),
+                        float(np.max(group_bbox3d[:, 1])),
+                        float(np.min(group_bbox3d[:, 2])),
+                        float(np.max(group_bbox3d[:, 3])),
+                        float(np.min(group_bbox3d[:, 4])),
+                        float(np.max(group_bbox3d[:, 5])),
+                    ]
+                )
 
-        return np.asarray(merged_bbox3d, dtype=bbox3d.dtype)
+        merged_bbox3d_array = np.asarray(merged_bbox3d, dtype=bbox3d.dtype)
+        if return_input_to_merged:
+            return merged_bbox3d_array, input_to_merged
+        return merged_bbox3d_array
+
+    @staticmethod
+    def match_merged_bbox_to_track_id(
+        merged_bbox3d: NDArray,
+        tracks: NDArray,
+        minimum_iou_threshold: float,
+    ) -> NDArray[np.int32]:
+        merged_bbox3d = np.asarray(merged_bbox3d)
+        tracks = np.asarray(tracks)
+        if merged_bbox3d.size == 0:
+            return np.empty((0,), dtype=np.int32)
+        if merged_bbox3d.ndim != 2 or merged_bbox3d.shape[1] != 6:
+            raise ValueError(
+                f"Expected merged bbox shape (N,6), got {merged_bbox3d.shape}"
+            )
+        if tracks.ndim != 2 or (tracks.size > 0 and tracks.shape[1] < 6):
+            raise ValueError(f"Expected tracks shape (N,6+), got {tracks.shape}")
+
+        # 統合済みbboxごとの対応IDを初期化し、未対応は-1とする
+        matched_track_ids = np.full(len(merged_bbox3d), -1, dtype=np.int32)
+        if len(merged_bbox3d) == 0 or len(tracks) == 0:
+            return matched_track_ids
+
+        # 統合済みbboxとSORT出力bboxをXY形式に正規化する
+        detections_xyxy = merged_bbox3d[:, [0, 2, 1, 3]].astype(np.float64, copy=False)
+        tracks_xyxy = tracks[:, :4].astype(np.float64, copy=False)
+        detection_x1 = np.minimum(detections_xyxy[:, 0], detections_xyxy[:, 2])
+        detection_y1 = np.minimum(detections_xyxy[:, 1], detections_xyxy[:, 3])
+        detection_x2 = np.maximum(detections_xyxy[:, 0], detections_xyxy[:, 2])
+        detection_y2 = np.maximum(detections_xyxy[:, 1], detections_xyxy[:, 3])
+        track_x1 = np.minimum(tracks_xyxy[:, 0], tracks_xyxy[:, 2])
+        track_y1 = np.minimum(tracks_xyxy[:, 1], tracks_xyxy[:, 3])
+        track_x2 = np.maximum(tracks_xyxy[:, 0], tracks_xyxy[:, 2])
+        track_y2 = np.maximum(tracks_xyxy[:, 1], tracks_xyxy[:, 3])
+
+        intersection_width = np.maximum(
+            0.0,
+            np.minimum(detection_x2[:, None], track_x2)
+            - np.maximum(detection_x1[:, None], track_x1),
+        )
+        intersection_height = np.maximum(
+            0.0,
+            np.minimum(detection_y2[:, None], track_y2)
+            - np.maximum(detection_y1[:, None], track_y1),
+        )
+        intersection_area = intersection_width * intersection_height
+        detection_area = (detection_x2 - detection_x1) * (detection_y2 - detection_y1)
+        track_area = (track_x2 - track_x1) * (track_y2 - track_y1)
+        union_area = detection_area[:, None] + track_area - intersection_area
+        # 全bboxの組み合わせについてXY IoU行列を作成する
+        iou = np.divide(
+            intersection_area,
+            union_area,
+            out=np.zeros_like(intersection_area),
+            where=union_area > 0,
+        )
+
+        used_detections = np.zeros(len(merged_bbox3d), dtype=bool)
+        used_tracks = np.zeros(len(tracks), dtype=bool)
+        # IoUの高い組から一対一でIDを割り当てる
+        for flat_index in np.argsort(-iou.ravel(), kind="stable"):
+            detection_index, track_index = np.unravel_index(flat_index, iou.shape)
+            if iou[detection_index, track_index] < minimum_iou_threshold:
+                break
+            if used_detections[detection_index] or used_tracks[track_index]:
+                continue
+            matched_track_ids[detection_index] = int(tracks[track_index, 5])
+            used_detections[detection_index] = True
+            used_tracks[track_index] = True
+
+        return matched_track_ids
 
     @staticmethod
     def bbox3d_to_sv_detections(
@@ -307,17 +405,34 @@ class bbox3d_mot_tracker_wrapper:
         return out
 
     def update(self, bbox_multi_minmax: NDArray) -> NDArray:
+        bbox_multi_minmax = np.asarray(bbox_multi_minmax)
         if self.enable_bbox3d_overlap_merge:
-            bbox_multi_minmax = self.merge_overlapping_bbox3d_xy(
+            # merge前後のbboxインデックス対応も同時に保存する
+            merge_result = self.merge_overlapping_bbox3d_xy(
                 bbox3d=bbox_multi_minmax,
                 overlap_threshold=self.bbox3d_overlap_merge_threshold,
+                return_input_to_merged=True,
+                keep_lowest_z_bbox=self.keep_lowest_z_bbox_on_merge,
             )
+            assert isinstance(merge_result, tuple)
+            bbox_multi_minmax, self.last_input_to_merged = merge_result
+        else:
+            self.last_input_to_merged = np.arange(
+                len(bbox_multi_minmax), dtype=np.int32
+            )
+        # 点群切り出しに使う統合済みbboxを保存する
         self.last_bbox_multi_minmax = bbox_multi_minmax.copy()
         bbox_sv = self.bbox3d_to_sv_detections(bbox3d=bbox_multi_minmax)
         tracks_detection = self.mot.update(bbox_sv)
         tracks = self.sv_detections_to_ndarray(
             tracks_detection, include_tracker_id=True
         )  # 返り値： xmin,ymin,xmax,ymax,conf,trackid
+        # SORT出力の順番に依存せず、bboxごとのtrack IDを再対応付けする
+        self.last_merged_to_track_id = self.match_merged_bbox_to_track_id(
+            merged_bbox3d=bbox_multi_minmax,
+            tracks=tracks,
+            minimum_iou_threshold=self.minimum_iou_threshold,
+        )
         # AppLogger.info("bbox2d_mot_tracker_wrapper",f"{tracks=}")
         return tracks
 
@@ -364,6 +479,7 @@ class proc3d_bboxtracker_recorder:
             minimum_iou_threshold=app_config_calib.calib2d3d.Proc3d.minimum_iou_threshold,
             enable_bbox3d_overlap_merge=app_config_calib.calib2d3d.Proc3d.enable_bbox3d_overlap_merge,
             bbox3d_overlap_merge_threshold=app_config_calib.calib2d3d.Proc3d.bbox3d_overlap_merge_threshold,
+            keep_lowest_z_bbox_on_merge=app_config_calib.calib2d3d.Proc3d.keep_lowest_z_bbox_on_merge,
         )
         self.reset()
 
@@ -546,6 +662,7 @@ class proc3d_bboxtracker_recorder:
 
         self.data_array_fbb_point_history.append(  # 1フレームごとの点群・bbox記録
             (
+                # 統合済みbboxごとにpcdframeから対応点群を切り出す
                 [
                     set_xyz_range(pcdframe, (x1L, x1H), (y1L, y1H), (z1L, z1H)).copy()
                     for (
@@ -558,9 +675,8 @@ class proc3d_bboxtracker_recorder:
                     ) in self.mot_tracker.last_bbox_multi_minmax
                 ],
                 frame_ix,
-                [
-                    track_id for track_id in self.last_tracker_result[:, 5]
-                ],  # リスト要素番号からトラッキングIDを得るリスト
+                # 点群・bboxと同じ添字で対応するtrack IDを保存する
+                self.mot_tracker.last_merged_to_track_id.tolist(),
                 self.mot_tracker.last_bbox_multi_minmax.copy(),
             )
         )

@@ -14,12 +14,89 @@ echo "$ARGUS3D_DEV"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$SCRIPT_DIR" || exit 1
 
-# 子プロセスを含む前回起動が残っている間は、二重起動を拒否する。
-LOCK_FILE="${XDG_RUNTIME_DIR:-/tmp}/argus_bootfig_jetson.lock"
+# ----------------------------------------------------------------------
+# 二重起動対策
+#
+# 前回の Argus がまだ動作している場合は、既存の argus_synchro(Main) へ SIGTERM を送り、
+# 前回の argus_bootfig が cleanup を完了してflock を解放するまで待つ。
+#
+# flock を使用するため、VS Code が argus_bootfig.sh を開いているだけでは二重起動とは判定されない。
+# argus_bootfig.sh / argus_bootfig_jetson.sh で共通ロックを使用できるよう、ロックファイル名は argus3d.lock とする。
+# ----------------------------------------------------------------------
+LOCK_FILE="${XDG_RUNTIME_DIR:-/tmp}/argus3d.lock"
+
 exec 9>"$LOCK_FILE"
+
 if ! flock -n 9; then
-    echo "<<run_all>> ERROR: argus_bootfig_jetson.sh は既に起動中です"
-    exit 1
+    echo "<<run_all>> 既存の Argus 起動を検出しました"
+    echo "<<run_all>> 既存プロセスを終了してから再起動します"
+
+    # --------------------------------------------------------------
+    # 既存 Main(argus_synchro) を探す
+    #
+    # MonitorArgus:
+    #   -m argus_synchro.SystemMonitor.MonitorArgus
+    #
+    # Main:
+    #   -m argus_synchro
+    #
+    # Main のみを対象にする。
+    # --------------------------------------------------------------
+    OLD_MAIN_PIDS="$(
+        pgrep -f '[p]ython.*-m argus_synchro([[:space:]]|$)' || true
+    )"
+
+    if [ -n "$OLD_MAIN_PIDS" ]; then
+        echo "<<run_all>> 既存 Main に SIGTERM を送信: PID=${OLD_MAIN_PIDS}"
+
+        # Main の shutdown handler に正常終了を要求する。
+        kill -TERM $OLD_MAIN_PIDS 2>/dev/null || true
+    else
+        echo "<<run_all>> WARN: 既存 Main が見つかりません"
+        echo "<<run_all>> 前回 argus_bootfig の cleanup 完了を待ちます"
+    fi
+
+    # --------------------------------------------------------------
+    # 前回の argus_bootfig が cleanup を完了して、
+    # flock を解放するまで最大40秒待つ。
+    #
+    # 既存 stop_service() は、
+    #   SIGINT
+    #     ↓
+    #   最大30秒待機
+    #     ↓
+    #   SIGTERM
+    #     ↓
+    #   3秒
+    #     ↓
+    #   SIGKILL
+    #
+    # という動作なので、それより少し長く待つ。
+    # --------------------------------------------------------------
+    LOCK_ACQUIRED=0
+
+    for i in {1..40}; do
+        if flock -n 9; then
+            LOCK_ACQUIRED=1
+            echo "<<run_all>> 既存 Argus の終了を確認しました"
+            break
+        fi
+
+        echo "<<run_all>> 既存 Argus の終了待ち... (${i}/40)"
+        sleep 1
+    done
+
+    # --------------------------------------------------------------
+    # 40秒経過してもロックが解放されない場合
+    #
+    # 新しい側から無理に bootfig 自体を SIGKILL すると、
+    # cleanup を飛ばしてプロセスや MMAP を残す可能性があるため、ここでは安全側に倒して起動を中止する。
+    # --------------------------------------------------------------
+    if [ "$LOCK_ACQUIRED" -ne 1 ]; then
+        echo "<<run_all>> ERROR: 既存 Argus が正常終了しませんでした"
+        echo "<<run_all>> ERROR: 安全のため新しい Argus は起動しません"
+        exit 1
+    fi
 fi
 
 # 仮想環境（.venv）のPython

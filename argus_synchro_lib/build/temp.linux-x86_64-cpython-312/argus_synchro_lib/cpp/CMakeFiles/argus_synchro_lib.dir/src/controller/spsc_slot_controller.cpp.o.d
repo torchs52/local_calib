@@ -1,7 +1,7 @@
 cpp/CMakeFiles/argus_synchro_lib.dir/src/controller/spsc_slot_controller.cpp.o: \
- /home/matsuoka/argus_pipe_filter/argus_synchro_lib/cpp/src/controller/spsc_slot_controller.cpp \
+ /home/matsuoka/local_calib/argus_synchro_lib/cpp/src/controller/spsc_slot_controller.cpp \
  /usr/include/stdc-predef.h \
- /home/matsuoka/argus_pipe_filter/argus_synchro_lib/cpp/include/controller/spsc_slot_controller.h \
+ /home/matsuoka/local_calib/argus_synchro_lib/cpp/include/controller/spsc_slot_controller.h \
  /usr/include/c++/13/cstddef \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/os_defines.h \

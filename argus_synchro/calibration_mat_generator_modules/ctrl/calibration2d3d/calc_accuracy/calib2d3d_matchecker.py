@@ -1,7 +1,7 @@
 # カメラ校正行列の差分チェックスクリプト
 
-import numpy as np
 import cv2
+import numpy as np
 
 
 def conv_rtvec_to_mat(rvec, tvec):
@@ -60,12 +60,24 @@ def check_diff(
     verbose=False,
 ):
     # カメラの位置と設置角度で比較する場合は、rvecとtvecをカメラ座標系に変換する。「実際にカメラがどこに付いていると推定されたか」ベースでの比較になる
+    R1, _ = cv2.Rodrigues(rvec1)
+    R2, _ = cv2.Rodrigues(rvec2)
     if camerapos_mode:
-        _, tvec1, rvec1 = conv_rtvec_to_camera_pose(rvec1, tvec1)
-        _, tvec2, rvec2 = conv_rtvec_to_camera_pose(rvec2, tvec2)
-    rvec_diff = rvec2 - rvec1
+        R1, tvec1, rvec1 = conv_rtvec_to_camera_pose(rvec1, tvec1)
+        R2, tvec2, rvec2 = conv_rtvec_to_camera_pose(rvec2, tvec2)
+    # rvec_diff = rvec2 - rvec1 : この方法だと角度特有の問題（180度跨ぎ等）が発生。回転行列と転置回転行列の積から角度差を求める方法が望ましい
+
+    R_diff = R2 @ R1.T
+    rvec_diff, _ = cv2.Rodrigues(R_diff)
     tvec_diff = tvec2 - tvec1
     rvec_diff_deg = rvec_diff / np.pi * 180
-    rvec_ok = np.all(np.abs(rvec_diff_deg) <= rvec_threshold_deg)
-    tvec_ok = np.all(np.abs(tvec_diff) <= tvec_threshold)
+
+    rot_diff = np.linalg.norm(rvec_diff_deg)
+    pos_diff = np.linalg.norm(tvec_diff)
+
+    rvec_ok = rot_diff <= rvec_threshold_deg
+    tvec_ok = pos_diff <= tvec_threshold
+
+    # rvec_ok = np.all(np.abs(rvec_diff_deg) <= rvec_threshold_deg)
+    # tvec_ok = np.all(np.abs(tvec_diff) <= tvec_threshold)
     return rvec_ok, tvec_ok, rvec_diff_deg, tvec_diff

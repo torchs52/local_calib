@@ -51,7 +51,7 @@ add_library(nanoflann::nanoflann INTERFACE IMPORTED)
 
 set_target_properties(nanoflann::nanoflann PROPERTIES
   INTERFACE_COMPILE_FEATURES "cxx_auto_type;cxx_decltype;cxx_deleted_functions"
-  INTERFACE_INCLUDE_DIRECTORIES "/home/matsuoka/argus_pipe_filter/3rdparty/nanoflann/include"
+  INTERFACE_INCLUDE_DIRECTORIES "/home/matsuoka/local_calib/3rdparty/nanoflann/include"
   INTERFACE_LINK_LIBRARIES "Threads::Threads"
 )
 

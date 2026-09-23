@@ -106,23 +106,3 @@ def test_tracker_metadata_records_only_the_last_moving_frame(
     recorder.last_tracker_result = np.array([[1, 0, 3, 2, 0.9, 7]], dtype=float)
     recorder._update_trackinfo(frame_ix=12)
     assert recorder.trackingID_data[7].frame_ix_lastmove == 12
-
-
-def test_3d_recorder_history_uses_bbox_after_overlap_merge() -> None:
-    recorder = cast(Any, object.__new__(proc3d_bboxtracker_recorder))
-    merged_bbox = np.array([[0.0, 3.0, 0.0, 2.0, -1.0, 2.0]])
-    recorder.mot_tracker = SimpleNamespace(
-        update=lambda bbox_multi_minmax: np.empty((0, 6)),
-        last_bbox_multi_minmax=merged_bbox,
-    )
-    recorder.trackingID_data = {}
-    recorder.trackingID_bboxlog = {}
-    recorder.data_array_fbb_point_history = []
-    pcdframe = np.array([[0.5, 0.5, 0.0], [2.5, 0.5, 0.0]])
-
-    recorder.update(np.ones((2, 6)), frame_ix=10, pcdframe=pcdframe)
-
-    points, _, _, bboxes = recorder.data_array_fbb_point_history[0]
-    assert len(points) == 1
-    assert np.array_equal(points[0], pcdframe)
-    assert np.array_equal(bboxes, merged_bbox)

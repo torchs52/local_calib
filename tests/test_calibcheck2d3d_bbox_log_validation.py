@@ -9,8 +9,16 @@ import numpy as np
 import pytest
 
 import argus_synchro.calibration_mat_generator_modules.ctrl.calibcheck2d3d as calibcheck_module
+from argus_synchro.calibration_mat_generator_modules.ctrl.calibcheck2d3d.processor import (
+    lidar_points_to_ui_data,
+    yolo_result_to_ui_bboxes,
+)
 from argus_synchro.calibration_mat_generator_modules.ctrl.calibcheck2d3d import (
     calibcheck2d3d,
+)
+from argus_synchro.diagnosis.calibcheck2d3d_result_diagnosis import (
+    CalibCheck2d3dDiagnosis,
+    CalibCheckFailureReason,
 )
 
 
@@ -48,7 +56,17 @@ def test_bbox_log_validation_reports_missing_3d_for_all_cameras() -> None:
         [_yoloresult(1), _yoloresult(1), _yoloresult(1)],
     )
 
-    assert controller.validate_recorded_bbox_logs() == [2, 2, 2]
+    diagnosis = CalibCheck2d3dDiagnosis(camera_count=3)
+    validity = diagnosis.diagnose_bbox_logs(
+        controller.collect_bbox_log_observation()
+    )
+
+    assert validity == (False, False, False)
+    assert [result.primary_reason for result in diagnosis.finalize([None] * 3)] == [
+        CalibCheckFailureReason.BBOX3D_LOG_INVALID,
+        CalibCheckFailureReason.BBOX3D_LOG_INVALID,
+        CalibCheckFailureReason.BBOX3D_LOG_INVALID,
+    ]
 
 
 def test_bbox_log_validation_reports_missing_2d_per_camera() -> None:
@@ -58,7 +76,17 @@ def test_bbox_log_validation_reports_missing_2d_per_camera() -> None:
         [_yoloresult(1), _yoloresult(0), _yoloresult(1)],
     )
 
-    assert controller.validate_recorded_bbox_logs() == [0, 3, 0]
+    diagnosis = CalibCheck2d3dDiagnosis(camera_count=3)
+    validity = diagnosis.diagnose_bbox_logs(
+        controller.collect_bbox_log_observation()
+    )
+
+    assert validity == (True, False, True)
+    assert [result.primary_reason for result in diagnosis.finalize([True] * 3)] == [
+        CalibCheckFailureReason.NONE,
+        CalibCheckFailureReason.BBOX2D_LOG_INVALID,
+        CalibCheckFailureReason.NONE,
+    ]
 
 
 def test_bbox_log_recording_keeps_configured_tail() -> None:
@@ -75,19 +103,54 @@ def test_bbox_log_recording_keeps_configured_tail() -> None:
     assert int(controller.frame_info[1][0][0][3]) == 2
 
 
+def test_yolo_result_is_converted_to_ui_pixel_bbox_coordinates() -> None:
+    yoloresult = [
+        np.array([[0.1, 0.2, 0.5, 0.8]], dtype=np.float32),
+        np.array([0.9], dtype=np.float32),
+        np.array([0], dtype=np.float32),
+        np.array(1, dtype=np.int32),
+    ]
+
+    bboxes = yolo_result_to_ui_bboxes(
+        yoloresult,
+        image_height=100,
+        image_width=200,
+    )
+
+    np.testing.assert_array_equal(bboxes, [[40, 10, 160, 50]])
+
+
+def test_lidar_points_are_prepared_for_ui_by_available_columns() -> None:
+    intensity_points = np.array([[1.0, 2.0, 3.0, 0.7]], dtype=np.float32)
+    points, colors = lidar_points_to_ui_data(
+        intensity_points,
+        intensity_to_color=lambda intensity: intensity.reshape(-1, 1) * 2,
+    )
+    np.testing.assert_array_equal(points, [[1.0, 2.0, 3.0]])
+    np.testing.assert_allclose(colors, [[1.4]])
+
+    xyz_points = np.array([[4.0, 5.0, 6.0]], dtype=np.float32)
+    points, colors = lidar_points_to_ui_data(
+        xyz_points,
+        intensity_to_color=lambda _: pytest.fail("intensity is not available"),
+    )
+    np.testing.assert_array_equal(points, xyz_points)
+    np.testing.assert_allclose(colors, [[0.2, 0.2, 0.2]])
+
+
 def test_reason_mappings_match_shi_contract() -> None:
     controller = _controller()
 
     assert controller.error_reason_to_string(11) == "カメラとLiDARの評価可能な対象物なし"
     assert [controller.error_reason_to_ui_errornum(reason) for reason in range(1, 12)] == [
+        6,
         3,
         3,
-        3,
         5,
         5,
-        5,
-        5,
-        5,
+        7,
+        7,
+        7,
         4,
         3,
         4,
