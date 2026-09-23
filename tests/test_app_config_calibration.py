@@ -1,5 +1,6 @@
 # ruff: noqa: PLR2004
 
+from configparser import ConfigParser
 from pathlib import Path
 
 import pytest
@@ -7,6 +8,7 @@ import pytest
 from directory_config_helper import dev_directory_config
 
 from argus_synchro.common import paths
+from argus_synchro.config.app_config import parse_float_list
 from argus_synchro.config.app_config_calibration import AppConfigCalibration
 from argus_synchro.config.settings_validation import ConfigValidationError
 
@@ -129,6 +131,65 @@ def test_calib2d3d_bbox_center_z_ratio_areas_are_loaded() -> None:
     assert config.bbox_center3d_z_ratio_area_xmax == [100.0, 100.0, 100.0]
     assert config.bbox_center3d_z_ratio_area_ymin == [-100.0, -100.0, -100.0]
     assert config.bbox_center3d_z_ratio_area_ymax == [100.0, 100.0, 100.0]
+
+
+def test_calib2d3d_walking_area_corners_are_loaded_by_zero_based_camera() -> None:
+    app_config = AppConfigCalibration(
+        configpath="config/calib_settings.ini",
+        arglist=[],
+        directory_config=dev_directory_config(),
+    )
+
+    assert app_config.calib2d3d.Diagnosis.walking_area_corners == [
+        ((-15.0, 0.0), (15.0, 0.0), (15.0, 10.0), (-15.0, 10.0)),
+        ((-15.0, 0.0), (15.0, 0.0), (15.0, 10.0), (-15.0, 10.0)),
+        ((-15.0, 0.0), (15.0, 0.0), (15.0, 10.0), (-15.0, 10.0)),
+    ]
+
+
+def test_calib2d3d_walking_area_requires_four_xy_points(tmp_path: Path) -> None:
+    settings = Path("config/calib_settings.ini").read_text(encoding="utf-8")
+    config_path = tmp_path / "calib_settings.ini"
+    config_path.write_text(
+        settings.replace(
+            "walking_area_corners_camera0 = [-15,0,15,0,15,10,-15,10]",
+            "walking_area_corners_camera0 = [0,0,1,1]",
+            1,
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="walking area must contain eight values"):
+        AppConfigCalibration(
+            configpath=str(config_path),
+            arglist=[],
+            directory_config=dev_directory_config(),
+        )
+
+
+@pytest.mark.parametrize(
+    "model_settings_path",
+    [
+        "config/SCX700-3_calib_settings.ini",
+        "config/SCX900-3_calib_settings.ini",
+        "config/SCX2000-3_calib_settings.ini",
+        "config/SCX3500-3_calib_settings.ini",
+    ],
+)
+def test_model_specific_walking_areas_use_zero_based_camera_keys(
+    model_settings_path: str,
+) -> None:
+    settings = ConfigParser()
+    settings.read(model_settings_path, encoding="utf-8")
+
+    for camera_id in range(3):
+        values = parse_float_list(
+            settings.get(
+                "Calib2d3d_Diagnosis",
+                f"walking_area_corners_camera{camera_id}",
+            )
+        )
+        assert len(values) == 8
 
 
 def test_calib2d3d_future_tracking_and_axis_grid_settings_are_loaded() -> None:

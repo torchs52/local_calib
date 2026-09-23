@@ -26,6 +26,22 @@ def _optional_float_list(text: str) -> list[float]:
     return parse_float_list(text) if text.strip() else []
 
 
+def _parse_xy_quadrilateral(text: str) -> tuple[tuple[float, float], ...]:
+    """``[x0,y0,...,x3,y3]``を内部処理用の4点へ変換する。"""
+
+    values = parse_float_list(text)
+    expected_coordinate_count = 8
+    if len(values) != expected_coordinate_count:
+        raise ValueError(
+            "walking area must contain eight values: "
+            "[x0,y0,x1,y1,x2,y2,x3,y3]"
+        )
+    return tuple(
+        (values[index], values[index + 1])
+        for index in range(0, expected_coordinate_count, 2)
+    )
+
+
 # 全体
 @dataclass(frozen=True)
 class DefaultConf:
@@ -532,6 +548,21 @@ class Calib2d3dConf:
 
     CalcAccuracy: CalcAccuracyConf
 
+    @dataclass(frozen=True)
+    class DiagnosisConf:
+        continuation_seconds: float
+        long_duration_seconds: float
+        detection_rate_window_seconds: float
+        detection_rate_threshold: float
+        expected_person_count: int
+        brightness_threshold: float
+        brightness_sample_stride: int
+        walking_area_enabled: bool
+        # 外側のlist添字が0始まりのcamera_id、内側が4つの(x, y)座標。
+        walking_area_corners: list[tuple[tuple[float, float], ...]]
+
+    Diagnosis: DiagnosisConf
+
 
 def Calib2d3dConf_read(
     ini: ConfigParser,
@@ -911,6 +942,45 @@ def Calib2d3dConf_read(
         CalcAccuracy=Calib2d3dConf.CalcAccuracyConf(
             check_enable=ini.getboolean("Calib2d3d_CalcAccuracy", "check_enable"),
             accvalue=ini.getfloat("Calib2d3d_CalcAccuracy", "accvalue"),
+        ),
+        Diagnosis=Calib2d3dConf.DiagnosisConf(
+            continuation_seconds=ini.getfloat(
+                "Calib2d3d_Diagnosis", "continuation_seconds", fallback=20.0
+            ),
+            long_duration_seconds=ini.getfloat(
+                "Calib2d3d_Diagnosis", "long_duration_seconds", fallback=600.0
+            ),
+            detection_rate_window_seconds=ini.getfloat(
+                "Calib2d3d_Diagnosis",
+                "detection_rate_window_seconds",
+                fallback=20.0,
+            ),
+            detection_rate_threshold=ini.getfloat(
+                "Calib2d3d_Diagnosis", "detection_rate_threshold", fallback=0.2
+            ),
+            expected_person_count=ini.getint(
+                "Calib2d3d_Diagnosis", "expected_person_count", fallback=1
+            ),
+            brightness_threshold=ini.getfloat(
+                "Calib2d3d_Diagnosis", "brightness_threshold", fallback=20.0
+            ),
+            brightness_sample_stride=ini.getint(
+                "Calib2d3d_Diagnosis", "brightness_sample_stride", fallback=16
+            ),
+            walking_area_enabled=ini.getboolean(
+                "Calib2d3d_Diagnosis", "walking_area_enabled", fallback=False
+            ),
+            walking_area_corners=[
+                _parse_xy_quadrilateral(
+                    ini.get(
+                        "Calib2d3d_Diagnosis",
+                        f"walking_area_corners_camera{camera_id}",
+                    )
+                )
+                for camera_id in range(
+                    ini.getint("DataCapture_Camera", "count")
+                )
+            ],
         ),
     )
 

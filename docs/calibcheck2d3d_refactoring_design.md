@@ -24,7 +24,13 @@
 このモジュールは内部計算だけで完結しない。core アプリは
 `./argus_bootfig_jetson.sh appimage` で起動され、`MonitorArgus.json` が指定する UI と
 `[CalibUI_IF]` の MMAP を介して連携する。UI はユーザー操作に応じて `settings.ini` の
-`[CalibMode]` を書き換え、core は `SharedAppConfig` からその変更を読む。
+`[General]`と`[CalibMode]`を書き換える。`file_watch`が変更を検出して`SharedAppConfig`へ
+反映し、coreは共有設定からその変更を読む。
+
+ユーザーが校正チェック開始ボタンを押したとき、UIは`isRunning2D3Dcheck=True`を設定する。
+これが`calibcheck2d3d_app()`への遷移条件であり、coreは`pre_app_loopmain()`を1回実行した
+直後から`app_loopmain()`によるデータ収集を開始する。`pre_app_loopmain()`は画面待機中に
+継続する処理ではない。
 
 `calib_process.py` が `start2D3DCheckCalc` を監視し、`False` の間だけ
 `app_loopmain()` を呼ぶ。`True` になると loop を抜け、`post_app_loopmain()` を一度だけ
@@ -34,12 +40,21 @@
 ```mermaid
 sequenceDiagram
         participant UI as UI application
-        participant INI as settings.ini / SharedAppConfig
+        participant INI as settings.ini
+        participant FW as file_watch
+        participant SAC as SharedAppConfig
         participant CP as calib_process
         participant CC as calibcheck2d3d facade
         participant MMAP as CalibrationUIGodot / MMAP
 
-        UI->>INI: isRunning2D3Dcheck = True
+        UI->>INI: operation_mode = 1
+        INI-->>FW: ファイル変更
+        FW->>SAC: 設定を再読込
+        SAC-->>CP: 校正モードへ遷移
+        UI->>INI: isRunning2D3Dcheck = True<br/>チェック開始
+        INI-->>FW: ファイル変更
+        FW->>SAC: 設定を再読込
+        SAC-->>CP: calibcheck2d3d_app起動
         CP->>CC: pre_app_loopmain()
         CC->>MMAP: RUNNING と初回データを transmit
         MMAP-->>UI: 診断準備完了
@@ -48,7 +63,10 @@ sequenceDiagram
                 CC->>MMAP: フレーム情報を transmit
                 MMAP-->>UI: 画像・点群・検出結果・yaw
         end
-        UI->>INI: start2D3DCheckCalc = True
+        UI->>INI: start2D3DCheckCalc = True<br/>歩行データ取得完了
+        INI-->>FW: ファイル変更
+        FW->>SAC: 設定を再読込
+        SAC-->>CP: 収集終了・計算開始
         CP->>CC: post_app_loopmain()
         CC->>MMAP: CALCULATING とカメラ別診断を transmit
         CP->>CC: end_wait() / send_end_wait()

@@ -7,6 +7,7 @@ import numpy as np
 import pytest
 
 from argus_synchro.calibration_mat_generator_modules.ctrl.calibration2d3d import (
+    MAX_MATRIX_INVALID_CALCULATION_ATTEMPTS,
     calibration2d3d_class,
 )
 from argus_synchro.calibration_mat_generator_modules.ctrl.calibration2d3d.calc_progress import (
@@ -24,7 +25,9 @@ from argus_synchro.calibration_mat_generator_modules.ctrl.calibration2d3d.track_
     image_preprocess,
 )
 from argus_synchro.diagnosis.calib2d3d_result_diagnosis import (
+    Calib2d3dDiagnosisSession,
     Calib2d3dErrorCommon,
+    Calib2d3dFinalDiagnosis,
     Calib2d3dResultDiagnosis,
     CameraCalibrationStatus,
     CameraCalibrationStatusDiagnosis,
@@ -235,8 +238,40 @@ def _autoexit_calibration(point_count: int) -> calibration2d3d_class:
     calibration.camera_id = 1
     calibration.app_config_calib = MagicMock()
     calibration.app_config_calib.calib2d3d.CalcAccuracy.check_enable = True
-    calibration._result_diagnosis = Calib2d3dResultDiagnosis()
+    calibration.app_config_calib.calib2d3d.CalcAccuracy.accvalue = 30.0
+    calibration._diagnosis_session = Calib2d3dDiagnosisSession(
+        calibration.camera_id
+    )
+    calibration._final_diagnosis = Calib2d3dFinalDiagnosis()
     return calibration
+
+
+def test_final_diagnosis_failure_finishes_without_retry() -> None:
+    calibration = object.__new__(calibration2d3d_class)
+    calibration._matrix_invalid_calculation_attempts = 0
+
+    assert calibration._should_finish_after_final_diagnosis(
+        CameraCalibrationStatus.WALKING_PERSON_COUNT_INVALID
+    )
+    assert calibration._matrix_invalid_calculation_attempts == 0
+
+
+def test_matrix_invalid_finishes_after_three_calculation_attempts() -> None:
+    calibration = object.__new__(calibration2d3d_class)
+    calibration._matrix_invalid_calculation_attempts = 0
+
+    decisions = [
+        calibration._should_finish_after_final_diagnosis(
+            CameraCalibrationStatus.CALIBRATION_MATRIX_INVALID
+        )
+        for _ in range(MAX_MATRIX_INVALID_CALCULATION_ATTEMPTS)
+    ]
+
+    assert decisions == [False, False, True]
+    assert (
+        calibration._matrix_invalid_calculation_attempts
+        == MAX_MATRIX_INVALID_CALCULATION_ATTEMPTS
+    )
 
 
 def test_fileend_autoexit_rejects_insufficient_calibration_points(tmp_path) -> None:

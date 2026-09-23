@@ -56,16 +56,24 @@ from argus_synchro.calibration_mat_generator_modules.utils.NumpyMatrixLUT import
 from argus_synchro.common.app_logger import AppLogger, AppLoggerFactory
 from argus_synchro.config.app_config_calibration import AppConfigCalibration
 from argus_synchro.diagnosis.calib2d3d_result_diagnosis import (
+    Calib2d3dDiagnosisSession,
     Calib2d3dErrorCommon,
-    Calib2d3dResultDiagnosis,
+    Calib2d3dFinalDiagnosis,
+    Calib2d3dFinalObservation,
     CameraCalibrationStatus,
-    CameraCalibrationStatusDiagnosis,
+)
+from argus_synchro.diagnosis.calib2d3d_runtime_diagnosis import (
+    Calib2d3dFrameObservation,
+    Calib2d3dRuntimeDiagnosis,
+    Calib2d3dRuntimeDiagnosisConfig,
 )
 from argus_synchro.diagnosis.error_diagnosis import ResultDiagnosis
 from argus_synchro.message.calib_fifo_message import FIFOData
 from argus_synchro.shared_app_config import SharedAppConfig
 from argus_synchro.shared_errors import SharedErrors, StateErrorDIndex
 from argus_synchro.shared_excepts import SharedExcepts
+
+MAX_MATRIX_INVALID_CALCULATION_ATTEMPTS = 3
 
 _extract_ordered_data_logger: AppLogger = AppLoggerFactory.from_name(
     "_extract_ordered_data"
@@ -131,8 +139,11 @@ class calibration2d3d_class:
         self._report_file_io_error: Callable[[str, str, Exception], None] = (
             self._report_file_io_error_impl
         )
-        self._result_diagnosis = Calib2d3dResultDiagnosis()
-        self._camera_calibration_status_diagnosis = CameraCalibrationStatusDiagnosis()
+        self._diagnosis_session = Calib2d3dDiagnosisSession(camerasel)
+        self._runtime_diagnosis = Calib2d3dRuntimeDiagnosis(
+            self._make_runtime_diagnosis_config(camerasel)
+        )
+        self._final_diagnosis = Calib2d3dFinalDiagnosis()
 
         self.read_settingfile()
 
@@ -185,6 +196,7 @@ class calibration2d3d_class:
         self.current_progress_score = 0.0
         self.progress_mem = 0.0
         self.datasource_endflag = False
+        self._matrix_invalid_calculation_attempts = 0
 
         self.lastts2d: int | None = None
         self.lastts3d: int | None = None
@@ -317,6 +329,8 @@ class calibration2d3d_class:
         self.debug_processingtime_record: list[float] = []
         self.starttime: datetime.datetime = datetime.datetime.now()
         self.datasource_endflag = False
+        # カメラごとの校正開始時に、行列不正時の再計算回数も初期化する。
+        self._matrix_invalid_calculation_attempts = 0
 
         # CalibStatus:C1/C2 もう一度送信
         monitor.set_status_calibcommon(CalibrationCommonStatus.RUNNING)
@@ -333,6 +347,10 @@ class calibration2d3d_class:
         self.finalized_fileend_autoexit = False
 
         self.camera_id: int = sac.read().CalibMode.cameraID
+        self._diagnosis_session.reset(self.camera_id)
+        self._runtime_diagnosis = Calib2d3dRuntimeDiagnosis(
+            self._make_runtime_diagnosis_config(self.camera_id)
+        )
 
         _logger.info("clear all data in queues")
         self.progress_mem: float = 0.0
@@ -404,18 +422,32 @@ class calibration2d3d_class:
         )
         monitor.transmit_setdata(sec=sec, ref_t=ref_t)
         _logger.info(f"get_calibval: {transmat} accvalue: {accvalue}")
-        self._log_calibration_matrix_difference(transmat, accvalue)
+        reference_matrix_difference_invalid = (
+            self._log_calibration_matrix_difference(transmat, accvalue)
+        )
 
-        if not self.app_config_calib.calib2d3d.CalcAccuracy.check_enable:
-            _logger.info("** [CalcAccuracy]check_enable=False **")
-        _logger.info(
-            "** debug - calibration evaluation mode, Accuracy check disabled **"
+        camera_status = self._diagnose_final_calibration(
+            transmat=transmat,
+            accvalue=accvalue,
+            reference_matrix_difference_invalid=(
+                reference_matrix_difference_invalid
+            ),
+            monitor=monitor,
         )
-        self._write_result_matrix(resultmat_path, transmat)
-        _logger.info(
-            f"Accuracy Check OK ({accvalue}), result written: {resultmat_path} end"
-        )
-        monitor.set_camera_calibration_status(camera_id=self.camera_id, value=1)
+        if camera_status is CameraCalibrationStatus.CALIBRATION_SUCCEEDED:
+            if not self.app_config_calib.calib2d3d.CalcAccuracy.check_enable:
+                _logger.info("** [CalcAccuracy]check_enable=False **")
+            self._write_result_matrix(resultmat_path, transmat)
+            _logger.info(
+                f"Accuracy Check OK ({accvalue}), result written: {resultmat_path} end"
+            )
+        else:
+            _logger.error(
+                "Calibration result diagnosis failed: status=%s, accvalue=%s",
+                int(camera_status),
+                accvalue,
+            )
+            monitor.set_errorcode_unexpected_exception(True)
         self._update_errors_calibcommon(monitor)
         return True
 
@@ -446,7 +478,11 @@ class calibration2d3d_class:
 
     def _log_calibration_matrix_difference(
         self, transmat: NDArray[np.float64], accvalue: float
-    ) -> None:
+    ) -> bool | None:
+        """既存行列との差をログ出力し、閾値超過の有無を返す。
+
+        参照値を読み出せない場合は、推測で不合格にせず ``None`` を返す。
+        """
         try:
             with open(
                 self.app_config_calib.calib2d3d.CalcCorrespondence.optparam_initialvector,
@@ -478,8 +514,10 @@ class calibration2d3d_class:
                 f"{rvec_ok=}, {tvec_ok=}, {rvec_diff_deg=}, "
                 f"{tvec_diff=}, {accvalue=}"
             )
+            return not (bool(rvec_ok) and bool(tvec_ok))
         except (OSError, IndexError, KeyError, TypeError, ValueError) as error:
             _logger.warning("Calibration matrix reference check skipped: %r", error)
+            return None
 
     def app_loopmain(
         self,
@@ -877,15 +915,24 @@ class calibration2d3d_class:
                             f"get_calibval: {transmat} accvalue: {accvalue}",
                         )
 
-                        self._log_calibration_matrix_difference(transmat, accvalue)
-
-                        if (
-                            accvalue
-                            < self.app_config_calib.calib2d3d.CalcAccuracy.accvalue
-                            or (
-                                not self.app_config_calib.calib2d3d.CalcAccuracy.check_enable
+                        reference_matrix_difference_invalid = (
+                            self._log_calibration_matrix_difference(
+                                transmat, accvalue
                             )
-                        ):  # check_enable==Falseで即OKとする
+                        )
+
+                        camera_status = self._diagnose_final_calibration(
+                            transmat=transmat,
+                            accvalue=accvalue,
+                            reference_matrix_difference_invalid=(
+                                reference_matrix_difference_invalid
+                            ),
+                            monitor=monitor,
+                        )
+                        if (
+                            camera_status
+                            is CameraCalibrationStatus.CALIBRATION_SUCCEEDED
+                        ):
                             if not self.app_config_calib.calib2d3d.CalcAccuracy.check_enable:
                                 _logger.info(
                                     "** [CalcAccuracy]check_enable=False **",
@@ -895,27 +942,17 @@ class calibration2d3d_class:
                                 f"Accuracy Check OK ({accvalue}), result written: {resultmat_path} end",
                             )
                             endflag = True
-                            monitor.set_camera_calibration_status(
-                                camera_id=self.camera_id,
-                                value=int(
-                                    CameraCalibrationStatus.CALIBRATION_SUCCEEDED
-                                ),
-                            )
 
                         else:
                             _logger.error(
-                                f"accuracy check failed!! {self.current_progress_score = }",
+                                "calibration result diagnosis failed!! "
+                                f"status={int(camera_status)}, "
+                                f"{self.current_progress_score = }",
                             )
                             monitor.set_errorcode_unexpected_exception(True)
-                            camera_status = (
-                                self._camera_calibration_status_diagnosis.diagnose()
+                            endflag = self._should_finish_after_final_diagnosis(
+                                camera_status
                             )
-                            monitor.set_camera_calibration_status(
-                                camera_id=self.camera_id,
-                                value=int(camera_status),
-                            )
-                            if self.datasource_endflag:
-                                endflag = True
                         break
 
                     if (
@@ -1074,9 +1111,127 @@ class calibration2d3d_class:
 
         self.pcd_indexoffset = (self.accumulate_length - 1) / 2
 
-    def _update_errors_calibcommon(self, monitor: CalibrationUIGodot) -> None:
-        status: Calib2d3dErrorCommon = self._result_diagnosis.diagnose()
-        monitor.set_errors_calibcommon(int(status))
+    def _make_runtime_diagnosis_config(
+        self, camera_id: int
+    ) -> Calib2d3dRuntimeDiagnosisConfig:
+        """アプリ設定を、校正計算から独立した診断設定へ変換する。"""
+
+        config = self.app_config_calib.calib2d3d.Diagnosis
+        return Calib2d3dRuntimeDiagnosisConfig(
+            # 各フラグはINIへ公開せず、診断単位で独立して切り替えられる。
+            enable_walking_range=True,
+            enable_person_count=True,
+            enable_poor_person_detection=True,
+            enable_poor_tracking_3d=True,
+            enable_poor_tracking_2d=True,
+            enable_unsuitable_condition=True,
+            enable_long_duration=True,
+            enable_person_detection_impossible=True,
+            enable_tracking_impossible=True,
+            continuation_seconds=config.continuation_seconds,
+            long_duration_seconds=config.long_duration_seconds,
+            detection_rate_window_seconds=config.detection_rate_window_seconds,
+            detection_rate_threshold=config.detection_rate_threshold,
+            expected_person_count=config.expected_person_count,
+            brightness_threshold=config.brightness_threshold,
+            brightness_sample_stride=config.brightness_sample_stride,
+            walking_area_enabled=config.walking_area_enabled,
+            # 設定ではcamera0始まりのフラット座標列、ここでは計算用の4点を受け取る。
+            walking_area_corners=config.walking_area_corners[camera_id],
+        )
+
+    def _update_errors_calibcommon(
+        self,
+        monitor: CalibrationUIGodot,
+        status: Calib2d3dErrorCommon = Calib2d3dErrorCommon.DEFAULT,
+    ) -> None:
+        """本校正診断をMMAP送信用のUI状態へ反映する。"""
+        result = self._diagnosis_session.diagnose_runtime(status)
+        monitor.set_errors_calibcommon(int(result.common_error))
+        if result.camera_status is not None:
+            monitor.set_camera_calibration_status(
+                camera_id=result.camera_id,
+                value=int(result.camera_status),
+            )
+
+    def _diagnose_final_calibration(
+        self,
+        *,
+        transmat: NDArray[np.float64],
+        accvalue: float,
+        reference_matrix_difference_invalid: bool | None,
+        monitor: CalibrationUIGodot,
+    ) -> CameraCalibrationStatus:
+        """最終計算の観測値を診断へ渡し、カメラ別結果を設定する。"""
+
+        common_error = self._diagnosis_session.current_result.common_error
+        decision = self._final_diagnosis.diagnose(
+            Calib2d3dFinalObservation(
+                matrix=transmat,
+                accuracy_value=accvalue,
+                accuracy_threshold=(
+                    self.app_config_calib.calib2d3d.CalcAccuracy.accvalue
+                ),
+                accuracy_check_enabled=(
+                    self.app_config_calib.calib2d3d.CalcAccuracy.check_enable
+                ),
+                invalid_person_count=(
+                    common_error
+                    is Calib2d3dErrorCommon.WALKING_PERSON_COUNT_INVALID
+                ),
+                poor_tracking_3d=(
+                    common_error is Calib2d3dErrorCommon.POOR_TRACKING_3D
+                ),
+                poor_tracking_2d=(
+                    common_error is Calib2d3dErrorCommon.POOR_TRACKING_2D
+                ),
+                reference_matrix_difference_invalid=(
+                    reference_matrix_difference_invalid
+                ),
+            )
+        )
+        result = self._diagnosis_session.diagnose_final(
+            decision.status,
+            details=decision.details,
+        )
+        assert result.camera_status is not None
+        monitor.set_camera_calibration_status(
+            camera_id=self.camera_id,
+            value=int(result.camera_status),
+        )
+        return result.camera_status
+
+    def _should_finish_after_final_diagnosis(
+        self,
+        camera_status: CameraCalibrationStatus,
+    ) -> bool:
+        """最終診断不合格後に結果画面へ進むかを決める。
+
+        行列不正だけは一時的な計算失敗を考慮して初回を含む最大3回まで
+        計算する。それ以外の不合格は再計算しても診断理由が変わらないため、
+        現在のカメラ状態を保持したまま直ちに収集ループを終了する。
+        """
+
+        if camera_status is not CameraCalibrationStatus.CALIBRATION_MATRIX_INVALID:
+            return True
+
+        self._matrix_invalid_calculation_attempts += 1
+        if (
+            self._matrix_invalid_calculation_attempts
+            < MAX_MATRIX_INVALID_CALCULATION_ATTEMPTS
+        ):
+            _logger.warning(
+                "calibration matrix diagnosis failed; retry calculation "
+                f"({self._matrix_invalid_calculation_attempts}/"
+                f"{MAX_MATRIX_INVALID_CALCULATION_ATTEMPTS})",
+            )
+            return False
+
+        _logger.error(
+            "calibration matrix diagnosis failed after maximum calculation "
+            f"attempts ({MAX_MATRIX_INVALID_CALCULATION_ATTEMPTS})",
+        )
+        return True
 
     def get_last_singleyoloBB(self) -> list[NDArray[np.float64]] | None:
         return self.track_main.get_last_singleyoloBB()
@@ -1115,10 +1270,73 @@ class calibration2d3d_class:
         )
         return result == ResultDiagnosis.DETECTION
 
-    def detection_diagnosis(self, timestamp: int) -> bool:
-        # 現在はダミー。ここに人検知系・トラッキング系の検証処理・エラー処理を入れる。（長時間人検知無し、追跡等）
-        self.track_main.tracking_diagnosis(timestamp=timestamp)
-        return True
+    @staticmethod
+    def _active_tracking_id_count(metadata: dict[int, Any], timestamp: int) -> int:
+        """現在フレームまで更新された追跡ID数を数える。"""
+
+        return sum(
+            int(getattr(track, "frame_ix_max", -1)) == int(timestamp)
+            for track in metadata.values()
+        )
+
+    def detection_diagnosis(
+        self,
+        *,
+        image: NDArray[np.uint8],
+        monitor: CalibrationUIGodot,
+    ) -> None:
+        """検出・追跡結果を診断モジュールへ渡し、UI向け値を更新する。"""
+
+        yolo_result = self.track_main.get_last_yoloBB()
+        detection_2d_count = 0
+        if yolo_result is not None and len(yolo_result) > 1:
+            # bbox配列の深い添字ではなく、有効score数から2D検出人数を数える。
+            scores = np.asarray(yolo_result[1])
+            detection_2d_count = int(np.count_nonzero(scores > 0))
+
+        process3d = self.track_main.get_monitor_data().get("process3d_frame", {})
+        bbox_3d = np.asarray(process3d.get("multi_minmax", np.empty((0, 6))))
+        if bbox_3d.ndim != 2 or bbox_3d.shape[-1] < 4:
+            bbox_3d = np.empty((0, 6))
+        # 3D bbox形式は(xmin, xmax, ymin, ymax, zmin, zmax)。歩行範囲にはXY中心を使う。
+        bbox_3d_centers_xy = tuple(
+            ((float(bbox[0]) + float(bbox[1])) / 2.0,
+             (float(bbox[2]) + float(bbox[3])) / 2.0)
+            for bbox in bbox_3d
+        )
+
+        tracking_2d = self.track_main.detect2d.get_tracking_results()
+        tracking_3d = self.track_main.detect3d.get_tracking_results()
+        tracking_2d_count = self._active_tracking_id_count(
+            tracking_2d.trackingIDmetadata,
+            -1 if self.lastts2d is None else self.lastts2d,
+        )
+        tracking_3d_count = self._active_tracking_id_count(
+            tracking_3d.trackingIDmetadata,
+            -1 if self.lastts3d is None else self.lastts3d,
+        )
+
+        decision = self._runtime_diagnosis.diagnose(
+            Calib2d3dFrameObservation(
+                image=image,
+                detection_2d_count=detection_2d_count,
+                bbox_3d_count=len(bbox_3d),
+                tracking_2d_id_count=tracking_2d_count,
+                tracking_3d_id_count=tracking_3d_count,
+                bbox_3d_centers_xy=bbox_3d_centers_xy,
+            )
+        )
+        result = self._diagnosis_session.diagnose_runtime(
+            decision.common_error,
+            phase=decision.phase,
+            details=decision.details,
+        )
+        monitor.set_errors_calibcommon(int(result.common_error))
+        if result.camera_status is not None:
+            monitor.set_camera_calibration_status(
+                camera_id=result.camera_id,
+                value=int(result.camera_status),
+            )
 
     def dataproc(
         self,
@@ -1155,7 +1373,7 @@ class calibration2d3d_class:
             return False
         self.track_main.detect(indata=readresults)
 
-        self.detection_diagnosis(timestamp=framecounter)
+        self.detection_diagnosis(image=readresults[0][0], monitor=monitor)
 
         monitor.set_image(cameraID, self.track_main.monitor_data[f"detect2d_image{0}"])
 

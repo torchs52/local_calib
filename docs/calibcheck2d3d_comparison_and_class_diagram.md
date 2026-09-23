@@ -236,7 +236,9 @@ flowchart TD
 ```mermaid
 sequenceDiagram
     participant UI as UI application
-    participant INI as settings.ini / SharedAppConfig
+    participant INI as settings.ini
+    participant FW as file_watch
+    participant SAC as SharedAppConfig
     participant CP as calib_process
     participant FAC as calibcheck2d3d facade
     participant PROC as processor.py
@@ -245,7 +247,14 @@ sequenceDiagram
     participant REP as reporting.py
     participant MMAP as CalibrationUIGodot / MMAP
 
-    UI->>INI: isRunning2D3Dcheck = True
+    UI->>INI: operation_mode = 1
+    INI-->>FW: ファイル変更
+    FW->>SAC: 設定を再読込
+    SAC-->>CP: 校正モードへ遷移
+    UI->>INI: isRunning2D3Dcheck = True<br/>チェック開始
+    INI-->>FW: ファイル変更
+    FW->>SAC: 設定を再読込
+    SAC-->>CP: calibcheck2d3d_app起動
     CP->>FAC: pre_app_loopmain()
     FAC->>PROC: create_calibcheck_session_state()
     FAC->>MMAP: RUNNING と初回データを transmit
@@ -259,7 +268,10 @@ sequenceDiagram
         MMAP-->>UI: 画面更新
     end
 
-    UI->>INI: start2D3DCheckCalc = True
+    UI->>INI: start2D3DCheckCalc = True<br/>歩行データ取得完了
+    INI-->>FW: ファイル変更
+    FW->>SAC: 設定を再読込
+    SAC-->>CP: 収集終了・計算開始
     CP->>FAC: post_app_loopmain()
     FAC->>TRK: track_3dbbox() / track_2dbbox()
     FAC->>EVA: evaluate_2d3d()

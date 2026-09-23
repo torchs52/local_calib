@@ -31,6 +31,24 @@
 | `calibration_mat_generator_modules/ctrl/calibcheck2d3d/evaluator.py` | 投影、評価、統計、reason生成、全体制御 | 評価結果と診断用統計の生成 |
 | `calibration_mat_generator_modules/ctrl/calibcheck2d3d/__init__.py` | facade、状態保持、ライフサイクル | 診断セッションの所有と各処理段階からの診断呼び出し |
 
+### 2.1 UI操作とライフサイクルの前提
+
+本機能の開始・収集終了は、coreアプリ内の直接的なUIイベントではなく、UIアプリが
+`settings.ini`を書き換えることで通知される。`file_watch`が変更を検出して
+`SharedAppConfig`へ反映し、core側が共有設定を読み取って状態を遷移する。
+
+各設定値の役割は次のとおりである。
+
+| 設定値 | UI操作とcore側の動作 |
+|---|---|
+| `General.operation_mode = 1` | システムを校正モードへ移行する |
+| `CalibMode.isRunning2D3Dcheck = True` | ユーザーの校正チェック開始操作。coreは`calibcheck2d3d_app()`へ入り、`pre_app_loopmain()`を1回実行した直後から`app_loopmain()`を繰り返す |
+| `CalibMode.start2D3DCheckCalc = True` | ユーザーの歩行データ取得完了操作。収集ループを終了し、`post_app_loopmain()`を1回実行する |
+
+`pre_app_loopmain()`は画面待機中に継続実行される処理ではない。診断状態と収集状態を初期化し、
+MMAPへ開始状態を送信する1回限りの処理である。データ収集はその直後の`app_loopmain()`から始まる。
+また、`start2D3DCalibCalc`は本校正`calibration2d3d`用であり、本機能の終了トリガーには使用しない。
+
 ## 3. 設計原則
 
 ### 3.1 診断モジュールを理由判定の唯一の定義元にする
@@ -763,6 +781,10 @@ bboxログまたは追跡段階ですでに評価不能となったカメラに�
 
 ```mermaid
 sequenceDiagram
+    participant UIApp as UI application
+    participant INI as settings.ini
+    participant FW as file_watch
+    participant SAC as SharedAppConfig
     participant CP as CalibProcess
     participant CC as calibcheck2d3d facade
     participant P as processor
@@ -773,6 +795,13 @@ sequenceDiagram
     participant R as reporting
     participant UI as CalibrationUIGodot/MMAP
 
+    UIApp->>INI: operation_mode = 1
+    INI-->>FW: ファイル変更
+    FW->>SAC: 設定を再読込
+    UIApp->>INI: isRunning2D3Dcheck = True<br/>チェック開始
+    INI-->>FW: ファイル変更
+    FW->>SAC: 設定を再読込
+    SAC-->>CP: 校正チェック起動条件成立
     CP->>CC: pre_app_loopmain()
     CC->>D: reset(camera_count)
     CC->>UI: RUNNINGを送信
@@ -788,6 +817,10 @@ sequenceDiagram
         CC->>UI: フレーム情報を送信
     end
 
+    UIApp->>INI: start2D3DCheckCalc = True<br/>歩行データ取得完了
+    INI-->>FW: ファイル変更
+    FW->>SAC: 設定を再読込
+    SAC-->>CP: 収集終了・計算開始条件成立
     CP->>CC: post_app_loopmain()
     CC->>E: run_data_evaluation_process()
     E->>T: bboxログ統計を生成
