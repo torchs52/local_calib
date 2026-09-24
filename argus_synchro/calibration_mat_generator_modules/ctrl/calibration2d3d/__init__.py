@@ -43,6 +43,7 @@ from argus_synchro.calibration_mat_generator_modules.ctrl.data_capture.datacaptu
     datacapture_class,
 )
 from argus_synchro.calibration_mat_generator_modules.facade import (
+    CURRENTCAMERA_INIT,
     CalibrationCommonStatus,
     CalibrationUIGodot,
 )
@@ -422,16 +423,14 @@ class calibration2d3d_class:
         )
         monitor.transmit_setdata(sec=sec, ref_t=ref_t)
         _logger.info(f"get_calibval: {transmat} accvalue: {accvalue}")
-        reference_matrix_difference_invalid = (
-            self._log_calibration_matrix_difference(transmat, accvalue)
+        reference_matrix_difference_invalid = self._log_calibration_matrix_difference(
+            transmat, accvalue
         )
 
         camera_status = self._diagnose_final_calibration(
             transmat=transmat,
             accvalue=accvalue,
-            reference_matrix_difference_invalid=(
-                reference_matrix_difference_invalid
-            ),
+            reference_matrix_difference_invalid=(reference_matrix_difference_invalid),
             monitor=monitor,
         )
         if camera_status is CameraCalibrationStatus.CALIBRATION_SUCCEEDED:
@@ -916,9 +915,7 @@ class calibration2d3d_class:
                         )
 
                         reference_matrix_difference_invalid = (
-                            self._log_calibration_matrix_difference(
-                                transmat, accvalue
-                            )
+                            self._log_calibration_matrix_difference(transmat, accvalue)
                         )
 
                         camera_status = self._diagnose_final_calibration(
@@ -1079,6 +1076,14 @@ class calibration2d3d_class:
             overwrite_calibresult=True,
             enable_yawangle=True,
         )
+        # 1カメラ分の校正終了後は、次の対象カメラを選べるように
+        # MMAP上の対象カメラだけを未選択へ戻す。
+        # currentmode=2は2D-3D本校正の画面コンテキストとして保持する。
+        monitor.set_currentcamera(CURRENTCAMERA_INIT)
+
+        # errors_calibcommon は収集中だけの診断値なので待機時にクリアする。
+        # カメラ別の最終結果 camera_calibstatus_values は保持する。
+        monitor.set_errors_calibcommon(int(Calib2d3dErrorCommon.DEFAULT))
         monitor.transmit_setdata(sec=sec, ref_t=None)
 
     @staticmethod
@@ -1176,8 +1181,7 @@ class calibration2d3d_class:
                     self.app_config_calib.calib2d3d.CalcAccuracy.check_enable
                 ),
                 invalid_person_count=(
-                    common_error
-                    is Calib2d3dErrorCommon.WALKING_PERSON_COUNT_INVALID
+                    common_error is Calib2d3dErrorCommon.WALKING_PERSON_COUNT_INVALID
                 ),
                 poor_tracking_3d=(
                     common_error is Calib2d3dErrorCommon.POOR_TRACKING_3D
@@ -1300,8 +1304,10 @@ class calibration2d3d_class:
             bbox_3d = np.empty((0, 6))
         # 3D bbox形式は(xmin, xmax, ymin, ymax, zmin, zmax)。歩行範囲にはXY中心を使う。
         bbox_3d_centers_xy = tuple(
-            ((float(bbox[0]) + float(bbox[1])) / 2.0,
-             (float(bbox[2]) + float(bbox[3])) / 2.0)
+            (
+                (float(bbox[0]) + float(bbox[1])) / 2.0,
+                (float(bbox[2]) + float(bbox[3])) / 2.0,
+            )
             for bbox in bbox_3d
         )
 

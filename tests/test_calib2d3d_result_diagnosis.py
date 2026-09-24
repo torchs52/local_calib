@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, call
 
 import pytest
 
 from argus_synchro.calibration_mat_generator_modules.ctrl.calibration2d3d import (
     calibration2d3d_class,
 )
+from argus_synchro.calibration_mat_generator_modules.facade import CURRENTCAMERA_INIT
 from argus_synchro.diagnosis.calib2d3d_result_diagnosis import (
     Calib2d3dDiagnosisPhase,
     Calib2d3dDiagnosisSession,
@@ -201,4 +202,25 @@ def test_controller_warning_does_not_overwrite_camera_status() -> None:
     )
 
     monitor.set_errors_calibcommon.assert_called_once_with(6)
+    monitor.set_camera_calibration_status.assert_not_called()
+
+
+def test_send_end_wait_clears_runtime_warning_but_keeps_camera_result() -> None:
+    monitor = MagicMock()
+    sec = object()
+
+    calibration2d3d_class.send_end_wait(sec, object(), monitor)
+
+    assert monitor.method_calls == [
+        call.set_status_calibcommon(0),
+        call.set_dummydata(
+            enable_systemerrorflag=True,
+            enable_errorflag=True,
+            overwrite_calibresult=True,
+            enable_yawangle=True,
+        ),
+        call.set_currentcamera(CURRENTCAMERA_INIT),
+        call.set_errors_calibcommon(int(Calib2d3dErrorCommon.DEFAULT)),
+        call.transmit_setdata(sec=sec, ref_t=None),
+    ]
     monitor.set_camera_calibration_status.assert_not_called()
