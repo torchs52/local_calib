@@ -166,7 +166,9 @@ sequenceDiagram
         UI->>INI: 動作モード・校正モード設定を変更
         INI-->>SAC: 設定変更を反映
         SAC-->>CP: セッション終了条件成立
-        CP->>MMAP: INACTIVEを通知
+        CP->>MMAP: INACTIVE、currentcamera=255、errors_calibcommon=0を通知
+        Note over CP,MMAP: currentmode=2と全カメラの最終結果は保持
+        MMAP-->>UI: 次カメラの選択・開始が可能な待機状態
     end
 ```
 
@@ -232,7 +234,17 @@ start2D3DCalibCalc = True
 
 現在の`post_app_loopmain()`は実質的な最終計算を行わず、ほぼ空の後処理である。
 その後、`end_wait()`が`COMPLETED`をMMAPへ通知し、UIによるモード変更を待つ。
-終了時は`send_end_wait()`が`INACTIVE`を通知する。
+終了時は`send_end_wait()`が次を同一のMMAP送信へ反映する。
+
+- `status_calibcommon = INACTIVE`
+- `currentcamera = 255`（`CURRENTCAMERA_INIT`、対象カメラ未選択）
+- `errors_calibcommon = 0`（実行中診断をクリア）
+
+`currentmode`は0へ戻さず、2D-3D本校正の画面コンテキストを示す値2を保持する。
+また、校正済みカメラを含む`CameraCalibrationStatus`は保持する。これによりUIは
+完了済みカメラの結果を表示したまま、次の対象カメラを選択して「歩行を開始する」
+操作へ進める。次カメラの開始時には、選択された`cameraID`を使って
+`reset_internal_values(..., currentmode=2, currentcamera=cameraID)`が実行される。
 
 ## 5. MMAPへ出力する診断の区分
 
@@ -242,6 +254,20 @@ start2D3DCalibCalc = True
 |---|---|---|---|
 | `Calib2d3dErrorCommon` | 現在実行中の校正セッション | `app_loopmain()`の収集中 | 作業条件、検出、追跡などの状態をUIへ随時通知 |
 | `CameraCalibrationStatus` | 対象カメラの最終結果 | `app_loopmain()`の最終計算時、または重大エラー確定時 | カメラ別校正結果をUIへ通知 |
+
+診断と合わせてUI遷移に関係するMMAP項目は次の契約とする。
+
+| 項目 | 2D-3D本校正中 | 1台終了後の次カメラ選択待ち |
+|---|---:|---:|
+| `status_calibcommon` | `RUNNING`、`CALCULATING`または`COMPLETED` | `INACTIVE` |
+| `currentmode` | 2 | 2（保持） |
+| `currentcamera` | 選択された0始まりのカメラ番号 | 255（未選択） |
+| `errors_calibcommon` | 現在の実行中診断値 | 0 |
+| `CameraCalibrationStatus` | カメラごとの現在または最終結果 | 全カメラ分を保持 |
+
+`currentmode=0`への変更は、校正モード全体から抜けることと同義ではないため、
+1台終了後の待機化には使用しない。実機確認では、ボタンの再活性化に必要なのは
+`currentcamera=255`への復帰であり、`currentmode=2`の保持で正常に次カメラを開始できる。
 
 コアは診断コードに基づいて画面遷移や動作モード変更を行わない。
 コアがMMAPへ診断コードを書き、UIアプリがそれを検出して次を行う。
@@ -380,6 +406,8 @@ app_loopmainの最終計算部分
   → 0～15は成功を妨げず、ラッチ済みの16～31だけを状態7へ反映
 
 セッション終了
+  → MMAPのcurrentcameraを255、errors_calibcommonを0へ戻す
+  → currentmode=2と全カメラのCameraCalibrationStatusは保持する
   → 次のcameraIDでは新しい診断セッションを開始
 ```
 
@@ -644,6 +672,7 @@ classDiagram
 16. 既存行列との差分判定は既定OFFで成功可否を変えず、明示的にONにした場合だけ閾値超過を状態6とする。参照値を読めない場合は推測で不合格にしない。
 17. 歩行範囲設定がカメラ番号0始まりで読み込まれ、8要素以外を拒否する。
 18. 機種別校正設定に全カメラ分の歩行範囲が存在する。
+19. 1台終了時に`currentcamera=255`、`errors_calibcommon=0`となり、`currentmode=2`と他カメラを含む`CameraCalibrationStatus`は保持される。
 
 ## 14. 未確定事項
 
@@ -652,7 +681,6 @@ classDiagram
 - `CameraCalibrationStatus`の値7の正式名称とUI表示文言
 - 重大エラーと`start2D3DCalibCalc=True`が同時に成立した場合の正式な表示優先順位
 - `CALIBRATION_SUCCEEDED`を`Calib2d3dErrorCommon`にも設定する必要があるか
-- 次カメラ開始時に、前カメラの`CameraCalibrationStatus`を保持するMMAP契約
 - 検出率・追跡率20%と輝度20.0が実機データに対して妥当か
 - 2D追跡ID数を人数の主判定に使う仕様を、3D情報で補完する必要があるか
 - 最終状態2～5を将来、行列不正の原因表示として使い分ける必要があるか
